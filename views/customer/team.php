@@ -19,8 +19,8 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php if (!empty($data['orders'])): ?>
-							<?php foreach ($data['orders'] as $key => $order): ?>
+						<?php if (!empty($team['orders'])): ?>
+							<?php foreach ($team['orders'] as $key => $order): ?>
 								<tr>
 									<td><?php print $key+1 ?></td>
 									<td>
@@ -29,7 +29,7 @@
 										</a>
 									<td><?php print $order['price'] ?></td>
 									<td width="200" class="text-center">
-										<img width="100%" height="50" src="<?php print $order['barcode'] ?>" alt="">
+										<img width="100%" height="50" src="/ext/barcode/barcode.php?text=<?php print $order['id'] ?>" alt="">
 									</td>
 									<td>
 										<button class="btn btn-default">

@@ -14,7 +14,7 @@ Class Model_Elements Extends Model_Base {
 			'name' => 'Название',
 			'price' => 'Цена',
 			'type' => 'Тип',
-			'sate' => 'Состояние'
+			'state' => 'Состояние'
 		);
 	}
 	

@@ -27,7 +27,7 @@ Class Controller_Admin Extends Controller_Base
 						$element_model = new Model_Elements();
 						$element = $element_model->getRowById($operation['element_id']);
 
-						if ($element['type'] == ORDER && $element['state'] == 0)
+						if ($element['type'] == ORDER && ($element['state'] == 0 || $element['state'] == 1 || $element['state'] == 3))
 						{
 							$element['price'] = $operation['price'];
 						}

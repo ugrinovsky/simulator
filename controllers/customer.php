@@ -69,9 +69,14 @@ Class Controller_Customer Extends Controller_Base
 				{
 					$select = array('where' => 'id = '.$operation['element_id'].' and type = '.ORDER);
 					$element_model = new Model_Elements($select);
-					$team['orders'] = $element_model->getAllRows();
+					$order = $element_model->getOneRow();
+					if (isset($order) && !empty($order))
+					{
+						$orders[] = $order;
+					}
 				}
 			}
+			$team['orders'] = $orders;
 
 			$this->template->vars('team', $team);
 			$this->template->view('team');
@@ -92,18 +97,18 @@ Class Controller_Customer Extends Controller_Base
 
 		if(isset($order))
 		{
+			$select = array('where' => 'id = '.$order_id);
+			$order = new Model_Elements($select);
+			$order->fetchOne();
+			$order->state = 1;
+			$order->update();
+
 			$operation_model = new Model_Operations();
 			$operation_model->element_id = $order['id'];
 			$operation_model->team_id = $team['id'];
 			$operation_model->price = 0;
 			$operation_model->residue = $team['score'];
 			$operation_model->save();
-
-			$select = array('where' => 'id = '.$order_id);
-			$order = new Model_Elements($select);
-			$order->fetchOne();
-			$order->state = 1;
-			$order->update();
 
 			$this->redirectToAction('team/'.$team_id);
 		}

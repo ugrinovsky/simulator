@@ -22,9 +22,16 @@
 							<?php foreach ($team['operations'] as $key => $operation): ?>
 								<tr>
 									<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
-									<td class="<?php print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT) ? 'danger' : 'success')  ?>">
+									<td class="
+											<?php if ($operation['price'] != 0): ?>
+												<?php print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT) ? 'danger' : 'success')  ?>
+											<?php endif ?>
+												">
 										<?php
-											print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT) ? '-' : '+')
+											if ($operation['price'] != 0)
+											{
+												print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT) ? '-' : '+');
+											}
 										?>
 										<?php print $operation['price'] ?>
 									</td>

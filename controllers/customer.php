@@ -77,4 +77,36 @@ Class Controller_Customer Extends Controller_Base
 			$this->template->view('team');
 		}
 	}
+
+	function add_order_team()
+	{
+		$order_id = $_POST['order_id'];
+		$team_id = $_POST['team_id'];
+
+		$select = array('where' => 'id = '.$order_id.' and type = '.ORDER);
+		$element_model = new Model_Elements($select);
+		$order = $element_model->getOneRow();
+
+		$team_model = new Model_Teams();
+		$team = $team_model->getRowById($team_id);
+
+		if(isset($order))
+		{
+			$operation_model = new Model_Operations();
+			$operation_model->element_id = $order['id'];
+			$operation_model->team_id = $team['id'];
+			$operation_model->price = 0;
+			$operation_model->residue = $team['score'];
+			$operation_model->save();
+
+			$select = array('where' => 'id = '.$order_id);
+			$order = new Model_Elements($select);
+			$order->fetchOne();
+			$order->state = 1;
+			$order->update();
+
+			$this->redirectToAction('team/'.$team_id);
+		}
+
+	}
 }

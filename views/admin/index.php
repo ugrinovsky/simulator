@@ -27,9 +27,16 @@
 									</td>
 									<td><?php print $team['score'] ?></td>
 									<?php if (isset($team['operation']) && !empty($team['operation'])): ?>
-										<td class="<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT) ? 'danger' : 'success')  ?>">
+										<td class="
+														<?php if ($team['operation']['price'] != 0): ?>
+															<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT) ? 'danger' : 'success')  ?>
+														<?php endif ?>
+													">
 											<?php
-												print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT) ? '-' : '+')
+												if ($team['operation']['price'] != 0)
+												{
+													print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT) ? '-' : '+');
+												}
 											?>
 											<?php print $team['operation']['price'] ?>
 										</td>

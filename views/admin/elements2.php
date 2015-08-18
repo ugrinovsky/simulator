@@ -32,10 +32,24 @@
 										<img width="100%" src="/ext/barcode/barcode.php?text=<?php print $order['id'] ?>" alt="">
 									</td>
 									<td>
-										
+										<?php print $order['team'] ?>
 									</td>
 									<td>
-										
+										<?php
+											$state_text = '';
+											switch ($order['state']) {
+												case 0:
+													$state_text = 'не определен';
+													break;
+												case 1:
+													$state_text = 'на исполнении';
+													break;
+												case 2:
+													$state_text = 'выполнен';
+													break;
+											}
+											print $state_text;
+										?>
 									</td>
 									<td>
 										<button class="btn-order-edit btn btn-default" data-id="<?php print $order['id'] ?>"  data-toggle="modal" data-target="#editOrder">
@@ -173,7 +187,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-        <button type="submit" class="btn btn-primary">Добавить</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
       </div>
      </form>
     </div>
@@ -228,7 +242,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-        <button type="submit" class="btn btn-primary">Добавить</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
       </div>
      </form>
     </div>

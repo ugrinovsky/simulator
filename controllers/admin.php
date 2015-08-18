@@ -14,7 +14,8 @@ Class Controller_Admin Extends Controller_Base
 			foreach ($data['teams'] as $key => $team)
 			{
 				$select = array(
-					'where' => 'team_id = '.$team['id']
+					'where' => 'team_id = '.$team['id'],
+					'order' => 'id'
 				); 
 				$operation_model = new Model_Operations($select);
 				$operation = $operation_model->getLastRow();
@@ -25,6 +26,11 @@ Class Controller_Admin Extends Controller_Base
 					{
 						$element_model = new Model_Elements();
 						$element = $element_model->getRowById($operation['element_id']);
+
+						if ($element['type'] == ORDER && $element['state'] == 0)
+						{
+							$element['price'] = $operation['price'];
+						}
 					}
 					elseif($operation['element_id'] < 0)
 					{
@@ -111,7 +117,7 @@ Class Controller_Admin Extends Controller_Base
 		$director->team_id = $team_id;
 		$director->save();
 
-		$this->redirectToAction("team?id=$team_id");
+		$this->redirectToAction("team/$team_id");
 	}
 
 
@@ -209,6 +215,21 @@ Class Controller_Admin Extends Controller_Base
 		$select = array('where' => 'type = '.ORDER);
 		$element_model = new Model_Elements($select);
 		$data['orders'] = $element_model->getAllRows();
+
+		foreach ($data['orders'] as $key => $order)
+		{
+			$select = array('where' => 'element_id = '.$order['id']);
+			$operation_model = new Model_Operations($select);
+			$operation = $operation_model->getOneRow();
+
+			if (isset($operation))
+			{
+				$team_model = new Model_Teams();
+				$team = $team_model->getRowById($operation['team_id']);
+
+				$data['orders'][$key]['team'] = $team['name'];
+			}
+		}
 
 		$select = array('where' => 'type = '.PART);
 		$element_model = new Model_Elements($select);

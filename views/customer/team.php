@@ -42,7 +42,7 @@
 					</tbody>
 				</table>
 			</div>
-			<button class="btn btn-default">
+			<button class="btn btn-default" data-toggle="modal" data-target="#addOrderTeam">
 				Добавить заказ
 			</button>
 		</div>
@@ -60,45 +60,21 @@
 <div class="modal fade" id="addOrderTeam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-     <form id="form-team-cost" action="/admin/add_cost_team" method="post">
+     <form id="form-team-cost" action="/customer/add_order_team" method="post">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">Добавить расход</span></h4>
+        <h4 class="modal-title" id="exampleModalLabel">Добавить заказ</span></h4>
       </div>
       <div class="modal-body">
 			<div class="form-group">
-				<label for="recipient-name" class="control-label">Название:</label>
-				<select id="select-elements" class="form-control">
-					<option value=""></option>
-					<?php if (!empty($data['costs'])): ?>
-						<option class="option-cost" value="cost">Расход</option>
-					<?php endif ?>
-					<?php if (!empty($data['fines'])): ?>
-						<option class="option-fine" value="fine">Штраф</option>
-					<?php endif ?>
-				</select>
+				<label for="recipient-name" class="control-label">Идентификатор:</label>
+				<input name="order_id" class="form-control" type="text">
 			</div>
-			<div class="select-element select-cost form-group">
-				<select id="" class="form-control">
-					<?php foreach ($data['costs'] as $key => $cost): ?>
-						<option value="<?php print $cost['id'] ?>"><?php print $cost['name'] ?></option>
-					<?php endforeach ?>
-				</select>
-			</div>
-			<div class="select-element select-fine form-group">
-				<select id="" class="form-control">
-					<?php foreach ($data['fines'] as $key => $fine): ?>
-						<option value="<?php print $fine['id'] ?>"><?php print $fine['name'] ?></option>
-					<?php endforeach ?>
-				</select>
-			</div>
+			<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
       </div>
-      <input name="team_element" type="hidden">
-      <input name="team_cost_id" type="hidden">
-      <input name="location" type="hidden" value="index">
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-        <button type="submit" class="select-btn btn btn-primary" disabled>Добавить</button>
+        <button type="submit" class="btn btn-primary">Добавить</button>
       </div>
      </form>
     </div>

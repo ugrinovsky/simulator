@@ -9,6 +9,28 @@ Class Controller_Customer Extends Controller_Base
 		$team_model = new Model_Teams();
 		$data['teams'] = $team_model->getAllRows();
 
+		foreach ($data['teams'] as $key => $team)
+		{
+			$select = array('where' => 'team_id = '.$team['id']);
+			$operation_model = new Model_Operations($select);
+			$operations = $operation_model->getAllRows();
+			if (!empty($operations))
+			{
+				foreach ($operations as $key2 => $operation)
+				{
+					$select = array('where' => 'id = '.$operation['element_id']);
+					$element_model = new Model_Elements($select);
+					$element = $element_model->getOneRow();
+
+					if (isset($element) && !empty($element))
+					{
+						$data['teams'][$key]['order'] = $element;
+						break;
+					}
+				}
+			}
+		}
+
 		$this->template->vars('data', $data);
 		$this->template->view('index');
 	}
@@ -19,11 +41,18 @@ Class Controller_Customer Extends Controller_Base
 		$element_model = new Model_Elements($select);
 		$data['orders'] = $element_model->getAllRows();
 
-		if(!empty($data['orders']))
+		foreach ($data['orders'] as $key => $order)
 		{
-			foreach ($data['orders'] as $key => $order)
+			$select = array('where' => 'element_id = '.$order['id']);
+			$operation_model = new Model_Operations($select);
+			$operation = $operation_model->getOneRow();
+
+			if (isset($operation))
 			{
-				$data['orders'][$key]['barcode'] = '/ext/barcode/barcode.php?text='.$order['id'].'&size=40';
+				$team_model = new Model_Teams();
+				$team = $team_model->getRowById($operation['team_id']);
+
+				$data['orders'][$key]['team'] = $team['name'];
 			}
 		}
 
@@ -39,8 +68,6 @@ Class Controller_Customer Extends Controller_Base
 
 		if (isset($order))
 		{
-			$order['barcode'] = '/ext/barcode/barcode.php?text='.$order['id'].'&size=40';
-
 			$this->layouts = 'order_layouts';
 			$this->template->layouts = 'order_layouts';
 
@@ -97,18 +124,42 @@ Class Controller_Customer Extends Controller_Base
 
 		if(isset($order))
 		{
-			$select = array('where' => 'id = '.$order_id);
-			$order = new Model_Elements($select);
-			$order->fetchOne();
-			$order->state = 1;
-			$order->update();
+			if ($order['state'] == 0)
+			{
+				$select = array('where' => 'id = '.$order_id);
+				$order = new Model_Elements($select);
+				$order->fetchOne();
+				$order->state = 1;
+				$order->update();
 
-			$operation_model = new Model_Operations();
-			$operation_model->element_id = $order['id'];
-			$operation_model->team_id = $team['id'];
-			$operation_model->price = 0;
-			$operation_model->residue = $team['score'];
-			$operation_model->save();
+				$operation_model = new Model_Operations();
+				$operation_model->element_id = $order->id;
+				$operation_model->team_id = $team['id'];
+				$operation_model->price = 0;
+				$operation_model->residue = $team['score'];
+				$operation_model->save();
+			}
+			elseif($order['state'] == 1)
+			{
+				$select = array('where' => 'id = '.$order_id);
+				$order = new Model_Elements($select);
+				$order->fetchOne();
+				$order->state = 2;
+				$order->update();
+
+				$select = array('where' => 'id = '.$team_id);
+				$team = new Model_Teams($select);
+				$team->fetchOne();
+				$team->score += $order->price;
+				$team->update();	
+
+				$operation_model = new Model_Operations();
+				$operation_model->element_id = $order->id;
+				$operation_model->team_id = $team->id;
+				$operation_model->price = $order->price;
+				$operation_model->residue = $team->score;
+				$operation_model->save();
+			}
 
 			$this->redirectToAction('team/'.$team_id);
 		}

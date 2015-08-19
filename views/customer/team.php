@@ -15,6 +15,7 @@
 							<th>Название</th>
 							<th>Цена, руб.</th>
 							<th>Штрих-код</th>
+							<th>Статус</th>
 							<th width="50">Печать</th>
 						</tr>
 					</thead>
@@ -29,7 +30,24 @@
 										</a>
 									<td><?php print $order['price'] ?></td>
 									<td width="200" class="text-center">
-										<img width="100%" height="50" src="/ext/barcode/barcode.php?text=<?php print $order['id'] ?>" alt="">
+										<img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $order['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
+									</td>
+									<td>
+									   <?php
+									      $state_text = '';
+									      switch ($order['state']) {
+									         case 0:
+									            $state_text = 'не определен';
+									            break;
+									         case 1:
+									            $state_text = 'на исполнении';
+									            break;
+									         case 2:
+									            $state_text = 'выполнен';
+									            break;
+									      }
+									      print $state_text;
+									   ?>
 									</td>
 									<td>
 										<button class="btn btn-default">

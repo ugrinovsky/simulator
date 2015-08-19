@@ -8,5 +8,5 @@
 	Штрих-код:
 </p>
 <p>
-	<img src="<?php print $order['barcode'] ?>" alt="" width="200">
+	<img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $order['id'] ?>&code=Code128&dpi=306' alt='Barcode Generator TEC-IT'/>
 </p>

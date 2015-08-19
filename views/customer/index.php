@@ -25,12 +25,26 @@
 									</td>
 									<td>
 										<?php if (isset($team['order'])): ?>
-											
+											<?php print $team['order']['name'] ?>
 										<?php endif ?>
 									</td>
 									<td>
 										<?php if (isset($team['order'])): ?>
-											
+											<?php
+											   $state_text = '';
+											   switch ($team['order']['state']) {
+											      case 0:
+											         $state_text = 'не определен';
+											         break;
+											      case 1:
+											         $state_text = 'на исполнении';
+											         break;
+											      case 2:
+											         $state_text = 'выполнен';
+											         break;
+											   }
+											   print $state_text;
+											?>
 										<?php endif ?>
 									</td>
 									<td>

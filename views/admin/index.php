@@ -29,13 +29,13 @@
 									<?php if (isset($team['operation']) && !empty($team['operation'])): ?>
 										<td class="
 														<?php if ($team['operation']['price'] != 0): ?>
-															<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT) ? 'danger' : 'success')  ?>
+															<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER) ? 'danger' : 'success')  ?>
 														<?php endif ?>
 													">
 											<?php
 												if ($team['operation']['price'] != 0)
 												{
-													print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT) ? '-' : '+');
+													print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER) ? '-' : '+');
 												}
 											?>
 											<?php print $team['operation']['price'] ?>

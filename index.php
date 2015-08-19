@@ -17,8 +17,58 @@ function current_period()
 	$select = array('where' => "state = '".PERIOD_ENABLE."'");
 	$period_model = new Model_Periods($select);
 	$period = $period_model->getOneRow();
-	// die('qwe');
 	return $period['id'];
+}
+
+function game()
+{
+	$select = array('where' => "state = '".PERIOD_DISABLE."'");
+	$period_model = new Model_Periods($select);
+	$period = $period_model->getAllRows();
+	if (count($period) != 4)
+		return true;
+	else 
+		return false;
+}
+
+function end_period()
+{
+	if (game())
+	{
+		$select = array('where' => "id = 'fine_time'");
+		$game_model = new Model_Game($select);
+		$game = $game_model->getOneRow();
+
+		$select = array('where' => 'type = '.ORDER. ' and state = '.ORDER_CONTROL);
+		$element_model = new Model_Elements($select);
+		$elements = $element_model->getAllRows();
+
+		foreach ($elements as $key => $element)
+		{
+			$select = array('where' => 'id = '.$element['id']);
+			$element_model = new Model_Elements($select);
+			$element_model->fetchOne();
+			$element_model->state = ORDER_OVERDUE;
+			$element_model->update();
+
+			$select = array('where' => 'element_id = '.$element['id']);
+			$operation_model = new Model_Operations($select);
+			$old_operation = $operation_model->getOneRow();
+
+			$select = array('where' => 'id = '.$old_operation['team_id']);
+			$team_model = new Model_Teams($select);
+			$team_model->fetchOne();
+			$team_model->score -= $game['value'];
+			$team_model->update();
+
+			$operation_model = new Model_Operations();
+			$operation_model->team_id = $old_operation['team_id'];
+			$operation_model->element_id = $element['id'];
+			$operation_model->price = -$element['price'];
+			$operation_model->residue = $team_model->score;
+			$operation_model->save();
+		}
+	}
 }
 
 // Загружаем router

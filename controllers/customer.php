@@ -18,7 +18,7 @@ Class Controller_Customer Extends Controller_Base
 			{
 				foreach ($operations as $key2 => $operation)
 				{
-					$select = array('where' => 'id = '.$operation['element_id']);
+					$select = array('where' => 'id = '.$operation['element_id'].' and type = '.ORDER);
 					$element_model = new Model_Elements($select);
 					$element = $element_model->getOneRow();
 
@@ -66,7 +66,7 @@ Class Controller_Customer Extends Controller_Base
 		$element_model = new Model_Elements();
 		$order = $element_model->getRowById($id);
 
-		if (isset($order))
+		if (isset($order) && !empty($order))
 		{
 			$this->layouts = 'order_layouts';
 			$this->template->layouts = 'order_layouts';
@@ -83,7 +83,7 @@ Class Controller_Customer Extends Controller_Base
 		$team_model = new Model_Teams();
 		$team = $team_model->getRowById($team_id);
 
-		if (isset($team))
+		if (isset($team) && !empty($team))
 		{
 			$select = array('where' => 'team_id = '.$team_id);
 			$operation_model = new Model_Operations($select);
@@ -103,6 +103,7 @@ Class Controller_Customer Extends Controller_Base
 					}
 				}
 			}
+			$orders = array_unique($orders, SORT_REGULAR);
 			$team['orders'] = $orders;
 
 			$this->template->vars('team', $team);
@@ -124,12 +125,12 @@ Class Controller_Customer Extends Controller_Base
 
 		if(isset($order))
 		{
-			if ($order['state'] == 0)
+			if ($order['state'] == ORDER_NOCONTROL)
 			{
 				$select = array('where' => 'id = '.$order_id);
 				$order = new Model_Elements($select);
 				$order->fetchOne();
-				$order->state = 1;
+				$order->state = ORDER_CONTROL;
 				$order->update();
 
 				$operation_model = new Model_Operations();
@@ -139,12 +140,12 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model->residue = $team['score'];
 				$operation_model->save();
 			}
-			elseif($order['state'] == 1)
+			elseif($order['state'] == ORDER_CONTROL)
 			{
 				$select = array('where' => 'id = '.$order_id);
 				$order = new Model_Elements($select);
 				$order->fetchOne();
-				$order->state = 2;
+				$order->state = ORDER_COMPLETED;
 				$order->update();
 
 				$select = array('where' => 'id = '.$team_id);
@@ -163,6 +164,103 @@ Class Controller_Customer Extends Controller_Base
 
 			$this->redirectToAction('team/'.$team_id);
 		}
+	}
 
+	function elements()
+	{
+		$select = array('where' => 'type = '.CUST_FINE);
+		$element_model = new Model_Elements($select);
+		$data['cust_fines'] = $element_model->getAllRows();
+
+		$select = array('where' => 'type = '.PROM);
+		$element_model = new Model_Elements($select);
+		$data['proms'] = $element_model->getAllRows();
+
+		$this->template->vars('data', $data);
+		$this->template->view('elements');
+	}
+
+	function add_cust_fine()
+	{
+		$name = $_POST['cust_fine_name'];
+		$price = $_POST['cust_fine_price'];
+
+		$fine_model = new Model_Elements();
+		$fine_model->type = CUST_FINE;
+		$fine_model->name = $name;
+		$fine_model->price = $price;
+		$fine_model->save();
+
+		$this->redirectToAction('elements');
+	}
+
+	function edit_cust_fine()
+	{
+		$id = $_POST['cust_fine_id'];
+		$name = $_POST['cust_fine_name'];
+		$price = $_POST['cust_fine_price'];
+
+		$select = array('where' => 'id = '.$id);
+
+		$fine_model = new Model_Elements($select);
+		$fine_model->fetchOne();
+		$fine_model->name = $name;
+		$fine_model->price = $price;
+		$fine_model->update();
+
+		$this->redirectToAction('elements');
+	}
+
+	function delete_cust_fine()
+	{
+		$id = $_POST['cust_fine_id'];
+
+		$fine_model = new Model_Elements();
+		$select = array('where' => 'id = '.$id);
+		$fine_model->deleteBySelect($select);
+
+		$this->redirectToAction('elements');
+	}
+
+	function add_prom()
+	{
+		$name = $_POST['prom_name'];
+		$price = $_POST['prom_price'];
+
+		$cost_model = new Model_Elements();
+		$cost_model->type = PROM;
+		$cost_model->name = $name;
+		$cost_model->price = $price;
+		$cost_model->save();
+
+		$this->redirectToAction('elements');
+	}
+
+	function edit_prom()
+	{
+		$id = $_POST['prom_id'];
+		$name = $_POST['prom_name'];
+		$price = $_POST['prom_price'];
+
+		$select = array('where' => 'id = '.$id);
+
+		$cost_model = new Model_Elements($select);
+		$cost_model->fetchOne();
+		$cost_model->name = $name;
+		$cost_model->price = $price;
+		$cost_model->update();
+
+		$this->redirectToAction('elements');
+	}
+
+	function delete_prom()
+	{
+		$id = $_POST['prom_id'];
+
+		$cost_model = new Model_Elements();
+		$select = array('where' => 'id = '.$id);
+		$cost_model->deleteBySelect($select);
+
+		$this->redirectToAction('elements');
 	}
 }

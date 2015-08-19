@@ -24,18 +24,29 @@
 									<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
 									<td class="
 											<?php if ($operation['price'] != 0): ?>
-												<?php print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT && $operation['element']['type'] != ORDER) ? 'danger' : 'success')  ?>
+												<?php print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT && $operation['element']['type'] != ORDER || $operation['element']['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
 											<?php endif ?>
 												">
 										<?php
 											if ($operation['price'] != 0)
 											{
-												print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT && $operation['element']['type'] != ORDER) ? '-' : '+');
+												print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT && $operation['element']['type'] != ORDER || $operation['element']['state'] == ORDER_OVERDUE) ? '-' : '+');
 											}
 										?>
 										<?php print $operation['price'] ?>
 									</td>
-									<td><?php print $operation['element']['name'] ?></td>
+									<td>
+										<?php print $operation['element']['name'] ?>
+										<?php if ($operation['element']['type'] == ORDER && $operation['price'] == 0): ?>
+											(на исполнении)
+										<?php endif ?>
+										<?php if ($operation['element']['type'] == ORDER && $operation['element']['state'] == ORDER_COMPLETED): ?>
+											(выполнен)
+										<?php endif ?>
+										<?php if ($operation['element']['type'] == ORDER && $operation['price'] > 0): ?>
+											(просрочен)
+										<?php endif ?>
+									</td>
 									<td><?php print $operation['residue'] ?></td>
 								</tr>
 							<?php endforeach ?>

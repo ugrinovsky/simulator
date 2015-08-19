@@ -22,6 +22,7 @@ Class Controller_Admin Extends Controller_Base
 
 				if (isset($operation) && !empty($operation))
 				{
+					// mpr($operation);	
 					if ($operation['element_id'] > 0)
 					{
 						$element_model = new Model_Elements();
@@ -94,6 +95,12 @@ Class Controller_Admin Extends Controller_Base
 				}
 			}
 		}
+
+		$select = array('where' => "id = 'fine_time'");
+		$game_model = new Model_Game($select);
+		$game = $game_model->getOneRow();
+
+		$data['game'] = $game;
 
 		$this->template->vars('data', $data);
 		$this->template->view('index');
@@ -216,18 +223,21 @@ Class Controller_Admin Extends Controller_Base
 		$element_model = new Model_Elements($select);
 		$data['orders'] = $element_model->getAllRows();
 
-		foreach ($data['orders'] as $key => $order)
+		if (!empty($data['orders']))
 		{
-			$select = array('where' => 'element_id = '.$order['id']);
-			$operation_model = new Model_Operations($select);
-			$operation = $operation_model->getOneRow();
-
-			if (isset($operation))
+			foreach ($data['orders'] as $key => $order)
 			{
-				$team_model = new Model_Teams();
-				$team = $team_model->getRowById($operation['team_id']);
+				$select = array('where' => 'element_id = '.$order['id']);
+				$operation_model = new Model_Operations($select);
+				$operation = $operation_model->getOneRow();
 
-				$data['orders'][$key]['team'] = $team['name'];
+				if (isset($operation))
+				{
+					$team_model = new Model_Teams();
+					$team = $team_model->getRowById($operation['team_id']);
+
+					$data['orders'][$key]['team'] = $team['name'];
+				}
 			}
 		}
 
@@ -363,7 +373,7 @@ Class Controller_Admin Extends Controller_Base
 		$element_model->name = $name;
 		$element_model->price = $price;
 		$element_model->type = ORDER;
-		$element_model->state = 0;
+		$element_model->state = ORDER_NOCONTROL;
 		$element_model->save();
 
 		$this->redirectToAction('elements2');
@@ -406,7 +416,7 @@ Class Controller_Admin Extends Controller_Base
 		$element_model->name = $name;
 		$element_model->price = $price;
 		$element_model->type = PART;
-		$element_model->state = 0;
+		$element_model->state = PART_NOBUY;
 		$element_model->save();
 
 		$this->redirectToAction('elements2');
@@ -557,5 +567,18 @@ Class Controller_Admin Extends Controller_Base
 		$credit_model->update();
 
 		$this->redirectToLink(REFERER);
+	}
+
+	function settings()
+	{
+		$fine_time = $_POST['fine_time'];
+
+		$select = array('where' => "id = 'fine_time'");
+		$game_model = new Model_Game($select);
+		$game_model->fetchOne();
+		$game_model->value = $fine_time;
+		$game_model->update();
+
+		$this->redirectToAction('index');
 	}
 }

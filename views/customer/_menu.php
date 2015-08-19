@@ -25,6 +25,8 @@
 				$period_model->fetchOne();
 				$period_model->state = PERIOD_COMPLETED;
 				$period_model->update();
+
+				end_period();
 			?>
 			<div class="text-center">
 				Период <?php print $period['id'] ?> завершен!
@@ -74,7 +76,13 @@
 		        <li>
 		        		<a href="/customer/orders">
 		        			<span class="glyphicon glyphicon-barcode"></span>
-			        		Мои заказы
+			        		Заказы
+		        		</a>
+		        </li>
+		        <li>
+		        		<a href="/customer/elements">
+		        			<span class="glyphicon glyphicon-ruble"></span>
+			        		Штрафы/поощрения
 		        		</a>
 		        </li>
 		      </ul>

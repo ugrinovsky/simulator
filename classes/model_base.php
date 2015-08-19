@@ -234,10 +234,10 @@ Abstract Class Model_Base {
 		}
 		
 		$strForSet = implode(', ', $arrayForSet);
-		
+
 		try {
 			$db = $this->db;
-			$stmt = $db->prepare("UPDATE $this->table SET $strForSet WHERE `id` = $whereID");  
+			$stmt = $db->prepare("UPDATE $this->table SET $strForSet WHERE `id` = '$whereID'");  
 			$result = $stmt->execute();
 		}catch(PDOException $e){
 			echo 'Error : '.$e->getMessage();

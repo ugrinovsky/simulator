@@ -82,6 +82,20 @@ $(function()
 		}
 	})
 
+	$('.btn-cust-fine-edit').click(function()
+	{
+		$('#editCustFine input[name="cust_fine_id"]').val($(this).data('id'))
+		$('#editCustFine input[name="cust_fine_name"]').val($(this).closest('tr').find('.cust-fine-name').text())
+		$('#editCustFine input[name="cust_fine_price"]').val($(this).closest('tr').find('.cust-fine-price').text())
+		$('#title-cust-fine-id').text('#'+$(this).closest('tr').find('.cust-fine-key').text())
+	})
+	$('.btn-cust-fine-delete').click(function()
+	{
+		if (!confirm("Вы уверены?")) {
+		 	return false 
+		}
+	})
+
 	$('#select-elements').change(function() {
 		if($('#select-elements option:selected').val() == 'cost')
 		{

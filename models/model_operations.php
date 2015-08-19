@@ -9,6 +9,9 @@ Class Model_Operations Extends Model_Base {
 	public $residue;
 	public $price;
 	public $period_id;
+	public $name;
+	public $type;
+	public $state;
 	
 	public function fieldsTable(){
 		return array(		
@@ -18,7 +21,10 @@ Class Model_Operations Extends Model_Base {
 			'element_id' => 'Id элемента',
 			'residue' => 'Остаток',
 			'price' => 'Цена',
-			'period_id' => 'Id периода'
+			'period_id' => 'Id периода',
+			'name' => 'Id периода',
+			'type' => 'Id периода',
+			'state' => 'Id периода'
 		);
 	}
 	

@@ -40,6 +40,14 @@ define('PERIOD_DISABLE', -1);
 define('PERIOD_ENABLE', 1);
 define('PERIOD_COMPLETED', 2);
 
+define('ORDER_NOCONTROL', 0);
+define('ORDER_CONTROL', 1);
+define('ORDER_COMPLETED', 2);
+define('ORDER_OVERDUE', 3);
+
+define('PART_NOBUY', 0);
+define('PART_BUY', 1);
+
 define('PERIOD_MINUTES', 2);
 
 define('CREDIT_ENABLE', 1);
@@ -55,6 +63,8 @@ define('CUSTOMER_PASS', 'customer');
 
 define('PROVIDER_LOGIN', 'provider');
 define('PROVIDER_PASS', 'provider');
+
+define('FINE_TIME', 1000);
 
 function mpr($data)
 {

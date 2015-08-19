@@ -25,6 +25,8 @@
 				$period_model->fetchOne();
 				$period_model->state = PERIOD_COMPLETED;
 				$period_model->update();
+
+				end_period();
 			?>
 			<div class="text-center">
 				Период <?php print $period['id'] ?> завершен!

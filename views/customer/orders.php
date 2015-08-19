@@ -49,6 +49,9 @@
 									         case 2:
 									            $state_text = 'выполнен';
 									            break;
+									         case 3:
+									         	$state_text = 'просрочен';
+									         	break;
 									      }
 									      print $state_text;
 									   ?>

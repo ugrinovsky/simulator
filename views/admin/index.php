@@ -29,13 +29,13 @@
 									<?php if (isset($team['operation']) && !empty($team['operation'])): ?>
 										<td class="
 														<?php if ($team['operation']['price'] != 0): ?>
-															<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER) ? 'danger' : 'success')  ?>
+															<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER || $team['operation']['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
 														<?php endif ?>
 													">
 											<?php
 												if ($team['operation']['price'] != 0)
 												{
-													print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER) ? '-' : '+');
+													print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER || $team['operation']['state'] == ORDER_OVERDUE) ? '-' : '+');
 												}
 											?>
 											<?php print $team['operation']['price'] ?>
@@ -46,6 +46,15 @@
 									<td>
 										<?php if (isset($team['operation'])): ?>
 											<?php print $team['operation']['name'] ?>
+											<?php if ($team['operation']['type'] == ORDER && $team['operation']['state'] == ORDER_CONTROL): ?>
+												(на исполнении)
+											<?php endif ?>
+											<?php if ($team['operation']['type'] == ORDER && $team['operation']['state'] == ORDER_COMPLETED): ?>
+												(выполнен)
+											<?php endif ?>
+											<?php if ($team['operation']['type'] == ORDER && $team['operation']['state'] == ORDER_OVERDUE): ?>
+												(просрочен)
+											<?php endif ?>
 										<?php else: ?>
 											-
 										<?php endif ?>
@@ -101,6 +110,23 @@
 			</div>
 			<a href="/admin/clear" class="btn btn-danger">Очистить все данные</a>
 			<a href="/admin/clear_periods" class="btn btn-danger">Сбросить игру</a>
+			<hr>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">Настройки</div>
+						<div class="panel-body">
+							<form action="/admin/settings" method="post">
+								<div class="form-group">
+									<label class="control-label" for="">Штраф за просрочку</label>	
+									<input class="form-control" name="fine_time" type="text" value="<?php print $data['game']['value'] ?>">
+								</div>
+								<button type="submit" class="btn btn-default">Сохранить</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -123,6 +123,15 @@ $(function()
 		$('input[name="team_element"]').val($('.select-element select:visible').val())
 	})
 
+	$('.btn-add-fine-prom').click(function()
+	{
+		$('input[name="team_cost_id"]').val($(this).data('id'))
+	})
+	$('#form-team-fine-prom').submit(function()
+	{
+		$('input[name="team_element"]').val($('.select-element select:visible').val())
+	})
+
 	$.ajax(
 	{
 		url: '/admin/get_stat_data',

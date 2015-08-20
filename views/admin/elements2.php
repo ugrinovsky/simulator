@@ -14,7 +14,7 @@
                      <th>id</th>
                      <th>Название</th>
                      <th>Цена, р.</th>
-                     <th>Штрих-код</th>
+                     <th width="120">Штрих-код</th>
                      <th>Исполнитель</th>
                      <th>Статус</th>
                      <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
@@ -90,9 +90,10 @@
             <table class="table table-bordered">
                <thead>
                   <tr>
-                     <th>#</th>
+                     <th>id</th>
                      <th>Название</th>
                      <th>Цена, р.</th>
+                     <th width="120">Штрих-код</th>
                      <th>Кто купил</th>
                      <th>Статус</th>
                      <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
@@ -103,14 +104,22 @@
                   <?php if (!empty($data['parts'])): ?>
                      <?php foreach ($data['parts'] as $key => $part): ?>
                         <tr>
-                           <td class="part-key"><?php print $key+1 ?></td>
+                           <td class="part-key"><?php print $part['id'] ?></td>
                            <td class="part-name"><?php print $part['name'] ?></td>
                            <td class="part-price"><?php print $part['price'] ?></td>
-                           <td>
-                              
+                           <td class="text-center">
+                             <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $part['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
                            </td>
                            <td>
-                              
+                              <?php print $part['team'] ?>
+                           </td>
+                           <td>
+                              <?php
+                                if ($part['state'] == PART_NOBUY)
+                                  print 'не куплено';
+                                elseif($part['state'] == PART_BUY)
+                                  print 'куплено';
+                              ?>
                            </td>
                            <td>
                               <button class="btn-part-edit btn btn-default" data-id="<?php print $part['id'] ?>" data-toggle="modal" data-target="#editPart">

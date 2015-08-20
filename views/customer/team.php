@@ -16,7 +16,6 @@
 							<th>Цена, руб.</th>
 							<th>Штрих-код</th>
 							<th>Статус</th>
-							<th width="50">Печать</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -51,11 +50,6 @@
 									      }
 									      print $state_text;
 									   ?>
-									</td>
-									<td>
-										<button class="btn btn-default">
-											<span class="glyphicon glyphicon-print"></span>
-										</button>
 									</td>
 								</tr>
 							<?php endforeach ?>

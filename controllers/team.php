@@ -24,11 +24,8 @@ Class Controller_Team Extends Controller_Base
 			{
 				foreach ($operations as $key => $operation)
 				{
-					$element_model = new Model_Elements();
-					$element = $element_model->getRowById($operation['element_id']);
-					$operation['element'] = $element;
 					$date = new DateTime($operation['date_time']);
-					$operation['date_time'] = $date; 
+					$operation['date_time'] = $date; 	
 					$team['operations'][] = $operation;
 				}
 			}

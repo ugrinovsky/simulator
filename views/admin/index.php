@@ -9,9 +9,10 @@
 					<thead>
 						<tr>
 							<th>Команда</th>
-							<th>Остаток на счете</th>
+							<th>Cчет</th>
 							<th>Транзакция</th>
 							<th>Описание</th>
+							<th>Тип</th>
 							<th>Добавить расход</th>
 							<th>Кредиты</th>
 						</tr>
@@ -46,17 +47,39 @@
 									<td>
 										<?php if (isset($team['operation'])): ?>
 											<?php print $team['operation']['name'] ?>
-											<?php if ($team['operation']['type'] == ORDER && $team['operation']['state'] == ORDER_CONTROL): ?>
-												(на исполнении)
-											<?php endif ?>
-											<?php if ($team['operation']['type'] == ORDER && $team['operation']['state'] == ORDER_COMPLETED): ?>
-												(выполнен)
-											<?php endif ?>
-											<?php if ($team['operation']['type'] == ORDER && $team['operation']['state'] == ORDER_OVERDUE): ?>
-												(просрочен)
-											<?php endif ?>
 										<?php else: ?>
 											-
+										<?php endif ?>
+									</td>
+									<td>
+										<?php if (isset($team['operation'])): ?>
+											<?php
+												if ($team['operation']['type'] == ORDER) {
+													print 'Заказ ';
+													if ($team['operation']['state'] == ORDER_CONTROL) {
+														print '(на исполнении)';
+													}elseif($team['operation']['state'] == ORDER_COMPLETED) {
+														print '(выполнен)';
+													}elseif($team['operation']['state'] == ORDER_OVERDUE) {
+														print '(просрочен)';
+													}
+												}
+												if ($team['operation']['type'] == COST) {
+													print 'Расход';
+												}
+												if ($team['operation']['type'] == FINE) {
+													print 'Штраф';
+												}
+												if ($team['operation']['type'] == PROM) {
+													print 'Поощрение';
+												}
+												if ($team['operation']['type'] == CUST_FINE) {
+													print 'Штраф';
+												}
+												if ($team['operation']['type'] == CREDIT) {
+													print 'Кредит';
+												}
+											?>
 										<?php endif ?>
 									</td>
 									<td class="text-center">

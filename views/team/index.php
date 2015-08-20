@@ -21,10 +21,12 @@
 							<?php foreach ($team['operations'] as $key => $operation): ?>
 								<tr>
 									<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
-									<td class="<?php print (($operation['element']['type'] != PROM) ? 'danger' : 'success')  ?>">
-										<?php
-											print (($operation['element']['type'] != PROM) ? '-' : '+')
-										?>
+									<td class="<?php print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>">
+										<?php if ($operation['price'] != 0): ?>
+											<?php
+												print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? '-' : '+')
+											?>
+										<?php endif ?>
 										<?php print $operation['price'] ?>
 									</td>
 									<td><?php print $operation['residue'] ?></td>

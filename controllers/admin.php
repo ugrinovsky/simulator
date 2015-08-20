@@ -22,25 +22,7 @@ Class Controller_Admin Extends Controller_Base
 
 				if (isset($operation) && !empty($operation))
 				{
-					// mpr($operation);	
-					if ($operation['element_id'] > 0)
-					{
-						$element_model = new Model_Elements();
-						$element = $element_model->getRowById($operation['element_id']);
-
-						if ($element['type'] == ORDER && ($element['state'] == 0 || $element['state'] == 1 || $element['state'] == 3))
-						{
-							$element['price'] = $operation['price'];
-						}
-					}
-					elseif($operation['element_id'] < 0)
-					{
-						$credit_model = new Model_Credits();
-						$element = $credit_model->getRowById(abs($operation['element_id']));
-						$element['name'] = 'кредит';
-						$element['type'] = -1;
-					}
-					$data['teams'][$key]['operation'] = $element;
+					$data['teams'][$key]['operation'] = $operation;
 				}
 			}
 		}
@@ -82,16 +64,7 @@ Class Controller_Admin Extends Controller_Base
 			{
 				foreach ($data['teams'] as $key => $team)
 				{
-					// $select = array('where' => 'state = '.PERIOD_COMPLETED);
-					// $period_model = new Model_Periods($select);
-					// $period = $period_model->getLastRow();
-					// $select = array('where' => 'period_id = '.($period['id']).' and team_id = '.$team['id']);
-					// $credit_model = new Model_Credits($select);
-					// $credits = $credit_model->getAllRows();
-					// if (!empty($credits))
-					// 	$data['teams'][$key]['credit_count'] = count($credits);
-					// else
-						$data['teams'][$key]['credit_count'] = null;		
+					$data['teams'][$key]['credit_count'] = null;		
 				}
 			}
 		}
@@ -146,27 +119,9 @@ Class Controller_Admin Extends Controller_Base
 				{
 					foreach ($operations as $key => $operation)
 					{
-
-						if ($operation['element_id'] > 0)
-						{
-							$element_model = new Model_Elements();
-							$element = $element_model->getRowById($operation['element_id']);
-							$operation['element'] = $element;
-							$date = new DateTime($operation['date_time']);
-							$operation['date_time'] = $date; 
-							$team['operations'][] = $operation;
-						}
-						elseif($operation['element_id'] < 0)
-						{
-							$credit_model = new Model_Credits();
-							$element = $credit_model->getRowById(abs($operation['element_id']));
-							$element['name'] = 'кредит';
-							$element['type'] = -1;
-							$operation['element'] = $element;
-							$date = new DateTime($operation['date_time']);
-							$operation['date_time'] = $date; 
-							$team['operations'][] = $operation;
-						}
+						$date = new DateTime($operation['date_time']);
+						$operation['date_time'] = $date; 
+						$team['operations'][] = $operation;
 					}
 				}
 				$select = array('where' => 'type = '.COST);
@@ -245,8 +200,40 @@ Class Controller_Admin Extends Controller_Base
 		$element_model = new Model_Elements($select);
 		$data['parts'] = $element_model->getAllRows();
 
+		if (!empty($data['parts']))
+		{
+			foreach ($data['parts'] as $key => $part)
+			{
+				$select = array('where' => 'element_id = '.$part['id']);
+				$operation_model = new Model_Operations($select);
+				$operation = $operation_model->getOneRow();
+
+				if (isset($operation))
+				{
+					$team_model = new Model_Teams();
+					$team = $team_model->getRowById($operation['team_id']);
+
+					$data['parts'][$key]['team'] = $team['name'];
+				}
+			}
+		}
+
 		$this->template->vars('data', $data);
 		$this->template->view('elements2');
+	}
+
+	function elements3()
+	{
+		$select = array('where' => 'type = '.CUST_FINE);
+		$element_model = new Model_Elements($select);
+		$data['cust_fines'] = $element_model->getAllRows();
+
+		$select = array('where' => 'type = '.PROM);
+		$element_model = new Model_Elements($select);
+		$data['proms'] = $element_model->getAllRows();
+
+		$this->template->vars('data', $data);
+		$this->template->view('elements3');
 	}
 
 	function add_fine()
@@ -352,6 +339,9 @@ Class Controller_Admin Extends Controller_Base
 		$team_model->score -= $element['price'];
 		$team_model->update();
 
+		$operation_model->name = $element['name'];
+		$operation_model->type = $element['type'];
+		$operation_model->state = $element['state'];
 		$operation_model->price = $element['price'];
 		$operation_model->residue = $team_model->score;
 		$operation_model->save();
@@ -361,7 +351,7 @@ Class Controller_Admin Extends Controller_Base
 		if ($location == 'index')
 			$this->redirectToAction('index');
 		if ($location == 'team')
-			$this->redirectToAction('team?id='.$team_id);
+			$this->redirectToAction('team/'.$team_id);
 	}
 
 	function add_order()
@@ -510,6 +500,8 @@ Class Controller_Admin Extends Controller_Base
 			$operation_model->element_id = -$credit['id'];
 			$operation_model->price = $credit['price'];
 			$operation_model->residue += $team_model->score;
+			$operation_model->name = 'Кредит';
+			$operation_model->type = CREDIT;
 
 			$team_model->update();
 			$operation_model->save();
@@ -580,5 +572,89 @@ Class Controller_Admin Extends Controller_Base
 		$game_model->update();
 
 		$this->redirectToAction('index');
+	}
+
+	function add_cust_fine()
+	{
+		$name = $_POST['cust_fine_name'];
+		$price = $_POST['cust_fine_price'];
+
+		$fine_model = new Model_Elements();
+		$fine_model->type = CUST_FINE;
+		$fine_model->name = $name;
+		$fine_model->price = $price;
+		$fine_model->save();
+
+		$this->redirectToAction('elements3');
+	}
+
+	function edit_cust_fine()
+	{
+		$id = $_POST['cust_fine_id'];
+		$name = $_POST['cust_fine_name'];
+		$price = $_POST['cust_fine_price'];
+
+		$select = array('where' => 'id = '.$id);
+
+		$fine_model = new Model_Elements($select);
+		$fine_model->fetchOne();
+		$fine_model->name = $name;
+		$fine_model->price = $price;
+		$fine_model->update();
+
+		$this->redirectToAction('elements3');
+	}
+
+	function delete_cust_fine()
+	{
+		$id = $_POST['cust_fine_id'];
+
+		$fine_model = new Model_Elements();
+		$select = array('where' => 'id = '.$id);
+		$fine_model->deleteBySelect($select);
+
+		$this->redirectToAction('elements3');
+	}
+
+	function add_prom()
+	{
+		$name = $_POST['prom_name'];
+		$price = $_POST['prom_price'];
+
+		$cost_model = new Model_Elements();
+		$cost_model->type = PROM;
+		$cost_model->name = $name;
+		$cost_model->price = $price;
+		$cost_model->save();
+
+		$this->redirectToAction('elements3');
+	}
+
+	function edit_prom()
+	{
+		$id = $_POST['prom_id'];
+		$name = $_POST['prom_name'];
+		$price = $_POST['prom_price'];
+
+		$select = array('where' => 'id = '.$id);
+
+		$cost_model = new Model_Elements($select);
+		$cost_model->fetchOne();
+		$cost_model->name = $name;
+		$cost_model->price = $price;
+		$cost_model->update();
+
+		$this->redirectToAction('elements3');
+	}
+
+	function delete_prom()
+	{
+		$id = $_POST['prom_id'];
+
+		$cost_model = new Model_Elements();
+		$select = array('where' => 'id = '.$id);
+		$cost_model->deleteBySelect($select);
+
+		$this->redirectToAction('elements3');
 	}
 }

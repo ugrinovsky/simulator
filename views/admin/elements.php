@@ -11,7 +11,7 @@
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<th>#</th>
+							<th>id</th>
 							<th>Название</th>
 							<th>Цена, р.</th>
 							<th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
@@ -22,7 +22,7 @@
 						<?php if (!empty($data['fines'])): ?>
 							<?php foreach ($data['fines'] as $key => $fine): ?>
 								<tr>
-									<td class="fine-key"><?php print $key+1 ?></td>
+									<td class="fine-key"><?php print $fine['id'] ?></td>
 									<td class="fine-name"><?php print $fine['name'] ?></td>
 									<td class="fine-price"><?php print $fine['price'] ?></td>
 									<td>
@@ -60,7 +60,7 @@
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<th>#</th>
+							<th>id</th>
 							<th>Название</th>
 							<th>Цена, р.</th>
 							<th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
@@ -71,7 +71,7 @@
 						<?php if (!empty($data['costs'])): ?>
 							<?php foreach ($data['costs'] as $key => $cost): ?>
 								<tr>
-									<td class="cost-key"><?php print $key+1 ?></td>
+									<td class="cost-key"><?php print $cost['id'] ?></td>
 									<td class="cost-name"><?php print $cost['name'] ?></td>
 									<td class="cost-price"><?php print $cost['price'] ?></td>
 									<td>

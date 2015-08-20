@@ -54,7 +54,7 @@
 			</div>
 		<?php else: ?>
 			<div class="col-md-12 text-center">
-				<div>Период 1 <a href="/admin/start?id=1">СТАРТ</a></div>
+				<div>Период 1 <a class="btn btn-success" href="/admin/start?id=1">Старт</a></div>
 			</div>
 		<?php endif ?>
 	<?php endif ?>
@@ -165,18 +165,32 @@
 	            		Статистика
 	            	</a>
 	            </li>
-		        	<li>
-		        		<a href="/admin/elements">
-		        			<span class="glyphicon glyphicon-ruble"></span>
-		        			Штрафы/расходы
-		        		</a>
-		        	</li>
-		        	<li>
-		        		<a href="/admin/elements2">
-		        			<span class="glyphicon glyphicon-ruble"></span>
-		        			Заказы/детали
-		        		</a>
-		        	</li>
+		        <li class="dropdown">
+						<a href="/admin/elements" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+							<span class="glyphicon glyphicon-ruble"></span>
+							Данные <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="/admin/elements">
+									<span class="glyphicon glyphicon-ruble"></span>
+									Общие штрафы/расходы
+								</a>
+							</li>
+							<li>
+								<a href="/admin/elements3">
+									<span class="glyphicon glyphicon-ruble"></span>
+									Штрафы заказчика/поощрения
+								</a>
+							</li>
+							<li>
+								<a href="/admin/elements2">
+									<span class="glyphicon glyphicon-ruble"></span>
+									Заказы/детали
+								</a>
+							</li>
+		    		  </ul>
+					</li>
 		      </ul>
 		      <ul class="nav navbar-nav navbar-right">
 		        <li class="dropdown">

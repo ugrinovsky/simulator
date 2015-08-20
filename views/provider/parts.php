@@ -1,6 +1,9 @@
 <?php include_once('_menu.php') ?>
+	<h3>
+		Детали
+	</h3>
 	<div class="row">
-		<div class="col-md-8">
+		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					Общие данные
@@ -8,36 +11,38 @@
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<th>Команда</th>
-							<th>Деталь</th>
-							<?php if (isset($list_parts) && !empty($list_parts)): ?>
-								<th width="150">Продать деталь</th>
-							<?php endif ?>
+							<th>id</th>
+							<th>Название</th>
+							<th>Цена, руб.</th>
+							<th width="110">Штрих-код</th>
+							<th>Кто купил</th>
+							<th>Статус</th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php if (!empty($teams)): ?>
-							<?php foreach ($teams as $key => $team): ?>
+						<?php if (!empty($parts)): ?>
+							<?php foreach ($parts as $key => $part): ?>
 								<tr>
+									<td><?php print $part['id'] ?></td>
 									<td>
-										<a href="/provider/team/<?php print $team['id'] ?>">
-											<?php print $team['name'] ?>
-										</a>
+										<?php print $part['name'] ?></td>
+									<td><?php print $part['price'] ?></td>
+									<td class="text-center">
+										<img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $part['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
 									</td>
 									<td>
-										<?php if (isset($team['operation'])): ?>
-											<?php print $team['operation']['name'] ?>
-										<?php else: ?>
-											-
+										<?php if (isset($part['team'])): ?>
+											<?php print $part['team'] ?>
 										<?php endif ?>
 									</td>
-									<?php if (isset($list_parts) && !empty($list_parts)): ?>
-										<td>
-											<button class="btn btn-default btn-block" data-toggle="modal" data-target="#sellPart">
-												Продать деталь
-											</button>
-										</td>
-									<?php endif ?>
+									<td>
+										<?php
+											if ($part['state'] == PART_NOBUY)
+												print 'не куплено';
+											elseif($part['state'] == PART_BUY)
+												print 'куплено';
+										?>
+									</td>
 								</tr>
 							<?php endforeach ?>
 						<?php endif ?>
@@ -48,7 +53,7 @@
 	</div>
 </div>
 
-<?php if (isset($list_parts) && !empty($list_parts)): ?>
+<?php if (isset($team['list_parts']) && !empty($team['list_parts'])): ?>
 	<div class="modal fade" id="sellPart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
@@ -60,7 +65,11 @@
 	      <div class="modal-body">
 				<div class="form-group">
 					<label for="recipient-name" class="control-label">Деталь:</label>
-					<input type="text" name="part_id" class="form-control">
+					<select name="part_id" id="" class="form-control">
+						<?php foreach ($team['list_parts'] as $key => $part): ?>
+							<option value="<?php print $part['id'] ?>"><?php print $part['price'] ?> руб. | <?php print $part['name'] ?></option>
+						<?php endforeach ?>
+					</select>
 				</div>
 				<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
 	      </div>

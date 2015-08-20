@@ -1,6 +1,9 @@
 <?php include_once('_menu.php') ?>
+	<h3>
+		Команда <?php print $team['name'] ?>
+	</h3>
 	<div class="row">
-		<div class="col-md-8">
+		<div class="col-md-10">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					Общие данные
@@ -8,47 +11,37 @@
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<th>Команда</th>
-							<th>Деталь</th>
-							<?php if (isset($list_parts) && !empty($list_parts)): ?>
-								<th width="150">Продать деталь</th>
-							<?php endif ?>
+							<th>id</th>
+							<th>Название</th>
+							<th>Цена, руб.</th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php if (!empty($teams)): ?>
-							<?php foreach ($teams as $key => $team): ?>
+						<?php if (!empty($team['parts'])): ?>
+							<?php foreach ($team['parts'] as $key => $part): ?>
 								<tr>
+									<td><?php print $part['id'] ?></td>
 									<td>
-										<a href="/provider/team/<?php print $team['id'] ?>">
-											<?php print $team['name'] ?>
-										</a>
-									</td>
-									<td>
-										<?php if (isset($team['operation'])): ?>
-											<?php print $team['operation']['name'] ?>
-										<?php else: ?>
-											-
-										<?php endif ?>
-									</td>
-									<?php if (isset($list_parts) && !empty($list_parts)): ?>
-										<td>
-											<button class="btn btn-default btn-block" data-toggle="modal" data-target="#sellPart">
-												Продать деталь
-											</button>
-										</td>
-									<?php endif ?>
+										<?php print $part['name'] ?></td>
+									<td><?php print $part['price'] ?></td>
 								</tr>
 							<?php endforeach ?>
 						<?php endif ?>
 					</tbody>
 				</table>
 			</div>
+			<?php if (isset($team['list_parts']) && !empty($team['list_parts'])): ?>
+				<button class="btn btn-default" data-toggle="modal" data-target="#sellPart">
+					Продать деталь
+				</button>
+			<?php else: ?>
+				Деталей нет
+			<?php endif ?>
 		</div>
 	</div>
 </div>
 
-<?php if (isset($list_parts) && !empty($list_parts)): ?>
+<?php if (isset($team['list_parts']) && !empty($team['list_parts'])): ?>
 	<div class="modal fade" id="sellPart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">

@@ -14,38 +14,63 @@
 							<th>Время/дата</th>
 							<th>Транзакция</th>
 							<th>Описание</th>
-							<th>Остаток на счете</th>
+							<th>Тип</th>
+							<th>Cчет</th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php if (!empty($team['operations'])): ?>
+						<?php if (isset($team['operations']) && !empty($team['operations'])): ?>
 							<?php foreach ($team['operations'] as $key => $operation): ?>
 								<tr>
 									<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
 									<td class="
 											<?php if ($operation['price'] != 0): ?>
-												<?php print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT && $operation['element']['type'] != ORDER || $operation['element']['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
+												<?php print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
 											<?php endif ?>
 												">
 										<?php
 											if ($operation['price'] != 0)
 											{
-												print (($operation['element']['type'] != PROM && $operation['element']['type'] != CREDIT && $operation['element']['type'] != ORDER || $operation['element']['state'] == ORDER_OVERDUE) ? '-' : '+');
+												if ($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) {
+													print '-';
+												}
+												else
+													print '+';
 											}
 										?>
 										<?php print $operation['price'] ?>
 									</td>
 									<td>
-										<?php print $operation['element']['name'] ?>
-										<?php if ($operation['element']['type'] == ORDER && $operation['price'] == 0): ?>
-											(на исполнении)
-										<?php endif ?>
-										<?php if ($operation['element']['type'] == ORDER && $operation['element']['state'] == ORDER_COMPLETED): ?>
-											(выполнен)
-										<?php endif ?>
-										<?php if ($operation['element']['type'] == ORDER && $operation['price'] > 0): ?>
-											(просрочен)
-										<?php endif ?>
+										<?php print $operation['name'] ?>
+									</td>
+									<td>
+										<?php
+											if ($operation['type'] == ORDER) {
+												print 'Заказ ';
+												if ($operation['state'] == ORDER_CONTROL) {
+													print '(на исполнении)';
+												}elseif($operation['state'] == ORDER_COMPLETED) {
+													print '(выполнен)';
+												}elseif($operation['state'] == ORDER_OVERDUE) {
+													print '(просрочен)';
+												}
+											}
+											if ($operation['type'] == COST) {
+												print 'Расход';
+											}
+											if ($operation['type'] == FINE) {
+												print 'Штраф';
+											}
+											if ($operation['type'] == PROM) {
+												print 'Поощрение';
+											}
+											if ($operation['type'] == CUST_FINE) {
+												print 'Штраф';
+											}
+											if ($operation['type'] == CREDIT) {
+												print 'Кредит';
+											}
+										?>
 									</td>
 									<td><?php print $operation['residue'] ?></td>
 								</tr>

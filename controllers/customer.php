@@ -31,6 +31,14 @@ Class Controller_Customer Extends Controller_Base
 			}
 		}
 
+		$select = array('where' => 'type = '.PROM);
+		$model = new Model_Elements($select);
+		$data['proms'] = $model->getAllRows();
+
+		$select = array('where' => 'type = '.CUST_FINE);
+		$model = new Model_Elements($select);
+		$data['cust_fines'] = $model->getAllRows();
+
 		$this->template->vars('data', $data);
 		$this->template->view('index');
 	}
@@ -123,25 +131,32 @@ Class Controller_Customer Extends Controller_Base
 		$team_model = new Model_Teams();
 		$team = $team_model->getRowById($team_id);
 
-		if(isset($order))
+		if(isset($order) && !empty($order))
 		{
 			if ($order['state'] == ORDER_NOCONTROL)
 			{
+				$operation_model = new Model_Operations();
+				$operation_model->type = $order['type'];
+
 				$select = array('where' => 'id = '.$order_id);
 				$order = new Model_Elements($select);
 				$order->fetchOne();
 				$order->state = ORDER_CONTROL;
 				$order->update();
 
-				$operation_model = new Model_Operations();
 				$operation_model->element_id = $order->id;
 				$operation_model->team_id = $team['id'];
 				$operation_model->price = 0;
 				$operation_model->residue = $team['score'];
+				$operation_model->name = $order->name;
+				$operation_model->state = $order->state;
 				$operation_model->save();
 			}
 			elseif($order['state'] == ORDER_CONTROL)
 			{
+				$operation_model = new Model_Operations();
+				$operation_model->type = $order['type'];
+
 				$select = array('where' => 'id = '.$order_id);
 				$order = new Model_Elements($select);
 				$order->fetchOne();
@@ -154,16 +169,17 @@ Class Controller_Customer Extends Controller_Base
 				$team->score += $order->price;
 				$team->update();	
 
-				$operation_model = new Model_Operations();
 				$operation_model->element_id = $order->id;
 				$operation_model->team_id = $team->id;
 				$operation_model->price = $order->price;
 				$operation_model->residue = $team->score;
+				$operation_model->state = $order->state;
+				$operation_model->name = $order->name;
 				$operation_model->save();
 			}
 
-			$this->redirectToAction('team/'.$team_id);
 		}
+		$this->redirectToAction('team/'.$team_id);
 	}
 
 	function elements()
@@ -262,5 +278,43 @@ Class Controller_Customer Extends Controller_Base
 		$cost_model->deleteBySelect($select);
 
 		$this->redirectToAction('elements');
+	}
+
+	function add_fine_prom_team()
+	{
+		$element_id = $_POST['team_element'];
+		$team_id = $_POST['team_cost_id'];
+
+		$operation_model = new Model_Operations();
+		$operation_model->element_id = $element_id;
+		$operation_model->team_id = $team_id;
+
+		$element_model = new Model_Elements();
+		$element = $element_model->getRowById($element_id);
+
+		$select = array('where' => 'id = '.$team_id);
+		$team_model = new Model_Teams($select);
+		$team_model->fetchOne();
+
+		if ($element['type'] == PROM)
+			$team_model->score += $element['price'];
+		elseif($element['type'] == CUST_FINE)
+			$team_model->score -= $element['price'];
+
+		$team_model->update();
+
+		$operation_model->name = $element['name'];
+		$operation_model->type = $element['type'];
+		$operation_model->state = $element['state'];
+		$operation_model->price = $element['price'];
+		$operation_model->residue = $team_model->score;
+		$operation_model->save();
+
+
+		$location = $_POST['location'];
+		if ($location == 'index')
+			$this->redirectToAction('index');
+		if ($location == 'team')
+			$this->redirectToAction('team/'.$team_id);
 	}
 }

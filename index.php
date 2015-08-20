@@ -43,30 +43,36 @@ function end_period()
 		$element_model = new Model_Elements($select);
 		$elements = $element_model->getAllRows();
 
-		foreach ($elements as $key => $element)
+		if (isset($elements) && !empty($elements))
 		{
-			$select = array('where' => 'id = '.$element['id']);
-			$element_model = new Model_Elements($select);
-			$element_model->fetchOne();
-			$element_model->state = ORDER_OVERDUE;
-			$element_model->update();
+			foreach ($elements as $key => $element)
+			{
+				$select = array('where' => 'id = '.$element['id']);
+				$element_model = new Model_Elements($select);
+				$element_model->fetchOne();
+				$element_model->state = ORDER_OVERDUE;
+				$element_model->update();
 
-			$select = array('where' => 'element_id = '.$element['id']);
-			$operation_model = new Model_Operations($select);
-			$old_operation = $operation_model->getOneRow();
+				$select = array('where' => 'element_id = '.$element['id']);
+				$operation_model = new Model_Operations($select);
+				$old_operation = $operation_model->getOneRow();
 
-			$select = array('where' => 'id = '.$old_operation['team_id']);
-			$team_model = new Model_Teams($select);
-			$team_model->fetchOne();
-			$team_model->score -= $game['value'];
-			$team_model->update();
+				$select = array('where' => 'id = '.$old_operation['team_id']);
+				$team_model = new Model_Teams($select);
+				$team_model->fetchOne();
+				$team_model->score -= $game['value'];
+				$team_model->update();
 
-			$operation_model = new Model_Operations();
-			$operation_model->team_id = $old_operation['team_id'];
-			$operation_model->element_id = $element['id'];
-			$operation_model->price = -$element['price'];
-			$operation_model->residue = $team_model->score;
-			$operation_model->save();
+				$operation_model = new Model_Operations();
+				$operation_model->team_id = $old_operation['team_id'];
+				$operation_model->element_id = $element['id'];
+				$operation_model->price = $game['value'];
+				$operation_model->residue = $team_model->score;
+				$operation_model->state = $element['state'];
+				$operation_model->type = $element['type'];
+				$operation_model->name = $element['name'];
+				$operation_model->save();
+			}
 		}
 	}
 }

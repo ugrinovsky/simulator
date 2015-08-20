@@ -54,7 +54,9 @@
 					</tbody>
 				</table>
 			</div>
-			<button class="btn btn-default" data-toggle="modal" data-target="#addCustFine">Добавить новый</button>
+			<?php if (!game()): ?>
+				<button class="btn btn-default" data-toggle="modal" data-target="#addCustFine">Добавить новый</button>
+			<?php endif ?>
 		</div>
 		<div class="col-md-6">
 			<div class="panel panel-default">
@@ -107,7 +109,9 @@
 					</tbody>
 				</table>
 			</div>
-			<button class="btn btn-default" data-toggle="modal" data-target="#addProm">Добавить новый</button>
+			<?php if (!game()): ?>
+				<button class="btn btn-default" data-toggle="modal" data-target="#addProm">Добавить новый</button>
+			<?php endif ?>
 		</div>
 	</div>
 </div>

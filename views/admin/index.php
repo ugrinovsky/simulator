@@ -5,100 +5,103 @@
 				<div class="panel-heading">
 					Общие данные
 				</div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Команда</th>
-							<th>Cчет</th>
-							<th>Транзакция</th>
-							<th>Описание</th>
-							<th>Тип</th>
-							<th>Добавить расход</th>
-							<th>Кредиты</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if (!empty($data['teams'])): ?>
-							<?php foreach ($data['teams'] as $key => $team): ?>
-								<tr>
-									<td>
-										<a href="/admin/team/<?php print $team['id'] ?>">
-											<?php print $team['name'] ?>
-										</a>
-									</td>
-									<td><?php print $team['score'] ?></td>
-									<?php if (isset($team['operation']) && !empty($team['operation'])): ?>
-										<td class="
-														<?php if ($team['operation']['price'] != 0): ?>
-															<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER || $team['operation']['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
-														<?php endif ?>
-													">
-											<?php
-												if ($team['operation']['price'] != 0)
-												{
-													print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER || $team['operation']['state'] == ORDER_OVERDUE) ? '-' : '+');
-												}
-											?>
-											<?php print $team['operation']['price'] ?>
+				<div class="table-responsive">
+					
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Команда</th>
+								<th>Cчет</th>
+								<th>Транзакция</th>
+								<th>Описание</th>
+								<th>Тип</th>
+								<th>Добавить расход</th>
+								<th>Кредиты</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if (!empty($data['teams'])): ?>
+								<?php foreach ($data['teams'] as $key => $team): ?>
+									<tr>
+										<td>
+											<a href="/admin/team/<?php print $team['id'] ?>">
+												<?php print $team['name'] ?>
+											</a>
 										</td>
-									<?php else: ?>
-										<td></td>
-									<?php endif ?>
-									<td>
-										<?php if (isset($team['operation'])): ?>
-											<?php print $team['operation']['name'] ?>
-										<?php else: ?>
-											-
-										<?php endif ?>
-									</td>
-									<td>
-										<?php if (isset($team['operation'])): ?>
-											<?php
-												if ($team['operation']['type'] == ORDER) {
-													print 'Заказ ';
-													if ($team['operation']['state'] == ORDER_CONTROL) {
-														print '(на исполнении)';
-													}elseif($team['operation']['state'] == ORDER_COMPLETED) {
-														print '(выполнен)';
-													}elseif($team['operation']['state'] == ORDER_OVERDUE) {
-														print '(просрочен)';
+										<td><?php print $team['score'] ?></td>
+										<?php if (isset($team['operation']) && !empty($team['operation'])): ?>
+											<td class="
+															<?php if ($team['operation']['price'] != 0): ?>
+																<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER || $team['operation']['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
+															<?php endif ?>
+														">
+												<?php
+													if ($team['operation']['price'] != 0)
+													{
+														print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER || $team['operation']['state'] == ORDER_OVERDUE) ? '-' : '+');
 													}
-												}
-												if ($team['operation']['type'] == COST) {
-													print 'Расход';
-												}
-												if ($team['operation']['type'] == FINE) {
-													print 'Штраф';
-												}
-												if ($team['operation']['type'] == PROM) {
-													print 'Поощрение';
-												}
-												if ($team['operation']['type'] == CUST_FINE) {
-													print 'Штраф';
-												}
-												if ($team['operation']['type'] == CREDIT) {
-													print 'Кредит';
-												}
-												if ($team['operation']['type'] == PART) {
-													print 'Деталь';
-												}
-											?>
+												?>
+												<?php print $team['operation']['price'] ?>
+											</td>
+										<?php else: ?>
+											<td></td>
 										<?php endif ?>
-									</td>
-									<td class="text-center">
-										<button class="btn-add-cost btn btn-default" data-id="<?php print $team['id'] ?>" data-toggle="modal" data-target="#addCostTeam">
-											<span class="glyphicon glyphicon-plus"></span>
-											Добавить расход
-										</button>
-									</td>
-									<td>
-										<?php print $team['credit_count'] ?>
-									</td>
-								</tr>
-							<?php endforeach ?>
-						<?php endif ?>
-					</tbody>
-				</table>
+										<td>
+											<?php if (isset($team['operation'])): ?>
+												<?php print $team['operation']['name'] ?>
+											<?php else: ?>
+												-
+											<?php endif ?>
+										</td>
+										<td>
+											<?php if (isset($team['operation'])): ?>
+												<?php
+													if ($team['operation']['type'] == ORDER) {
+														print 'Заказ ';
+														if ($team['operation']['state'] == ORDER_CONTROL) {
+															print '(на исполнении)';
+														}elseif($team['operation']['state'] == ORDER_COMPLETED) {
+															print '(выполнен)';
+														}elseif($team['operation']['state'] == ORDER_OVERDUE) {
+															print '(просрочен)';
+														}
+													}
+													if ($team['operation']['type'] == COST) {
+														print 'Расход';
+													}
+													if ($team['operation']['type'] == FINE) {
+														print 'Штраф';
+													}
+													if ($team['operation']['type'] == PROM) {
+														print 'Поощрение';
+													}
+													if ($team['operation']['type'] == CUST_FINE) {
+														print 'Штраф';
+													}
+													if ($team['operation']['type'] == CREDIT) {
+														print 'Кредит';
+													}
+													if ($team['operation']['type'] == PART) {
+														print 'Деталь';
+													}
+												?>
+											<?php endif ?>
+										</td>
+										<td class="text-center">
+											<button class="btn-add-cost btn btn-default" data-id="<?php print $team['id'] ?>" data-toggle="modal" data-target="#addCostTeam">
+												<span class="glyphicon glyphicon-plus"></span>
+												Добавить расход
+											</button>
+										</td>
+										<td>
+											<?php print $team['credit_count'] ?>
+										</td>
+									</tr>
+								<?php endforeach ?>
+							<?php endif ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 		<div class="col-md-4">

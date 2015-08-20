@@ -5,44 +5,47 @@
 				<div class="panel-heading">
 					Общие данные
 				</div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Команда</th>
-							<th>Деталь</th>
-							<?php if (isset($list_parts) && !empty($list_parts)): ?>
-								<th width="150">Продать деталь</th>
-							<?php endif ?>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if (!empty($teams)): ?>
-							<?php foreach ($teams as $key => $team): ?>
-								<tr>
-									<td>
-										<a href="/provider/team/<?php print $team['id'] ?>">
-											<?php print $team['name'] ?>
-										</a>
-									</td>
-									<td>
-										<?php if (isset($team['operation'])): ?>
-											<?php print $team['operation']['name'] ?>
-										<?php else: ?>
-											-
-										<?php endif ?>
-									</td>
-									<?php if (isset($list_parts) && !empty($list_parts)): ?>
+				<div class="table-responsive">
+					
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Команда</th>
+								<th>Деталь</th>
+								<?php if (isset($list_parts) && !empty($list_parts)): ?>
+									<th width="150">Продать деталь</th>
+								<?php endif ?>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if (!empty($teams)): ?>
+								<?php foreach ($teams as $key => $team): ?>
+									<tr>
 										<td>
-											<button class="btn btn-default btn-block" data-toggle="modal" data-target="#sellPart">
-												Продать деталь
-											</button>
+											<a href="/provider/team/<?php print $team['id'] ?>">
+												<?php print $team['name'] ?>
+											</a>
 										</td>
-									<?php endif ?>
-								</tr>
-							<?php endforeach ?>
-						<?php endif ?>
-					</tbody>
-				</table>
+										<td>
+											<?php if (isset($team['operation'])): ?>
+												<?php print $team['operation']['name'] ?>
+											<?php else: ?>
+												-
+											<?php endif ?>
+										</td>
+										<?php if (isset($list_parts) && !empty($list_parts)): ?>
+											<td>
+												<button class="btn btn-default btn-block" data-toggle="modal" data-target="#sellPart">
+													Продать деталь
+												</button>
+											</td>
+										<?php endif ?>
+									</tr>
+								<?php endforeach ?>
+							<?php endif ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

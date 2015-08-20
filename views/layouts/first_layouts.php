@@ -22,6 +22,8 @@
 	<script src="/js/flot/jquery.flot.resize.js"></script>
 	<script src="/js/flot/jquery.flot.pie.js"></script>
 
+	<meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0">
+
 	<script type="text/javascript" src="/js/custom.js"></script>
 </head>
 <body>

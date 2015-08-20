@@ -8,46 +8,49 @@
         <div class="panel-heading">
           Штрафы
         </div>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>id</th>
-              <th>Название</th>
-              <th>Цена, р.</th>
-              <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
-              <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php if (!empty($data['cust_fines'])): ?>
-              <?php foreach ($data['cust_fines'] as $key => $cust_fine): ?>
-                <tr>
-                  <td class="cust-fine-key"><?php print $cust_fine['id'] ?></td>
-                  <td class="cust-fine-name"><?php print $cust_fine['name'] ?></td>
-                  <td class="cust-fine-price"><?php print $cust_fine['price'] ?></td>
-                  <td>
-                  <button class="btn-cust-fine-edit btn btn-default" data-id="<?php print $cust_fine['id'] ?>"  data-toggle="modal" data-target="#editCustFine">
-                    <span class="glyphicon glyphicon-edit"></span>
-                  </button>
-                  <td>
-                    <form action="/admin/delete_cust_fine" method="post">
-                      <input name="cust_fine_id" type="hidden" value="<?php print $cust_fine['id'] ?>">
-                      <button type="submit" class="btn-cust-fine-delete btn btn-danger">  
-                        <span class="glyphicon glyphicon-remove-circle"></span>
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-              <?php endforeach ?>
-            <?php else: ?>
-            <tr>
-              <td colspan="5">
-                пусто
-              </td>
-            </tr>
-            <?php endif ?>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Цена, р.</th>
+                <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
+                <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (!empty($data['cust_fines'])): ?>
+                <?php foreach ($data['cust_fines'] as $key => $cust_fine): ?>
+                  <tr>
+                    <td class="cust-fine-key"><?php print $cust_fine['id'] ?></td>
+                    <td class="cust-fine-name"><?php print $cust_fine['name'] ?></td>
+                    <td class="cust-fine-price"><?php print $cust_fine['price'] ?></td>
+                    <td>
+                    <button class="btn-cust-fine-edit btn btn-default" data-id="<?php print $cust_fine['id'] ?>"  data-toggle="modal" data-target="#editCustFine">
+                      <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+                    <td>
+                      <form action="/admin/delete_cust_fine" method="post">
+                        <input name="cust_fine_id" type="hidden" value="<?php print $cust_fine['id'] ?>">
+                        <button type="submit" class="btn-cust-fine-delete btn btn-danger">  
+                          <span class="glyphicon glyphicon-remove-circle"></span>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                <?php endforeach ?>
+              <?php else: ?>
+              <tr>
+                <td colspan="5">
+                  пусто
+                </td>
+              </tr>
+              <?php endif ?>
+            </tbody>
+          </table>
+        </div>
       </div>
       <button class="btn btn-default" data-toggle="modal" data-target="#addCustFine">Добавить новый</button>
     </div>
@@ -56,47 +59,50 @@
         <div class="panel-heading">
           Поощрения
         </div>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>id</th>
-              <th>Название</th>
-              <th>Цена, р.</th>
-              <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
-              <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php if (!empty($data['proms'])): ?>
-              <?php foreach ($data['proms'] as $key => $prom): ?>
-                <tr>
-                  <td class="prom-key"><?php print $prom['id'] ?></td>
-                  <td class="prom-name"><?php print $prom['name'] ?></td>
-                  <td class="prom-price"><?php print $prom['price'] ?></td>
-                  <td>
-                    <button class="btn-prom-edit btn btn-default" data-id="<?php print $prom['id'] ?>"  data-toggle="modal" data-target="#editProm">
-                      <span class="glyphicon glyphicon-edit"></span>
-                    </button>
-                  </td>
-                  <td>
-                    <form action="/admin/delete_prom" method="post">
-                      <input name="prom_id" type="hidden" value="<?php print $prom['id'] ?>">
-                      <button type="submit" class="btn-prom-delete btn btn-danger">
-                        <span class="glyphicon glyphicon-remove-circle"></span>
+        <div class="table-responsive">
+          
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>Название</th>
+                <th>Цена, р.</th>
+                <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
+                <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (!empty($data['proms'])): ?>
+                <?php foreach ($data['proms'] as $key => $prom): ?>
+                  <tr>
+                    <td class="prom-key"><?php print $prom['id'] ?></td>
+                    <td class="prom-name"><?php print $prom['name'] ?></td>
+                    <td class="prom-price"><?php print $prom['price'] ?></td>
+                    <td>
+                      <button class="btn-prom-edit btn btn-default" data-id="<?php print $prom['id'] ?>"  data-toggle="modal" data-target="#editProm">
+                        <span class="glyphicon glyphicon-edit"></span>
                       </button>
-                    </form>
-                  </td>
-                </tr>
-              <?php endforeach ?>
-            <?php else: ?>
-            <tr>
-              <td colspan="5">
-                пусто
-              </td>
-            </tr>
-            <?php endif ?>
-          </tbody>
-        </table>
+                    </td>
+                    <td>
+                      <form action="/admin/delete_prom" method="post">
+                        <input name="prom_id" type="hidden" value="<?php print $prom['id'] ?>">
+                        <button type="submit" class="btn-prom-delete btn btn-danger">
+                          <span class="glyphicon glyphicon-remove-circle"></span>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                <?php endforeach ?>
+              <?php else: ?>
+              <tr>
+                <td colspan="5">
+                  пусто
+                </td>
+              </tr>
+              <?php endif ?>
+            </tbody>
+          </table>
+        </div>
       </div>
       <button class="btn btn-default" data-toggle="modal" data-target="#addProm">Добавить новый</button>
     </div>

@@ -8,26 +8,25 @@
 				<div class="panel-heading">
 					Штрафы
 				</div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Название</th>
-							<th>Цена, р.</th>
-							<?php if (!game()): ?>
+				<div class="table-responsive">
+					
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Название</th>
+								<th>Цена, р.</th>
 								<th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
 								<th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
-							<?php endif ?>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if (!empty($data['cust_fines'])): ?>
-							<?php foreach ($data['cust_fines'] as $key => $cust_fine): ?>
-								<tr>
-									<td class="cust-fine-key"><?php print $key+1 ?></td>
-									<td class="cust-fine-name"><?php print $cust_fine['name'] ?></td>
-									<td class="cust-fine-price"><?php print $cust_fine['price'] ?></td>
-									<?php if (!game()): ?>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if (!empty($data['cust_fines'])): ?>
+								<?php foreach ($data['cust_fines'] as $key => $cust_fine): ?>
+									<tr>
+										<td class="cust-fine-key"><?php print $key+1 ?></td>
+										<td class="cust-fine-name"><?php print $cust_fine['name'] ?></td>
+										<td class="cust-fine-price"><?php print $cust_fine['price'] ?></td>
 										<td>
 											<button class="btn-cust-fine-edit btn btn-default" data-id="<?php print $cust_fine['id'] ?>"  data-toggle="modal" data-target="#editCustFine">
 												<span class="glyphicon glyphicon-edit"></span>
@@ -41,22 +40,20 @@
 												</button>
 											</form>
 										</td>
-									<?php endif ?>
-								</tr>
-							<?php endforeach ?>
-						<?php else: ?>
-						<tr>
-							<td colspan="5">
-								пусто
-							</td>
-						</tr>
-						<?php endif ?>
-					</tbody>
-				</table>
+									</tr>
+								<?php endforeach ?>
+							<?php else: ?>
+							<tr>
+								<td colspan="5">
+									пусто
+								</td>
+							</tr>
+							<?php endif ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
-			<?php if (!game()): ?>
-				<button class="btn btn-default" data-toggle="modal" data-target="#addCustFine">Добавить новый</button>
-			<?php endif ?>
+			<button class="btn btn-default" data-toggle="modal" data-target="#addCustFine">Добавить новый</button>
 		</div>
 		<div class="col-md-6">
 			<div class="panel panel-default">
@@ -69,10 +66,8 @@
 							<th>#</th>
 							<th>Название</th>
 							<th>Цена, р.</th>
-							<?php if (!game()): ?>
-								<th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
-								<th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
-							<?php endif ?>
+							<th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
+							<th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -109,9 +104,7 @@
 					</tbody>
 				</table>
 			</div>
-			<?php if (!game()): ?>
-				<button class="btn btn-default" data-toggle="modal" data-target="#addProm">Добавить новый</button>
-			<?php endif ?>
+			<button class="btn btn-default" data-toggle="modal" data-target="#addProm">Добавить новый</button>
 		</div>
 	</div>
 </div>

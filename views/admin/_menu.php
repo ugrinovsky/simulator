@@ -138,6 +138,12 @@
 								</a>
 							</li>
 							<li>
+								<a href="/admin/elements3">
+									<span class="glyphicon glyphicon-ruble"></span>
+									Штрафы заказчика/поощрения
+								</a>
+							</li>
+							<li>
 								<a href="/admin/elements2">
 									<span class="glyphicon glyphicon-ruble"></span>
 									Заказы/детали

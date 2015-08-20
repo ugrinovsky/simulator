@@ -8,54 +8,57 @@
 				<div class="panel-heading">
 					Общие данные
 				</div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Название</th>
-							<th>Цена, руб.</th>
-							<th>Штрих-код</th>
-							<th>Статус</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if (!empty($team['orders'])): ?>
-							<?php foreach ($team['orders'] as $key => $order): ?>
-								<tr>
-									<td><?php print $key+1 ?></td>
-									<td>
-										<a href="/customer/order/<?php print $order['id'] ?>">
-											<?php print $order['name'] ?></td>
-										</a>
-									<td><?php print $order['price'] ?></td>
-									<td width="200" class="text-center">
-										<img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $order['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
-									</td>
-									<td>
-									   <?php
-									      $state_text = '';
-									      switch ($order['state']) {
-									         case 0:
-									            $state_text = 'не определен';
-									            break;
-									         case 1:
-									            $state_text = 'на исполнении';
-									            break;
-									         case 2:
-									            $state_text = 'выполнен';
-									            break;
-									         case 3:
-									          	$state_text = 'просрочен';
-									          	break;
-									      }
-									      print $state_text;
-									   ?>
-									</td>
-								</tr>
-							<?php endforeach ?>
-						<?php endif ?>
-					</tbody>
-				</table>
+				<div class="table-responsive">
+					
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Название</th>
+								<th>Цена, руб.</th>
+								<th>Штрих-код</th>
+								<th>Статус</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if (!empty($team['orders'])): ?>
+								<?php foreach ($team['orders'] as $key => $order): ?>
+									<tr>
+										<td><?php print $key+1 ?></td>
+										<td>
+											<a href="/customer/order/<?php print $order['id'] ?>">
+												<?php print $order['name'] ?></td>
+											</a>
+										<td><?php print $order['price'] ?></td>
+										<td width="200" class="text-center">
+											<img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $order['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
+										</td>
+										<td>
+										   <?php
+										      $state_text = '';
+										      switch ($order['state']) {
+										         case 0:
+										            $state_text = 'не определен';
+										            break;
+										         case 1:
+										            $state_text = 'на исполнении';
+										            break;
+										         case 2:
+										            $state_text = 'выполнен';
+										            break;
+										         case 3:
+										          	$state_text = 'просрочен';
+										          	break;
+										      }
+										      print $state_text;
+										   ?>
+										</td>
+									</tr>
+								<?php endforeach ?>
+							<?php endif ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<button class="btn btn-default" data-toggle="modal" data-target="#addOrderTeam">
 				Добавить заказ

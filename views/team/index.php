@@ -8,33 +8,35 @@
 				<div class="panel-heading">
 					Общие данные
 				</div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Время/дата</th>
-							<th>Транзакция</th>
-							<th>Остаток на счете</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if (!empty($team['operations'])): ?>
-							<?php foreach ($team['operations'] as $key => $operation): ?>
-								<tr>
-									<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
-									<td class="<?php print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>">
-										<?php if ($operation['price'] != 0): ?>
-											<?php
-												print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? '-' : '+')
-											?>
-										<?php endif ?>
-										<?php print $operation['price'] ?>
-									</td>
-									<td><?php print $operation['residue'] ?></td>
-								</tr>
-							<?php endforeach ?>
-						<?php endif ?>
-					</tbody>
-				</table>
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Время/дата</th>
+								<th>Транзакция</th>
+								<th>Остаток на счете</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if (!empty($team['operations'])): ?>
+								<?php foreach ($team['operations'] as $key => $operation): ?>
+									<tr>
+										<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
+										<td class="<?php print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>">
+											<?php if ($operation['price'] != 0): ?>
+												<?php
+													print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? '-' : '+')
+												?>
+											<?php endif ?>
+											<?php print $operation['price'] ?>
+										</td>
+										<td><?php print $operation['residue'] ?></td>
+									</tr>
+								<?php endforeach ?>
+							<?php endif ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 		<div class="col-md-4">

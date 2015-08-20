@@ -5,68 +5,71 @@
 				<div class="panel-heading">
 					Общие данные
 				</div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Команда</th>
-							<th>Заказ</th>
-							<th>Статус</th>
-							<th width="150">Действие</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if (!empty($data['teams'])): ?>
-							<?php foreach ($data['teams'] as $key => $team): ?>
-								<tr>
-									<td>
-										<a href="/customer/team/<?php print $team['id'] ?>">
-											<?php print $team['name'] ?>
-										</a>
-									</td>
-									<td>
-										<?php if (isset($team['order'])): ?>
-											<?php print $team['order']['name'] ?>
-										<?php endif ?>
-									</td>
-									<td>
-										<?php if (isset($team['order'])): ?>
-											<?php
-											   $state_text = '';
-											   switch ($team['order']['state']) {
-											      case 0:
-											         $state_text = 'не определен';
-											         break;
-											      case 1:
-											         $state_text = 'на исполнении';
-											         break;
-											      case 2:
-											         $state_text = 'выполнен';
-											         break;
-											      case 3:
-											      	$state_text = 'просрочен';
-											      	break;
-											   }
-											   print $state_text;
-											?>
-										<?php endif ?>
-									</td>
-									<td class="text-center">
-										<?php if (isset($team['order'])): ?>
-											<button class="btn-add-fine-prom btn btn-default btn-block" data-id="<?php print $team['id'] ?>" data-toggle="modal" data-target="#addFinePromTeam">
+				<div class="table-responsive">
+					
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Команда</th>
+								<th>Заказ</th>
+								<th>Статус</th>
+								<th width="150">Действие</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if (!empty($data['teams'])): ?>
+								<?php foreach ($data['teams'] as $key => $team): ?>
+									<tr>
+										<td>
+											<a href="/customer/team/<?php print $team['id'] ?>">
+												<?php print $team['name'] ?>
+											</a>
+										</td>
+										<td>
+											<?php if (isset($team['order'])): ?>
+												<?php print $team['order']['name'] ?>
+											<?php endif ?>
+										</td>
+										<td>
+											<?php if (isset($team['order'])): ?>
+												<?php
+												   $state_text = '';
+												   switch ($team['order']['state']) {
+												      case 0:
+												         $state_text = 'не определен';
+												         break;
+												      case 1:
+												         $state_text = 'на исполнении';
+												         break;
+												      case 2:
+												         $state_text = 'выполнен';
+												         break;
+												      case 3:
+												      	$state_text = 'просрочен';
+												      	break;
+												   }
+												   print $state_text;
+												?>
+											<?php endif ?>
+										</td>
+										<td class="text-center">
+											<?php if (isset($team['order'])): ?>
+												<button class="btn-add-fine-prom btn btn-default btn-block" data-id="<?php print $team['id'] ?>" data-toggle="modal" data-target="#addFinePromTeam">
+													<span class="glyphicon glyphicon-plus"></span>
+													Штраф/поощрение
+												</button>
+											<?php endif ?>
+											<button class="btn-add-fine-prom btn btn-default btn-block" data-id="<?php print $team['id'] ?>" data-toggle="modal" data-target="#addOrderTeam">
 												<span class="glyphicon glyphicon-plus"></span>
-												Штраф/поощрение
+												Добавить заказ
 											</button>
-										<?php endif ?>
-										<button class="btn-add-fine-prom btn btn-default btn-block" data-id="<?php print $team['id'] ?>" data-toggle="modal" data-target="#addOrderTeam">
-											<span class="glyphicon glyphicon-plus"></span>
-											Добавить заказ
-										</button>
-									</td>
-								</tr>
-							<?php endforeach ?>
-						<?php endif ?>
-					</tbody>
-				</table>
+										</td>
+									</tr>
+								<?php endforeach ?>
+							<?php endif ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 		<div class="col-md-4">

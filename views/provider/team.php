@@ -8,27 +8,29 @@
 				<div class="panel-heading">
 					Общие данные
 				</div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>id</th>
-							<th>Название</th>
-							<th>Цена, руб.</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if (!empty($team['parts'])): ?>
-							<?php foreach ($team['parts'] as $key => $part): ?>
-								<tr>
-									<td><?php print $part['id'] ?></td>
-									<td>
-										<?php print $part['name'] ?></td>
-									<td><?php print $part['price'] ?></td>
-								</tr>
-							<?php endforeach ?>
-						<?php endif ?>
-					</tbody>
-				</table>
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>id</th>
+								<th>Название</th>
+								<th>Цена, руб.</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if (!empty($team['parts'])): ?>
+								<?php foreach ($team['parts'] as $key => $part): ?>
+									<tr>
+										<td><?php print $part['id'] ?></td>
+										<td>
+											<?php print $part['name'] ?></td>
+										<td><?php print $part['price'] ?></td>
+									</tr>
+								<?php endforeach ?>
+							<?php endif ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<?php if (isset($team['list_parts']) && !empty($team['list_parts'])): ?>
 				<button class="btn btn-default" data-toggle="modal" data-target="#sellPart">

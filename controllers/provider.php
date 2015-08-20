@@ -19,7 +19,7 @@ Class Controller_Provider Extends Controller_Base
 
 		}
 
-		$select = array('where' => 'state = '.PART_NOBUY.' and type = '.PART);
+		$select = array('where' => 'type = '.PART);
 		$element_model = new Model_Elements($select);
 		$list_parts = $element_model->getAllRows();
 
@@ -39,7 +39,7 @@ Class Controller_Provider Extends Controller_Base
 		$operation_model = new Model_Operations($select);
 		$team['parts'] = $operation_model->getAllRows();
 
-		$select = array('where' => 'state = '.PART_NOBUY.' and type = '.PART);
+		$select = array('where' => 'type = '.PART);
 		$element_model = new Model_Elements($select);
 		$team['list_parts'] = $element_model->getAllRows();
 
@@ -65,8 +65,9 @@ Class Controller_Provider Extends Controller_Base
 				$select = array('where' => 'id = '.$part_id);
 				$element_model = new Model_Elements($select);
 				$element_model->fetchOne();
-				$element_model->state = PART_BUY;
-				$element_model->update();
+				// $element_model->fetchOne();
+				// $element_model->state = PART_BUY;
+				// $element_model->update();
 
 				$select = array('where' => 'id = '.$team_id);
 				$team_model = new Model_Teams($select);

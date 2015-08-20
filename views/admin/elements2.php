@@ -94,8 +94,8 @@
                      <th>Название</th>
                      <th>Цена, р.</th>
                      <th width="120">Штрих-код</th>
-                     <th>Кто купил</th>
-                     <th>Статус</th>
+              <!--        <th>Кто купил</th>
+                     <th>Статус</th> -->
                      <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
                      <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
                   </tr>
@@ -110,7 +110,7 @@
                            <td class="text-center">
                              <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $part['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
                            </td>
-                           <td>
+                           <!-- <td>
                               <?php print $part['team'] ?>
                            </td>
                            <td>
@@ -120,7 +120,7 @@
                                 elseif($part['state'] == PART_BUY)
                                   print 'куплено';
                               ?>
-                           </td>
+                           </td> -->
                            <td>
                               <button class="btn-part-edit btn btn-default" data-id="<?php print $part['id'] ?>" data-toggle="modal" data-target="#editPart">
                                  <span class="glyphicon glyphicon-edit"></span>

@@ -79,6 +79,9 @@
 												if ($team['operation']['type'] == CREDIT) {
 													print 'Кредит';
 												}
+												if ($team['operation']['type'] == PART) {
+													print 'Деталь';
+												}
 											?>
 										<?php endif ?>
 									</td>

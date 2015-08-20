@@ -152,7 +152,25 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model->state = $order->state;
 				$operation_model->save();
 			}
-			elseif($order['state'] == ORDER_CONTROL)
+		}
+		$this->redirectToAction('team/'.$team_id);
+	}
+
+	function accept_order_team()
+	{
+		$order_id = $_POST['order_id'];
+		$team_id = $_POST['team_id'];
+
+		$select = array('where' => 'id = '.$order_id.' and type = '.ORDER);
+		$element_model = new Model_Elements($select);
+		$order = $element_model->getOneRow();
+
+		$team_model = new Model_Teams();
+		$team = $team_model->getRowById($team_id);
+
+		if(isset($order) && !empty($order))
+		{
+			if($order['state'] == ORDER_CONTROL)
 			{
 				$operation_model = new Model_Operations();
 				$operation_model->type = $order['type'];
@@ -177,7 +195,6 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model->name = $order->name;
 				$operation_model->save();
 			}
-
 		}
 		$this->redirectToAction('team/'.$team_id);
 	}

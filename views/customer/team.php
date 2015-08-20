@@ -60,6 +60,9 @@
 			<button class="btn btn-default" data-toggle="modal" data-target="#addOrderTeam">
 				Добавить заказ
 			</button>
+			<button class="btn btn-default" data-toggle="modal" data-target="#acceptOrderTeam">
+				Подтвердить заказ
+			</button>
 		</div>
 		<!-- <div class="col-md-4">
 			<div class="panel panel-default">
@@ -79,6 +82,30 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">Добавить заказ</span></h4>
+      </div>
+      <div class="modal-body">
+			<div class="form-group">
+				<label for="recipient-name" class="control-label">Идентификатор:</label>
+				<input name="order_id" class="form-control" type="text">
+			</div>
+			<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+      </div>
+     </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="acceptOrderTeam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+     <form id="form-team-cost" action="/customer/accept_order_team" method="post">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Подтвердить заказ</span></h4>
       </div>
       <div class="modal-body">
 			<div class="form-group">

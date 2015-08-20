@@ -70,6 +70,9 @@
 											if ($operation['type'] == CREDIT) {
 												print 'Кредит';
 											}
+											if ($operation['type'] == PART) {
+												print 'Деталь';
+											}
 										?>
 									</td>
 									<td><?php print $operation['residue'] ?></td>

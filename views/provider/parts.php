@@ -15,8 +15,8 @@
 							<th>Название</th>
 							<th>Цена, руб.</th>
 							<th width="110">Штрих-код</th>
-							<th>Кто купил</th>
-							<th>Статус</th>
+							<!-- <th>Кто купил</th> -->
+							<!-- <th>Статус</th> -->
 						</tr>
 					</thead>
 					<tbody>
@@ -30,7 +30,7 @@
 									<td class="text-center">
 										<img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $part['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
 									</td>
-									<td>
+									<!-- <td>
 										<?php if (isset($part['team'])): ?>
 											<?php print $part['team'] ?>
 										<?php endif ?>
@@ -42,7 +42,7 @@
 											elseif($part['state'] == PART_BUY)
 												print 'куплено';
 										?>
-									</td>
+									</td> -->
 								</tr>
 							<?php endforeach ?>
 						<?php endif ?>

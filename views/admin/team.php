@@ -8,79 +8,82 @@
 				<div class="panel-heading">
 					Общие данные
 				</div>
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Время/дата</th>
-							<th>Транзакция</th>
-							<th>Описание</th>
-							<th>Тип</th>
-							<th>Cчет</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if (isset($team['operations']) && !empty($team['operations'])): ?>
-							<?php foreach ($team['operations'] as $key => $operation): ?>
-								<tr>
-									<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
-									<td class="
-											<?php if ($operation['price'] != 0): ?>
-												<?php print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
-											<?php endif ?>
-												">
-										<?php
-											if ($operation['price'] != 0)
-											{
-												if ($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) {
-													print '-';
+				<div class="table-responsive">
+					
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Время/дата</th>
+								<th>Транзакция</th>
+								<th>Описание</th>
+								<th>Тип</th>
+								<th>Cчет</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if (isset($team['operations']) && !empty($team['operations'])): ?>
+								<?php foreach ($team['operations'] as $key => $operation): ?>
+									<tr>
+										<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
+										<td class="
+												<?php if ($operation['price'] != 0): ?>
+													<?php print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
+												<?php endif ?>
+													">
+											<?php
+												if ($operation['price'] != 0)
+												{
+													if ($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) {
+														print '-';
+													}
+													else
+														print '+';
 												}
-												else
-													print '+';
-											}
-										?>
-										<?php print $operation['price'] ?>
-									</td>
-									<td>
-										<?php print $operation['name'] ?>
-									</td>
-									<td>
-										<?php
-											if ($operation['type'] == ORDER) {
-												print 'Заказ ';
-												if ($operation['state'] == ORDER_CONTROL) {
-													print '(на исполнении)';
-												}elseif($operation['state'] == ORDER_COMPLETED) {
-													print '(выполнен)';
-												}elseif($operation['state'] == ORDER_OVERDUE) {
-													print '(просрочен)';
+											?>
+											<?php print $operation['price'] ?>
+										</td>
+										<td>
+											<?php print $operation['name'] ?>
+										</td>
+										<td>
+											<?php
+												if ($operation['type'] == ORDER) {
+													print 'Заказ ';
+													if ($operation['state'] == ORDER_CONTROL) {
+														print '(на исполнении)';
+													}elseif($operation['state'] == ORDER_COMPLETED) {
+														print '(выполнен)';
+													}elseif($operation['state'] == ORDER_OVERDUE) {
+														print '(просрочен)';
+													}
 												}
-											}
-											if ($operation['type'] == COST) {
-												print 'Расход';
-											}
-											if ($operation['type'] == FINE) {
-												print 'Штраф';
-											}
-											if ($operation['type'] == PROM) {
-												print 'Поощрение';
-											}
-											if ($operation['type'] == CUST_FINE) {
-												print 'Штраф';
-											}
-											if ($operation['type'] == CREDIT) {
-												print 'Кредит';
-											}
-											if ($operation['type'] == PART) {
-												print 'Деталь';
-											}
-										?>
-									</td>
-									<td><?php print $operation['residue'] ?></td>
-								</tr>
-							<?php endforeach ?>
-						<?php endif ?>
-					</tbody>
-				</table>
+												if ($operation['type'] == COST) {
+													print 'Расход';
+												}
+												if ($operation['type'] == FINE) {
+													print 'Штраф';
+												}
+												if ($operation['type'] == PROM) {
+													print 'Поощрение';
+												}
+												if ($operation['type'] == CUST_FINE) {
+													print 'Штраф заказчика';
+												}
+												if ($operation['type'] == CREDIT) {
+													print 'Кредит';
+												}
+												if ($operation['type'] == PART) {
+													print 'Деталь';
+												}
+											?>
+										</td>
+										<td><?php print $operation['residue'] ?></td>
+									</tr>
+								<?php endforeach ?>
+							<?php endif ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12">

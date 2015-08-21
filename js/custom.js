@@ -125,7 +125,12 @@ $(function()
 
 	$('.btn-add-fine-prom').click(function()
 	{
-		$('input[name="team_cost_id"]').val($(this).data('id'))
+		$('input[name="team_id"]').val($(this).data('team-id'))
+		$('input[name="order_id"]').val($(this).data('order-id'))
+	})
+	$('.btn-add-order-team').click(function()
+	{
+		$('input[name="team_id"]').val($(this).data('team-id'))
 	})
 	$('#form-team-fine-prom').submit(function()
 	{

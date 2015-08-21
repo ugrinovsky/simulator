@@ -114,6 +114,14 @@ Class Controller_Customer Extends Controller_Base
 			$orders = array_unique($orders, SORT_REGULAR);
 			$team['orders'] = $orders;
 
+			$select = array('where' => 'type = '.PROM);
+			$model = new Model_Elements($select);
+			$team['proms'] = $model->getAllRows();
+
+			$select = array('where' => 'type = '.CUST_FINE);
+			$model = new Model_Elements($select);
+			$team['cust_fines'] = $model->getAllRows();
+
 			$this->template->vars('team', $team);
 			$this->template->view('team');
 		}
@@ -154,6 +162,50 @@ Class Controller_Customer Extends Controller_Base
 			}
 		}
 		$this->redirectToAction('team/'.$team_id);
+	}
+
+	function accept_order_teams()
+	{
+		$order_id = $_POST['order_id'];
+
+		$select = array('where' => 'element_id = '.$order_id.' and type = '.ORDER.' and state = '.ORDER_CONTROL);
+		$operation_model = new Model_Operations($select);
+		$operation = $operation_model->getOneRow();
+
+		$team_model = new Model_Teams();
+		$team = $team_model->getRowById($operation['team_id']);
+
+		if(isset($operation) && !empty($operation))
+		{
+			if ($operation['state'] == ORDER_CONTROL)
+			{
+				$operation_model = new Model_Operations();
+				$operation_model->type = $operation['type'];
+
+				$select = array('where' => 'id = '.$order_id);
+				$order = new Model_Elements($select);
+				$order->fetchOne();
+				$order->state = ORDER_COMPLETED;
+				$order->update();
+
+				$select = array('where' => 'id = '.$team['id']);
+				$team = new Model_Teams($select);
+				$team->fetchOne();
+				$team->score += $order->price;
+				$team->update();	
+
+				$operation_model->element_id = $order->id;
+				$operation_model->team_id = $team->id;
+				$operation_model->price = $order->price;
+				$operation_model->residue = $team->score;
+				$operation_model->state = $order->state;
+				$operation_model->name = $order->name;
+				$operation_model->save();
+			}
+			$this->redirectToAction('team/'.$team->id);
+		}
+		else
+			$this->redirectToAction('index');
 	}
 
 	function accept_order_team()
@@ -297,10 +349,48 @@ Class Controller_Customer Extends Controller_Base
 		$this->redirectToAction('elements');
 	}
 
+	// function add_fine_prom_team()
+	// {
+	// 	$element_id = $_POST['team_element'];
+	// 	$team_id = $_POST['team_cost_id'];
+
+	// 	$operation_model = new Model_Operations();
+	// 	$operation_model->element_id = $element_id;
+	// 	$operation_model->team_id = $team_id;
+
+	// 	$element_model = new Model_Elements();
+	// 	$element = $element_model->getRowById($element_id);
+
+	// 	$select = array('where' => 'id = '.$team_id);
+	// 	$team_model = new Model_Teams($select);
+	// 	$team_model->fetchOne();
+
+	// 	if ($element['type'] == PROM)
+	// 		$team_model->score += $element['price'];
+	// 	elseif($element['type'] == CUST_FINE)
+	// 		$team_model->score -= $element['price'];
+
+	// 	$team_model->update();
+
+	// 	$operation_model->name = $element['name'];
+	// 	$operation_model->type = $element['type'];
+	// 	$operation_model->state = $element['state'];
+	// 	$operation_model->price = $element['price'];
+	// 	$operation_model->residue = $team_model->score;
+	// 	$operation_model->save();
+
+
+	// 	$location = $_POST['location'];
+	// 	if ($location == 'index')
+	// 		$this->redirectToAction('index');
+	// 	if ($location == 'team')
+	// 		$this->redirectToAction('team/'.$team_id);
+	// }
 	function add_fine_prom_team()
 	{
 		$element_id = $_POST['team_element'];
-		$team_id = $_POST['team_cost_id'];
+		$team_id = $_POST['team_id'];
+		$order_id = $_POST['order_id'];
 
 		$operation_model = new Model_Operations();
 		$operation_model->element_id = $element_id;
@@ -313,25 +403,25 @@ Class Controller_Customer Extends Controller_Base
 		$team_model = new Model_Teams($select);
 		$team_model->fetchOne();
 
+		$element_model = new Model_Elements();
+		$order = $element_model->getRowById($order_id);
+
+		$price = $order['price'] * $element['price'] / 100;
+
 		if ($element['type'] == PROM)
-			$team_model->score += $element['price'];
+			$team_model->score += $price;
 		elseif($element['type'] == CUST_FINE)
-			$team_model->score -= $element['price'];
+			$team_model->score -= $price;
 
 		$team_model->update();
 
-		$operation_model->name = $element['name'];
+		$operation_model->name = $element['name']." (".$element['price']."% на заказ №".$order['id'].")";
 		$operation_model->type = $element['type'];
 		$operation_model->state = $element['state'];
-		$operation_model->price = $element['price'];
+		$operation_model->price = $price;
 		$operation_model->residue = $team_model->score;
 		$operation_model->save();
 
-
-		$location = $_POST['location'];
-		if ($location == 'index')
-			$this->redirectToAction('index');
-		if ($location == 'team')
-			$this->redirectToAction('team/'.$team_id);
+		$this->redirectToAction('team/'.$team_id);
 	}
 }

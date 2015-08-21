@@ -76,7 +76,7 @@
 														print 'Поощрение';
 													}
 													if ($team['operation']['type'] == CUST_FINE) {
-														print 'Штраф';
+														print 'Штраф заказчика';
 													}
 													if ($team['operation']['type'] == CREDIT) {
 														print 'Кредит';

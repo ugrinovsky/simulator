@@ -15,7 +15,7 @@
               <tr>
                 <th>id</th>
                 <th>Название</th>
-                <th>Цена, р.</th>
+                <th>% от заказа</th>
                 <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
                 <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
               </tr>
@@ -66,7 +66,7 @@
               <tr>
                 <th>id</th>
                 <th>Название</th>
-                <th>Цена, р.</th>
+                <th>% от заказа</th>
                 <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
                 <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
               </tr>
@@ -123,8 +123,11 @@
         <input type="text" name="cust_fine_name" class="form-control">
       </div>
       <div class="form-group">
-        <label for="recipient-name" class="control-label">Цена:</label>
-        <input type="text" name="cust_fine_price" class="form-control">
+        <label for="recipient-name" class="control-label">Процент от заказа:</label>
+        <div class="input-group">
+          <div class="input-group-addon">%</div>
+          <input type="text" name="cust_fine_price" class="form-control">
+        </div>
       </div>
       </div>
       <div class="modal-footer">
@@ -151,8 +154,11 @@
       <input type="text" name="cust_fine_name" class="form-control">
     </div>
     <div class="form-group">
-      <label for="recipient-name" class="control-label">Цена:</label>
-      <input type="text" name="cust_fine_price" class="form-control">
+      <label for="recipient-name" class="control-label">Процент от заказа:</label>
+      <div class="input-group">
+        <div class="input-group-addon">%</div>
+        <input type="text" name="cust_fine_price" class="form-control">
+      </div>
     </div>
       </div>
       <div class="modal-footer">
@@ -178,8 +184,11 @@
         <input type="text" name="prom_name" class="form-control">
       </div>
       <div class="form-group">
-        <label for="recipient-name" class="control-label">Цена:</label>
-        <input type="text" name="prom_price" class="form-control">
+        <label for="recipient-name" class="control-label">Процент от заказа:</label>
+        <div class="input-group">
+          <div class="input-group-addon">%</div>
+          <input type="text" name="prom_price" class="form-control">
+        </div>
       </div>
       </div>
       <div class="modal-footer">
@@ -206,8 +215,11 @@
       <input type="text" name="prom_name" class="form-control">
     </div>
     <div class="form-group">
-      <label for="recipient-name" class="control-label">Цена:</label>
-      <input type="text" name="prom_price" class="form-control">
+      <label for="recipient-name" class="control-label">Процент от заказа:</label>
+      <div class="input-group">
+        <div class="input-group-addon">%</div>
+        <input type="text" name="prom_price" class="form-control">
+      </div>
     </div>
       </div>
       <div class="modal-footer">

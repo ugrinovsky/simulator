@@ -30,7 +30,10 @@
                              <td class="order-name"><?php print $order['name'] ?></td>
                              <td class="order-price"><?php print $order['price'] ?></td>
                              <td width="140" class="text-center">
-                                <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $order['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
+                                <?php
+                                  $code = sprintf('%06d', $order['id']);
+                                ?>
+                                <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $code ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
                              </td>
                              <td>
                                 <?php print $order['team'] ?>
@@ -112,7 +115,10 @@
                              <td class="part-name"><?php print $part['name'] ?></td>
                              <td class="part-price"><?php print $part['price'] ?></td>
                              <td class="text-center">
-                               <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $part['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
+                                <?php
+                                  $code = sprintf('%06d', $part['id']);
+                                ?>
+                               <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $code ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
                              </td>
                              <!-- <td>
                                 <?php print $part['team'] ?>

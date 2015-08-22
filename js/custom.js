@@ -164,12 +164,13 @@ $(function()
 			dataType: 'json',
 			success: function(result)
 			{
+				console.log(result);
 				end = new Date(result.end.date)
 			},
-			// error: function(xhr)
-			// {
-			// 	console.log(xhr)
-			// }
+			error: function(xhr)
+			{
+				console.log(xhr)
+			}
 		})
 	   var now = new Date()
    	if (now > end)
@@ -191,8 +192,8 @@ $(function()
 		dataType: 'json',
 		success: function(result)
 		{
-			end = new Date(result.end.date)
 			console.log(result);
+			end = new Date(result.end.date)
 		},
 		error: function(xhr)
 		{

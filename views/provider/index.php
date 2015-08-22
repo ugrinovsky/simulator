@@ -12,8 +12,10 @@
 							<tr>
 								<th>Команда</th>
 								<th>Деталь</th>
-								<?php if (isset($list_parts) && !empty($list_parts)): ?>
-									<th width="150">Продать деталь</th>
+								<?php if (game()): ?>
+									<?php if (isset($list_parts) && !empty($list_parts)): ?>
+										<th width="150">Продать деталь</th>
+									<?php endif ?>
 								<?php endif ?>
 							</tr>
 						</thead>
@@ -33,12 +35,14 @@
 												-
 											<?php endif ?>
 										</td>
-										<?php if (isset($list_parts) && !empty($list_parts)): ?>
-											<td>
-												<button class="btn btn-default btn-block" data-toggle="modal" data-target="#sellPart">
-													Продать деталь
-												</button>
-											</td>
+										<?php if (game()): ?>
+											<?php if (isset($list_parts) && !empty($list_parts)): ?>
+												<td>
+													<button class="btn btn-default btn-block" data-toggle="modal" data-target="#sellPart">
+														Продать деталь
+													</button>
+												</td>
+											<?php endif ?>
 										<?php endif ?>
 									</tr>
 								<?php endforeach ?>
@@ -51,28 +55,30 @@
 	</div>
 </div>
 
-<?php if (isset($list_parts) && !empty($list_parts)): ?>
-	<div class="modal fade" id="sellPart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	     <form id="form-team-cost" action="/provider/sell_part" method="post">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="exampleModalLabel">Продать деталь</span></h4>
-	      </div>
-	      <div class="modal-body">
-				<div class="form-group">
-					<label for="recipient-name" class="control-label">Деталь:</label>
-					<input type="text" name="part_id" class="form-control">
-				</div>
-				<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-	        <button type="submit" class="btn btn-primary">Добавить</button>
-	      </div>
-	     </form>
-	    </div>
-	  </div>
-	</div>
+<?php if (game()): ?>
+	<?php if (isset($list_parts) && !empty($list_parts)): ?>
+		<div class="modal fade" id="sellPart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		     <form id="form-team-cost" action="/provider/sell_part" method="post">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="exampleModalLabel">Продать деталь</span></h4>
+		      </div>
+		      <div class="modal-body">
+					<div class="form-group">
+						<label for="recipient-name" class="control-label">Деталь:</label>
+						<input type="text" name="part_id" class="form-control">
+					</div>
+					<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+		        <button type="submit" class="btn btn-primary">Добавить</button>
+		      </div>
+		     </form>
+		    </div>
+		  </div>
+		</div>
+	<?php endif ?>
 <?php endif ?>

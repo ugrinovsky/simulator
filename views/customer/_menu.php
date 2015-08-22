@@ -11,7 +11,12 @@
 
 			$now = new DateTime();
 			$period_date = new DateTime($period['start']);
-			$end = $period_date->modify('+'.PERIOD_MINUTES.' minutes');
+
+			$select = array('where' => "id = 'period_time'");
+			$game_model = new Model_Game($select);
+			$game = $game_model->getOneRow();
+
+			$end = $period_date->modify('+'.$game['value'].' minutes');
 		?>
 		<?php if ($now < $end): ?>
 			<div class="col-md-6 text-center">

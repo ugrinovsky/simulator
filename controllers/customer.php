@@ -156,7 +156,7 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model->team_id = $team['id'];
 				$operation_model->price = 0;
 				$operation_model->residue = $team['score'];
-				$operation_model->name = $order->name;
+				$operation_model->name = $order->name.', '.$order->price.' р.';
 				$operation_model->state = $order->state;
 				$operation_model->save();
 			}
@@ -222,14 +222,32 @@ Class Controller_Customer Extends Controller_Base
 
 		if(isset($order) && !empty($order))
 		{
-			if($order['state'] == ORDER_CONTROL)
+			if($order['state'] == ORDER_CONTROL || $order['state'] == ORDER_OVERDUE)
 			{
 				$operation_model = new Model_Operations();
 				$operation_model->type = $order['type'];
 
 				$select = array('where' => 'id = '.$order_id);
 				$order = new Model_Elements($select);
+
+				$select = array('where' => "id = 'fine_time'");
+				$game_model = new Model_Game($select);
+				$game = $game_model->getOneRow();
+
 				$order->fetchOne();
+				if ($order->state == ORDER_OVERDUE)
+				{
+					$operation_model->name = $order->name.' (-'.$game['value'].'% за просрочку)';
+				}
+				else
+					$operation_model->name = $order->name;
+
+				if ($order->state == ORDER_OVERDUE)
+				{
+					$percent = $order->price * $game['value'] / 100;
+					$order->price -= $percent;
+				}
+
 				$order->state = ORDER_COMPLETED;
 				$order->update();
 
@@ -244,7 +262,7 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model->price = $order->price;
 				$operation_model->residue = $team->score;
 				$operation_model->state = $order->state;
-				$operation_model->name = $order->name;
+
 				$operation_model->save();
 			}
 		}

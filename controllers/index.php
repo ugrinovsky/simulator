@@ -83,9 +83,13 @@ Class Controller_Index Extends Controller_Base
 		$period = $period_model->getOneRow();
 
 		if(isset($period) && !empty($period))
-		{
+		{	
+			$select = array('where' => "id = 'period_time'");
+			$game_model = new Model_Game($select);
+			$game = $game_model->getOneRow();
+
 			$data['start'] = $period['start'];
-			$string = '+'.PERIOD_MINUTES.' minutes';
+			$string = '+'.$game['value'].' minutes';
 			$date = new DateTime($period['start']);
 			$data['end'] = $date->modify($string);
 			echo json_encode($data); 

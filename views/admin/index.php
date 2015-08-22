@@ -148,7 +148,17 @@
 							<form action="/admin/settings" method="post">
 								<div class="form-group">
 									<label class="control-label" for="">Штраф за просрочку</label>	
-									<input class="form-control" name="fine_time" type="text" value="<?php print $data['game']['value'] ?>">
+									<div class="input-group">
+										<div class="input-group-addon">%</div>
+										<input class="form-control" name="fine_time" type="text" value="<?php print $data['fine_time']['value'] ?>">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label" for="">Время одного периода</label>	
+									<div class="input-group">
+										<div class="input-group-addon">мин.</div>
+										<input class="form-control" name="period_time" type="text" value="<?php print $data['period_time']['value'] ?>">
+									</div>
 								</div>
 								<button type="submit" class="btn btn-default">Сохранить</button>
 							</form>

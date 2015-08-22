@@ -73,7 +73,13 @@ Class Controller_Admin Extends Controller_Base
 		$game_model = new Model_Game($select);
 		$game = $game_model->getOneRow();
 
-		$data['game'] = $game;
+		$data['fine_time'] = $game;
+
+		$select = array('where' => "id = 'period_time'");
+		$game_model = new Model_Game($select);
+		$game = $game_model->getOneRow();
+
+		$data['period_time'] = $game;
 
 		$this->template->vars('data', $data);
 		$this->template->view('index');
@@ -85,7 +91,7 @@ Class Controller_Admin Extends Controller_Base
 
 		$team = new Model_Teams();
 		$team->name = $name;
-		$team->score = 80000;
+		$team->score = 180000;
 		$team->save();
 
 		$team = new Model_Teams();
@@ -513,7 +519,12 @@ Class Controller_Admin Extends Controller_Base
 		$period_model->state = PERIOD_ENABLE;
 		$date = new DateTime();
 		$period_model->start = $date->format('Y-m-d H:i:s');
-		$string = '+'.PERIOD_MINUTES.' minutes';
+
+		$select = array('where' => "id = 'period_time'");
+		$game_model = new Model_Game($select);
+		$game = $game_model->getOneRow();
+
+		$string = '+'.$game['value'].' minutes';
 		$period_model->update();
 
 		$this->redirectToLink(REFERER);
@@ -564,11 +575,18 @@ Class Controller_Admin Extends Controller_Base
 	function settings()
 	{
 		$fine_time = $_POST['fine_time'];
+		$period_time = $_POST['period_time'];
 
 		$select = array('where' => "id = 'fine_time'");
 		$game_model = new Model_Game($select);
 		$game_model->fetchOne();
 		$game_model->value = $fine_time;
+		$game_model->update();
+
+		$select = array('where' => "id = 'period_time'");
+		$game_model = new Model_Game($select);
+		$game_model->fetchOne();
+		$game_model->value = $period_time;
 		$game_model->update();
 
 		$this->redirectToAction('index');

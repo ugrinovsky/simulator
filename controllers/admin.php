@@ -103,6 +103,18 @@ Class Controller_Admin Extends Controller_Base
 		$director->team_id = $team_id;
 		$director->save();
 
+		$staffname_model = new Model_Staffnames();
+		$staffnames = $staffname_model->getAllRows();
+
+		foreach ($staffnames as $key => $staffname)
+		{
+			$staff_model = new Model_Staffs();
+			$staff_model->team_id = $team_id;
+			$staff_model->name = $staffname['name'];
+			$staff_model->skill_id = SKILL1;
+			$staff_model->save();
+		}
+
 		$this->redirectToAction("team/$team_id");
 	}
 
@@ -461,6 +473,9 @@ Class Controller_Admin Extends Controller_Base
 		$model = new Model_Credits();
 		$model->deleteBySelect();
 
+		$model = new Model_Staffs();
+		$model->deleteBySelect();
+
 		$this->redirectToAction('index');
 	}
 
@@ -674,5 +689,83 @@ Class Controller_Admin Extends Controller_Base
 		$cost_model->deleteBySelect($select);
 
 		$this->redirectToAction('elements3');
+	}
+
+	function staffs($args)
+	{
+		$id = $args[0];
+
+		if (!is_null($id))
+		{
+
+			$team_model = new Model_Teams();
+			$team = $team_model->getRowById($id);
+
+			$skill_model = new Model_Skills();
+			$skills = $skill_model->getAllRows();
+
+			$select = array('where' => 'team_id = '.$id);
+			$staff_model = new Model_Staffs($select);
+			$staffs = $staff_model->getAllRows();
+
+			$team['salary'] = get_salary($id);
+
+			$this->template->vars('team', $team);
+			$this->template->vars('skills', $skills);
+			$this->template->vars('staffs', $staffs);
+			$this->template->view('staffs');
+		}
+		else
+			$this->redirectToAction('index');
+	}
+
+	function save_staffs()
+	{
+		foreach ($_POST as $team_id => $value)
+		{
+			$select = array('where' => 'id = '.$team_id);
+			$staff_model = new Model_Staffs($select);
+			$staff_model->fetchOne();
+			$staff_model->skill_id = $value;
+			$staff_model->update();
+		}
+
+		$this->redirectToLink(REFERER);
+	}
+
+	function delete_staff()
+	{
+		$staff_id = $_POST['staff_id'];
+
+		// $staff_model = new Model_Staffs();
+		// $staff = $staff_model->getRowById($staff_id);
+
+		// $staffname_model = new Model_Staffnames();
+		// $staffname = $staffname_model->getRowById($staff['name_id']);
+
+		// if ($staffname['type'] == STAFFNAME_UNBLOCK)
+		// {
+		// 	# code...
+		// }
+
+		$select = array('where' => 'id = '.$staff_id);
+		$staff_model = new Model_Staffs();
+		$staff_model->deleteBySelect($select);
+
+		echo 1;
+	}
+
+	function add_staff()
+	{
+		$staff_name = $_POST['staff_name'];
+		$team_id = $_POST['team_id'];
+
+		$staff_model = new Model_Staffs();
+		$staff_model->name = $staff_name;
+		$staff_model->team_id = $team_id;
+		$staff_model->skill_id = SKILL1;
+		$staff_model->save();
+
+		$this->redirectToLink(REFERER);
 	}
 }

@@ -91,7 +91,8 @@ Class Controller_Index Extends Controller_Base
 			$data['start'] = $period['start'];
 			$string = '+'.$game['value'].' minutes';
 			$date = new DateTime($period['start']);
-			$data['end'] = $date->modify($string);
+			$end = $date->modify($string);
+			$data['end'] = $end->format('Y-m-d H:m:i');
 			echo json_encode($data); 
 		}
 	}

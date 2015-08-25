@@ -40,6 +40,31 @@ $(function()
 		}
 	})
 
+	$('.btn-staff-delete').click(function()
+	{
+		if (!confirm("Вы уверены?")) {
+		 	return false 
+		}
+		var staff_id = $(this).data('staff-id')
+
+		$.ajax({
+			url: '/admin/delete_staff',
+			type: 'post',
+			data: {
+				staff_id: staff_id
+			},
+			success: function(result)
+			{
+				if (result) 
+					location.reload()
+			},
+			error: function()
+			{
+
+			}
+		})
+	})
+
 	$('.btn-prom-edit').click(function()
 	{
 		$('#editProm input[name="prom_id"]').val($(this).data('id'))
@@ -164,18 +189,20 @@ $(function()
 			dataType: 'json',
 			success: function(result)
 			{
-				console.log(result);
-				end = new Date(result.end.date)
+				// console.log(result);
+				end = new Date(result.end)
+				console.log(end)
 			},
 			error: function(xhr)
 			{
+				console.log('не цикл')
 				console.log(xhr)
 			}
 		})
 	   var now = new Date()
    	if (now > end)
    	{
-   		location.reload()
+   		// location.reload()
    	}
    	else
    	{
@@ -193,7 +220,7 @@ $(function()
 		success: function(result)
 		{
 			console.log(result);
-			end = new Date(result.end.date)
+			end = new Date(result.end)
 		},
 		error: function(xhr)
 		{

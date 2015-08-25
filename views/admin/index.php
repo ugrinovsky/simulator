@@ -84,6 +84,9 @@
 													if ($team['operation']['type'] == PART) {
 														print 'Деталь';
 													}
+													if ($team['operation']['type'] == SALARY) {
+														print 'Зарплата';
+													}
 												?>
 											<?php endif ?>
 										</td>

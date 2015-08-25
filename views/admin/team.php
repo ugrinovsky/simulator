@@ -75,6 +75,9 @@
 												if ($operation['type'] == PART) {
 													print 'Деталь';
 												}
+												if ($operation['type'] == SALARY) {
+													print 'Зарплата';
+												}
 											?>
 										</td>
 										<td><?php print $operation['residue'] ?></td>
@@ -151,6 +154,13 @@
 							<?php endif ?>
 						</div>
 					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a class="btn btn-default" href="/admin/staffs/<?php print $team['id'] ?>">
+						Сотрудники
+					</a>
 				</div>
 			</div>
 		</div>

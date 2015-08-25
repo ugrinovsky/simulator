@@ -31,6 +31,35 @@ function game()
 		return false;
 }
 
+function get_salary($team_id)
+{
+	$select = array('where' => 'team_id = '.$team_id);
+	$staff_model = new Model_Staffs($select);
+	$staffs = $staff_model->getAllRows();
+
+	$data['price'] = 0;
+	$sk1 = 0;
+	$sk2 = 0;
+	$sk3 = 0;
+	foreach ($staffs as $key => $staff)
+	{
+		$skill_model = new Model_Skills();
+		if ($staff['skill_id'] == SKILL1) {
+			$sk1++;
+		}
+		if ($staff['skill_id'] == SKILL2) {
+			$sk2++;
+		}
+		if ($staff['skill_id'] == SKILL3) {
+			$sk3++;
+		}
+		$skill = $skill_model->getRowById($staff['skill_id']);
+		$data['price'] += $skill['price'];
+	}
+	$data['name'] = 'С: '.$sk1.' М: '.$sk2.' П: '.$sk3;
+	return $data;
+}
+
 function end_period()
 {
 	if (game())
@@ -73,6 +102,29 @@ function end_period()
 				// $operation_model->name = $element['name'];
 				// $operation_model->save();
 			}
+		}
+
+		$team_model = new Model_Teams();
+		$teams = $team_model->getAllRows();
+
+		foreach ($teams as $key => $team)
+		{
+			$salary = get_salary($team['id']);
+
+			$select = array('where' => 'id = '.$team['id']);
+			$team_model = new Model_Teams($select);
+			$team_model->fetchOne();
+			$team_model->score -= $salary['price'];
+			$team_model->update();
+
+			$operation_model = new Model_Operations();
+			$operation_model->team_id = $team['id'];
+			$operation_model->element_id = 0;
+			$operation_model->price = $salary['price'];
+			$operation_model->residue = $team_model->score;
+			$operation_model->type = SALARY;
+			$operation_model->name = $salary['name'];
+			$operation_model->save();
 		}
 	}
 }

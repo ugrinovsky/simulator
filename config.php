@@ -12,7 +12,7 @@ define ('SITE_PATH', $sitePath); // путь к корневой папке са
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'business');
+define('DB_NAME', 'stupenkom_zavod');
 
 define('SITE_HOST', $_SERVER['HTTP_HOST']);
 
@@ -30,6 +30,7 @@ define('COST', 4);
 define('PROM', 5);
 define('CUST_FINE', 6);
 define('CREDIT', -1);
+define('SALARY', 7);
 
 define('PERIOD1', 1);
 define('PERIOD2', 2);
@@ -48,8 +49,6 @@ define('ORDER_OVERDUE', 3);
 define('PART_NOBUY', 0);
 define('PART_BUY', 1);
 
-define('PERIOD_MINUTES', 2);
-
 define('CREDIT_ENABLE', 1);
 define('CREDIT_ACCEPT', 2);
 define('CREDIT_DISABLE', -1);
@@ -64,7 +63,11 @@ define('CUSTOMER_PASS', 'customer');
 define('PROVIDER_LOGIN', 'provider');
 define('PROVIDER_PASS', 'provider');
 
-define('FINE_TIME', 1000);
+define('SKILL1', 1);
+define('SKILL2', 2);
+define('SKILL3', 3);
+
+
 
 function mpr($data)
 {

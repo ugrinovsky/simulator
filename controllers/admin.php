@@ -509,29 +509,33 @@ Class Controller_Admin Extends Controller_Base
 		$credit_model = new Model_Credits($select);
 		$credits = $credit_model->getAllRows();
 
-		foreach ($credits as $key => $credit)
+		if (!empty($credits))
 		{
-			$select = array('where' => 'id = '.$credit['team_id']);
-			$team_model = new Model_Teams($select);
-			$team_model->fetchOne();
-			$team_model->score += $credit['price'];
+			foreach ($credits as $key => $credit)
+			{
+				$select = array('where' => 'id = '.$credit['team_id']);
+				$team_model = new Model_Teams($select);
+				$team_model->fetchOne();
+				$team_model->score += $credit['price'];
 
-			$operation_model = new Model_Operations();
-			$operation_model->team_id = $credit['team_id'];
-			$operation_model->element_id = -$credit['id'];
-			$operation_model->price = $credit['price'];
-			$operation_model->residue += $team_model->score;
-			$operation_model->name = 'Кредит';
-			$operation_model->type = CREDIT;
+				$operation_model = new Model_Operations();
+				$operation_model->team_id = $credit['team_id'];
+				$operation_model->element_id = -$credit['id'];
+				$operation_model->price = $credit['price'];
+				$operation_model->residue += $team_model->score;
+				$operation_model->name = 'Кредит';
+				$operation_model->type = CREDIT;
 
-			$team_model->update();
-			$operation_model->save();
+				$team_model->update();
+				$operation_model->save();
+			}
 		}
 
 		$select = array('where' => 'id = '.$period_id);
 		$period_model = new Model_Periods($select);
 		$period_model->fetchOne();
 		$period_model->state = PERIOD_ENABLE;
+
 		$date = new DateTime();
 		$period_model->start = $date->format('Y-m-d H:i:s');
 
@@ -540,9 +544,38 @@ Class Controller_Admin Extends Controller_Base
 		$game = $game_model->getOneRow();
 
 		$string = '+'.$game['value'].' minutes';
+		$period_model->end = $date->modify($string)->format('Y-m-d H:i:s');
+		// mpr($period_model);die();
+
 		$period_model->update();
 
 		$this->redirectToLink(REFERER);
+	}
+
+	function pause_period($args)
+	{
+		$period_id = $args[0];
+
+		$select = array('where' => 'id = '.$period_id);
+		$period_model = new Model_Periods($select);
+		$period_model->fetchOne();
+		$period_model->state = PERIOD_PAUSE;
+
+		$date = new DateTime();
+		$period_model->pause = $date->format('Y-m-d H:i:s');
+		$period_model->pause_end = 'NULL';
+
+		$period_model->update();
+
+		$this->redirectToLink(REFERER);
+	}
+
+	function continue_period($args)
+	{
+		$period_id = $args[0];
+		$pause_end = $args[1];
+
+		mpr($args);
 	}
 
 	function clear_periods()
@@ -554,9 +587,12 @@ Class Controller_Admin Extends Controller_Base
 			$period = new Model_Periods($select);
 			$period->fetchOne();
 			$period->start = 'NULL';
+			$period->end = 'NULL';
+			$period->pause = 'NULL';
 			$period->state = PERIOD_DISABLE;
 			$period->update();
 		}
+
 		$credit_model = new Model_Credits();
 		$credit_model->deleteBySelect();
 

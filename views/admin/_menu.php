@@ -1,7 +1,7 @@
-<div class="game col-md-3">
+<div class="game">
 	<!-- <a href="/admin/clear_periods" class="btn btn-danger">Очистить</a> -->
 	<?php
-		$select = array('where' => 'state = '.PERIOD_ENABLE);
+		$select = array('where' => 'state = '.PERIOD_ENABLE.' OR state = '.PERIOD_PAUSE);
 		$period_model = new Model_Periods($select);
 		$periods = $period_model->getAllRows();
 	?>
@@ -18,28 +18,66 @@
 
 			$end = $period_date->modify('+'.$game['value'].' minutes');
 		?>
-		<?php if ($now < $end): ?>
-			<div class="col-md-6 text-center">
-				Период <?php print $period['id'] ?>
-			</div>
-			<div class="col-md-6 number text-center"></div>
-		<?php else: ?>
-			<?php
-				$select = array('where' => 'id = '.$period['id']);
-				$period_model = new Model_Periods($select);
-				$period_model->fetchOne();
-				$period_model->state = PERIOD_COMPLETED;
-				$period_model->update();
+		<?php if ($period['state'] == PERIOD_ENABLE): ?>
+			<?php if ($now < $end): ?>
+				<!-- ТЕКУЩИЙ ПЕРИОД -->
+				<div class="alert alert-info">
+					<div class="period label label-info">
+						Период <?php print $period['id'] ?>
+					</div>
+					<div class="number"></div>
+					<div>
+						<div class="btn btn-default" disabled>
+							<span class="glyphicon glyphicon-play" disabled></span>
+						</div>
+						<a href="/admin/pause_period/<?php print $period['id'] ?>" class="btn btn-default">
+							<span class="glyphicon glyphicon-pause"></span>
+						</a>
+						<a href="/admin/pause_period/<?php print $period['id'] ?>" class="btn btn-default">
+							<span class="glyphicon glyphicon-stop"></span>
+						</a>
+					</div>
+				</div>
+			<?php else: ?>
+				<?php
+					$select = array('where' => 'id = '.$period['id']);
+					$period_model = new Model_Periods($select);
+					$period_model->fetchOne();
+					$period_model->state = PERIOD_COMPLETED;
+					$period_model->update();
 
-				end_period();
-			?>
-			<div class="text-center">
-				Период <?php print $period['id'] ?> завершен!
-				<?php if ($period['id'] < 4): ?>
-					<a href="/admin/start?id=<?php print $period['id']+1 ?>">Далее</a>
-				<?php else: ?>
-					<a href="/admin/clear_periods" class="btn btn-danger">Очистить</a>
-				<?php endif ?>
+					end_period();
+				?>
+				<div class="alert alert-danger">
+					<!-- ПЕРИОД ЗАВЕРШЕН -->
+					<div class="period label label-info">
+						Период <?php print $period['id'] ?> завершен!
+					</div>
+					<?php if ($period['id'] < 4): ?>
+						<a href="/admin/start?id=<?php print $period['id']+1 ?>">Далее</a>
+					<?php else: ?>
+						<a href="/admin/clear_periods" class="btn btn-danger">Очистить</a>
+					<?php endif ?>
+				</div>
+			<?php endif ?>
+		<?php elseif($period['state'] == PERIOD_PAUSE): ?>
+			<!-- ПАУЗА ПЕРИОДА -->
+			<div class="alert alert-warning">
+				<div class="period label label-warning">
+					Период <?php print $period['id'] ?>
+				</div>
+				<div class="number"></div>
+				<div>
+					<a class="btn btn-default" href="/admin/continue_period/<?php print $period['id'] ?>;/<?php prmt ?>">
+						<span class="glyphicon glyphicon-play"></span>
+					</a>
+					<div class="btn btn-default" disabled>
+						<span class="glyphicon glyphicon-pause"></span>
+					</div>
+					<a class="btn btn-default" href="/admin/continue_period/<?php print $period['id'] ?>;/<?php prmt ?>">
+						<span class="glyphicon glyphicon-stop"></span>
+					</a>
+				</div>
 			</div>
 		<?php endif ?>
 	<?php else: ?>
@@ -49,17 +87,26 @@
 			$last_period = $period_model->getLastRow();
 		?>
 		<?php if (isset($last_period) && !empty($last_period)): ?>
-			<div class="text-center">
-				Период <?php print $last_period['id'] ?> завершен!
+			<div class="alert alert-danger">
+				Период <?php print $last_period['id'] ?> завершен! Спасибо за игру.
 				<?php if ($last_period['id'] < 4): ?>
 					<a href="/admin/start?id=<?php print $last_period['id']+1 ?>">Далее</a>
-				<?php else: ?>
-					<a href="/admin/clear_periods" class="btn btn-danger">Очистить</a>
 				<?php endif ?>
 			</div>
 		<?php else: ?>
-			<div class="col-md-12 text-center">
-				<div>Период 1 <a class="btn btn-success" href="/admin/start?id=1">Старт</a></div>
+			<!-- ЗАПУСК ИГРЫ -->
+			<div class="alert alert-danger">
+				<div>Период 1 
+					<a class="btn btn-default" href="/admin/start?id=1">
+						<span class="glyphicon glyphicon-play"></span>
+					</a>
+					<div class="btn btn-default" disabled>
+						<span class="glyphicon glyphicon-pause"></span>
+					</div>
+					<div class="btn btn-default" disabled>
+						<span class="glyphicon glyphicon-stop"></span>
+					</div>
+				</div>
 			</div>
 		<?php endif ?>
 	<?php endif ?>

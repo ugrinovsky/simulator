@@ -1,18 +1,19 @@
 <?php
-date_default_timezone_set('Asia/Yekaterinburg');
-
-// Задаем константы:
-define ('DS', DIRECTORY_SEPARATOR);
-
-$sitePath = realpath(dirname(__FILE__) . DS) . DS;
-
-define ('SITE_PATH', $sitePath); // путь к корневой папке сайта
 
 // для подключения к бд
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'stupenkom_zavod');
+
+date_default_timezone_set('Asia/Bishkek');
+// date_default_timezone_set('Asia/Yekaterinburg');
+
+define ('DS', DIRECTORY_SEPARATOR);
+
+$sitePath = realpath(dirname(__FILE__) . DS) . DS;
+
+define ('SITE_PATH', $sitePath);
 
 define('SITE_HOST', $_SERVER['HTTP_HOST']);
 
@@ -40,6 +41,7 @@ define('PERIOD4', 4);
 define('PERIOD_DISABLE', -1);
 define('PERIOD_ENABLE', 1);
 define('PERIOD_COMPLETED', 2);
+define('PERIOD_PAUSE', 3);
 
 define('ORDER_NOCONTROL', 0);
 define('ORDER_CONTROL', 1);
@@ -66,8 +68,6 @@ define('PROVIDER_PASS', 'provider');
 define('SKILL1', 1);
 define('SKILL2', 2);
 define('SKILL3', 3);
-
-
 
 function mpr($data)
 {

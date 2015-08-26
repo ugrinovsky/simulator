@@ -78,21 +78,16 @@ Class Controller_Index Extends Controller_Base
 	function get_periods()
 	{
 		$data = array();
-		$select = array('where' => 'state = '.PERIOD_ENABLE);
+		$select = array('where' => 'state = '.PERIOD_ENABLE.' OR state = '.PERIOD_PAUSE);
 		$period_model = new Model_Periods($select);
 		$period = $period_model->getOneRow();
 
 		if(isset($period) && !empty($period))
 		{	
-			$select = array('where' => "id = 'period_time'");
-			$game_model = new Model_Game($select);
-			$game = $game_model->getOneRow();
-
 			$data['start'] = $period['start'];
-			$string = '+'.$game['value'].' minutes';
-			$date = new DateTime($period['start']);
-			$end = $date->modify($string);
-			$data['end'] = $end->format('Y-m-d H:m:i');
+			$data['end'] = $period['end'];
+			$data['pause'] = $period['pause'];
+			$data['state'] = $period['state'];
 			echo json_encode($data); 
 		}
 	}

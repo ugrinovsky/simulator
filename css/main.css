@@ -88,20 +88,30 @@ table{
 .game {
   position: fixed;
   bottom: 0;
-  right: 15%;
-  padding: 20px;
-  background-color: #B4E7B2;
-  border: 1px solid #8DB18D;
-  font-size: 15px;
-  z-index: 1;
-  border-bottom: 0;
+  right: 1%;
+  /*padding: 20px;*/
+  /*background-color: #B4E7B2;*/
+  /*border: 1px solid #8DB18D;*/
+  font-size: 20px;
+  vertical-align: middle;
+  z-index: 3;
+  /*border-bottom: 0;*/
+}
+.period{
+  top: -10px;
+  position: absolute;
 }
 .number{
-  font-size: 33px;
+  /*font-size: 33px;*/
+  width: 136px;
+  font-weight: bold;
 }
-.game > .col-md-6:first-child{
+/*.game > .col-md-6:first-child{
   line-height: 48px;
   font-size: 20px;
+}*/
+.game div{
+  display: inline-block;
 }
 .form-signin
 {
@@ -180,8 +190,15 @@ table{
 }
 @media(max-width: 992px){
   .game{
+    text-align: center;
     position: static;
   }
+  .period{
+    top: 10px;
+  }
+}
+.game .btn{
+  width: 60px;
 }
 .spinner {
   width: 100%;

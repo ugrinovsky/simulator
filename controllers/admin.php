@@ -91,7 +91,7 @@ Class Controller_Admin Extends Controller_Base
 
 		$team = new Model_Teams();
 		$team->name = $name;
-		$team->score = 180000;
+		$team->score = DEFAULT_SCORE;
 		$team->save();
 
 		$team = new Model_Teams();
@@ -573,9 +573,33 @@ Class Controller_Admin Extends Controller_Base
 	function continue_period($args)
 	{
 		$period_id = $args[0];
-		$pause_end = $args[1];
 
-		mpr($args);
+		$range = new DateTime();
+
+		$select = array('where' => 'id = '.$period_id);
+		$period_model = new Model_Periods($select);
+		$period_model->fetchOne();
+		$period_model->state = PERIOD_ENABLE;
+
+		$pause_start = new DateTime($period_model->pause);
+		
+		$diff = $pause_start->diff($range);
+
+		$new_end = new DateTime($period_model->end);
+		$interval = 'P'.$diff->y.'Y'.$diff->m.'M'.$diff->d.'DT'.$diff->h.'H'.$diff->i.'M'.$diff->s.'S';
+		$new_end->add(new DateInterval($interval));
+
+		$period_model->end = $new_end->format('Y-m-d H:i:s');
+		$period_model->pause = 'NULL';
+
+		$period_model->update();
+
+		$this->redirectToLink(REFERER);
+	}
+
+	function reset_period()
+	{
+
 	}
 
 	function clear_periods()
@@ -593,8 +617,21 @@ Class Controller_Admin Extends Controller_Base
 			$period->update();
 		}
 
+		$team_model = new Model_Teams();
+		$teams = $team_model->getAllRows();
+		foreach ($teams as $key => $team)
+		{
+			$select = array('where' => 'id = '.$team['id']);
+			$team_model = new Model_Teams($select);
+			$team_model->fetchOne();
+			$team_model->score = DEFAULT_SCORE;
+			$team_model->update();
+		}
+
 		$credit_model = new Model_Credits();
 		$credit_model->deleteBySelect();
+		$model = new Model_Operations();
+		$model->deleteBySelect();
 
 		$this->redirectToLink(REFERER);
 	}

@@ -10,7 +10,7 @@
 						Общие данные
 					</div>
 					<div class="table-responsive">
-						<table class="table table-bordered">
+						<table class="table-staffs table table-bordered">
 							<thead>
 								<tr>
 									<th>Сотрудник</th>
@@ -33,7 +33,8 @@
 															print 'checked';
 														}
 													?>
-												name="<?php print $staff['id'] ?>" value="<?php print $skill['id'] ?>">
+												name="<?php print $staff['id'] ?>" value="<?php print $skill['id'] ?>" id="<?php print $staff['id'] ?><?php print $skill['id'] ?>">
+												<label for="<?php print $staff['id'] ?><?php print $skill['id'] ?>"></label>
 											</td>
 										<?php endforeach ?>
 										<td>

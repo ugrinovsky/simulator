@@ -40,6 +40,13 @@ $(function()
 		}
 	})
 
+	$('.clear-periods').click(function()
+	{
+		if (!confirm("Вы уверены?")) {
+		 	return false 
+		}
+	})
+	
 	$('.btn-staff-delete').click(function()
 	{
 		if (!confirm("Вы уверены?")) {

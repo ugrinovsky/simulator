@@ -150,7 +150,9 @@
 									</div>
 								<?php endif ?>
 							<?php else: ?>
-								-
+								<div class="text-left">
+									Нет запрашиваемых кредитов
+								</div>
 							<?php endif ?>
 						</div>
 					</div>
@@ -159,6 +161,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<a class="btn btn-default" href="/admin/staffs/<?php print $team['id'] ?>">
+						<span class="glyphicon glyphicon-user"></span>
 						Сотрудники
 					</a>
 				</div>

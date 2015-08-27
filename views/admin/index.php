@@ -140,8 +140,20 @@
 					<?php endif ?>
 				</div>
 			</div>
-			<a href="/admin/clear" class="btn btn-danger">Очистить все данные</a>
-			<a href="/admin/clear_periods" class="btn btn-danger">Сбросить игру</a>
+			<div class="row">
+				<div class="col-xs-6">
+					<a href="/admin/clear_periods" class="btn btn-danger btn-block">
+						<span class="glyphicon glyphicon-refresh"></span>
+						Рестарт
+					</a>
+				</div>
+				<div class="col-xs-6">
+					<a href="/admin/clear" class="clear-periods btn btn-danger btn-block">
+						<span class="glyphicon glyphicon-trash"></span>
+						Удалить все
+					</a>
+				</div>
+			</div>
 			<hr>
 			<div class="row">
 				<div class="col-md-12">
@@ -163,7 +175,10 @@
 										<input class="form-control" name="period_time" type="text" value="<?php print $data['period_time']['value'] ?>">
 									</div>
 								</div>
-								<button type="submit" class="btn btn-default">Сохранить</button>
+								<button type="submit" class="btn btn-default">
+									<span class="glyphicon glyphicon-floppy-disk"></span>
+									Сохранить
+								</button>
 							</form>
 						</div>
 					</div>

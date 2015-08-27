@@ -5,6 +5,7 @@
 		$period_model = new Model_Periods($select);
 		$periods = $period_model->getAllRows();
 	?>
+	<!-- ЕСЛИ ИГРА ЗАПУЩЕНА -->
 	<?php if (isset($periods) && !empty($periods)): ?>
 		<?php
 			$period = $periods[0];
@@ -12,11 +13,7 @@
 			$now = new DateTime();
 			$period_date = new DateTime($period['start']);
 
-			$select = array('where' => "id = 'period_time'");
-			$game_model = new Model_Game($select);
-			$game = $game_model->getOneRow();
-
-			$end = $period_date->modify('+'.$game['value'].' minutes');
+			$end = new DateTime($period['end']);
 		?>
 		<?php if ($period['state'] == PERIOD_ENABLE): ?>
 			<?php if ($now < $end): ?>
@@ -33,12 +30,13 @@
 						<a href="/admin/pause_period/<?php print $period['id'] ?>" class="btn btn-default">
 							<span class="glyphicon glyphicon-pause"></span>
 						</a>
-						<a href="/admin/pause_period/<?php print $period['id'] ?>" class="btn btn-default">
+						<!-- <a href="/admin/pause_period/<?php print $period['id'] ?>" class="btn btn-default">
 							<span class="glyphicon glyphicon-stop"></span>
-						</a>
+						</a> -->
 					</div>
 				</div>
 			<?php else: ?>
+				<!-- ПЕРИОД ЗАВЕРШЕН -->
 				<?php
 					$select = array('where' => 'id = '.$period['id']);
 					$period_model = new Model_Periods($select);
@@ -49,14 +47,11 @@
 					end_period();
 				?>
 				<div class="alert alert-danger">
-					<!-- ПЕРИОД ЗАВЕРШЕН -->
-					<div class="period label label-info">
-						Период <?php print $period['id'] ?> завершен!
-					</div>
+					Период <?php print $period['id'] ?> завершен!
 					<?php if ($period['id'] < 4): ?>
-						<a href="/admin/start?id=<?php print $period['id']+1 ?>">Далее</a>
-					<?php else: ?>
-						<a href="/admin/clear_periods" class="btn btn-danger">Очистить</a>
+						<a class="btn btn-default" href="/admin/start?id=<?php print $period['id']+1 ?>">
+							<span class="glyphicon glyphicon-play"></span>
+						</a>
 					<?php endif ?>
 				</div>
 			<?php endif ?>
@@ -68,18 +63,19 @@
 				</div>
 				<div class="number"></div>
 				<div>
-					<a class="btn btn-default" href="/admin/continue_period/<?php print $period['id'] ?>;/<?php prmt ?>">
+					<a class="btn btn-default" href="/admin/continue_period/<?php print $period['id'] ?>">
 						<span class="glyphicon glyphicon-play"></span>
 					</a>
 					<div class="btn btn-default" disabled>
 						<span class="glyphicon glyphicon-pause"></span>
 					</div>
-					<a class="btn btn-default" href="/admin/continue_period/<?php print $period['id'] ?>;/<?php prmt ?>">
+					<!-- <a class="btn btn-default" href="/admin/reset_period/<?php print $period['id'] ?>/<?php prmt ?>">
 						<span class="glyphicon glyphicon-stop"></span>
-					</a>
+					</a> -->
 				</div>
 			</div>
 		<?php endif ?>
+	<!-- ЕСЛИ ИГРА НЕ ЗАПУСКАЛАСЬ ИЛИ ПЕРЕРЫв -->
 	<?php else: ?>
 		<?php
 			$select = array('where' => 'state = '.PERIOD_COMPLETED);
@@ -88,9 +84,11 @@
 		?>
 		<?php if (isset($last_period) && !empty($last_period)): ?>
 			<div class="alert alert-danger">
-				Период <?php print $last_period['id'] ?> завершен! Спасибо за игру.
+				Период <?php print $last_period['id'] ?> завершен!
 				<?php if ($last_period['id'] < 4): ?>
-					<a href="/admin/start?id=<?php print $last_period['id']+1 ?>">Далее</a>
+					<a class="btn btn-default" href="/admin/start?id=<?php print $last_period['id']+1 ?>">
+							<span class="glyphicon glyphicon-play"></span>
+						</a>
 				<?php endif ?>
 			</div>
 		<?php else: ?>
@@ -103,9 +101,9 @@
 					<div class="btn btn-default" disabled>
 						<span class="glyphicon glyphicon-pause"></span>
 					</div>
-					<div class="btn btn-default" disabled>
+					<!-- <div class="btn btn-default" disabled>
 						<span class="glyphicon glyphicon-stop"></span>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		<?php endif ?>

@@ -69,6 +69,8 @@ define('SKILL1', 1);
 define('SKILL2', 2);
 define('SKILL3', 3);
 
+define('DEFAULT_SCORE', 180000);
+
 function mpr($data)
 {
 	echo "<pre>";

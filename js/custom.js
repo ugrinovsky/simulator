@@ -236,7 +236,6 @@ $(function()
 			dataType: 'json',
 			success: function(result)
 			{
-				console.log(result);
 				end = new Date(result.end)
 			},
 			error: function(xhr)
@@ -245,6 +244,7 @@ $(function()
 			}
 		})
 	   	var now = new Date()
+	   	
 	   	if (now > end)
 	   	{
 	   		location.reload()

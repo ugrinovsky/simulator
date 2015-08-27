@@ -1,37 +1,57 @@
-<div class="game col-md-3">
+<div class="game">
 	<!-- <a href="/admin/clear_periods" class="btn btn-danger">Очистить</a> -->
 	<?php
-		$select = array('where' => 'state = '.PERIOD_ENABLE);
+		$select = array('where' => 'state = '.PERIOD_ENABLE.' OR state = '.PERIOD_PAUSE);
 		$period_model = new Model_Periods($select);
 		$periods = $period_model->getAllRows();
 	?>
+	<!-- ЕСЛИ ИГРА ЗАПУЩЕНА -->
 	<?php if (isset($periods) && !empty($periods)): ?>
 		<?php
 			$period = $periods[0];
 
 			$now = new DateTime();
 			$period_date = new DateTime($period['start']);
-			$end = $period_date->modify('+'.PERIOD_MINUTES.' minutes');
-		?>
-		<?php if ($now < $end): ?>
-			<div class="col-md-6 text-center">
-				Период <?php print $period['id'] ?>
-			</div>
-			<div class="col-md-6 number text-center"></div>
-		<?php else: ?>
-			<?php
-				$select = array('where' => 'id = '.$period['id']);
-				$period_model = new Model_Periods($select);
-				$period_model->fetchOne();
-				$period_model->state = PERIOD_COMPLETED;
-				$period_model->update();
 
-				end_period();
-			?>
-			<div class="text-center">
-				Период <?php print $period['id'] ?> завершен!
+			$end = new DateTime($period['end']);
+		?>
+		<?php if ($period['state'] == PERIOD_ENABLE): ?>
+			<?php if ($now < $end): ?>
+				<!-- ТЕКУЩИЙ ПЕРИОД -->
+				<div class="alert alert-info">
+					<div class="period label label-info">
+						Период <?php print $period['id'] ?>
+					</div>
+					<div class="number"></div>
+				</div>
+			<?php else: ?>
+				<!-- ПЕРИОД ЗАВЕРШЕН -->
+				<?php
+					$select = array('where' => 'id = '.$period['id']);
+					$period_model = new Model_Periods($select);
+					$period_model->fetchOne();
+					$period_model->state = PERIOD_COMPLETED;
+					$period_model->update();
+
+					end_period();
+				?>
+				<div class="alert alert-danger">
+					Период <?php print $period['id'] ?> завершен!
+					<?php if ($period['id'] == 4): ?>
+						Спасибо за игру.
+					<?php endif ?>
+				</div>
+			<?php endif ?>
+		<?php elseif($period['state'] == PERIOD_PAUSE): ?>
+			<!-- ПАУЗА ПЕРИОДА -->
+			<div class="alert alert-warning">
+				<div class="period label label-warning">
+					Период <?php print $period['id'] ?>
+				</div>
+				<div class="number"></div>
 			</div>
 		<?php endif ?>
+	<!-- ЕСЛИ ИГРА НЕ ЗАПУСКАЛАСЬ ИЛИ ПЕРЕРЫв -->
 	<?php else: ?>
 		<?php
 			$select = array('where' => 'state = '.PERIOD_COMPLETED);
@@ -39,12 +59,16 @@
 			$last_period = $period_model->getLastRow();
 		?>
 		<?php if (isset($last_period) && !empty($last_period)): ?>
-			<div class="text-center">
+			<div class="alert alert-danger">
 				Период <?php print $last_period['id'] ?> завершен!
+				<?php if ($last_period['id'] == 4): ?>
+					Спасибо за игру.
+				<?php endif ?>
 			</div>
 		<?php else: ?>
-			<div class="col-md-12 text-center">
-				<div>Игра еще не началась</div>
+			<!-- ЗАПУСК ИГРЫ -->
+			<div class="alert alert-danger">
+				<div>Период 1</div>
 			</div>
 		<?php endif ?>
 	<?php endif ?>

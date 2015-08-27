@@ -6,7 +6,6 @@ Class Model_Periods Extends Model_Base {
 	public $start;
 	public $end;
 	public $pause;
-	public $pause_end;
 	public $state;
 	
 	public function fieldsTable(){
@@ -15,7 +14,6 @@ Class Model_Periods Extends Model_Base {
 			'start' => 'Начало',
 			'end' => 'Начало',
 			'pause' => 'Пауза',
-			'pause_end' => 'Конец паузы',
 			'state' => 'Состояние'
 		);
 	}

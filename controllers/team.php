@@ -80,4 +80,9 @@ Class Controller_Team Extends Controller_Base
 
 		$this->redirectToAction('index');
 	}
+
+	function credits()
+	{
+		$this->template->view('credits');
+	}
 }

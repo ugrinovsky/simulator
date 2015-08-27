@@ -169,12 +169,21 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label" for="">Время одного периода</label>	
+									<label class="control-label" for="">Процентная ставка кредита</label>	
 									<div class="input-group">
-										<div class="input-group-addon">мин.</div>
-										<input class="form-control" name="period_time" type="text" value="<?php print $data['period_time']['value'] ?>">
+										<div class="input-group-addon">%</div>
+										<input class="form-control" name="credit_rate" type="text" value="<?php print $data['credit_rate']['value'] ?>">
 									</div>
 								</div>
+								<?php if (is_null(current_period())): ?>
+									<div class="form-group">
+										<label class="control-label" for="">Время одного периода</label>	
+										<div class="input-group">
+											<div class="input-group-addon">мин.</div>
+											<input class="form-control" name="period_time" type="text" value="<?php print $data['period_time']['value'] ?>">
+										</div>
+									</div>
+								<?php endif ?>
 								<button type="submit" class="btn btn-default">
 									<span class="glyphicon glyphicon-floppy-disk"></span>
 									Сохранить

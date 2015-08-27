@@ -81,6 +81,12 @@ Class Controller_Admin Extends Controller_Base
 
 		$data['period_time'] = $game;
 
+		$select = array('where' => "id = 'credit_rate'");
+		$game_model = new Model_Game($select);
+		$game = $game_model->getOneRow();
+
+		$data['credit_rate'] = $game;
+
 		$this->template->vars('data', $data);
 		$this->template->view('index');
 	}
@@ -663,7 +669,18 @@ Class Controller_Admin Extends Controller_Base
 	function settings()
 	{
 		$fine_time = $_POST['fine_time'];
-		$period_time = $_POST['period_time'];
+		$credit_rate = $_POST['credit_rate'];
+
+		if (isset($_POST['period_time']))
+		{
+			$period_time = $_POST['period_time'];
+
+			$select = array('where' => "id = 'period_time'");
+			$game_model = new Model_Game($select);
+			$game_model->fetchOne();
+			$game_model->value = $period_time;
+			$game_model->update();
+		}
 
 		$select = array('where' => "id = 'fine_time'");
 		$game_model = new Model_Game($select);
@@ -671,10 +688,10 @@ Class Controller_Admin Extends Controller_Base
 		$game_model->value = $fine_time;
 		$game_model->update();
 
-		$select = array('where' => "id = 'period_time'");
+		$select = array('where' => "id = 'credit_rate'");
 		$game_model = new Model_Game($select);
 		$game_model->fetchOne();
-		$game_model->value = $period_time;
+		$game_model->value = $period_rate;
 		$game_model->update();
 
 		$this->redirectToAction('index');

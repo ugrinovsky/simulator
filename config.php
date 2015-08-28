@@ -32,6 +32,7 @@ define('PROM', 5);
 define('CUST_FINE', 6);
 define('CREDIT', -1);
 define('SALARY', 7);
+define('REPAYMENT', 8);
 
 define('PERIOD1', 1);
 define('PERIOD2', 2);
@@ -54,7 +55,6 @@ define('PART_BUY', 1);
 define('CREDIT_ENABLE', 1);
 define('CREDIT_ACCEPT', 2);
 define('CREDIT_DISABLE', -1);
-
 
 define('ADMIN_LOGIN', 'admin');
 define('ADMIN_PASS', 'admin');

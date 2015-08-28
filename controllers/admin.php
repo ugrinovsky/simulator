@@ -98,6 +98,7 @@ Class Controller_Admin Extends Controller_Base
 		$team = new Model_Teams();
 		$team->name = $name;
 		$team->score = DEFAULT_SCORE;
+		$team->credit = 0;
 		$team->save();
 
 		$team = new Model_Teams();
@@ -512,30 +513,41 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$period_id = (isset($_GET['id'])) ? (int)$_GET['id'] : false;
 
-		$select = array('where' => 'period_id = '.$period_id.' and state = '.CREDIT_ACCEPT);
-		$credit_model = new Model_Credits($select);
-		$credits = $credit_model->getAllRows();
+		// $select = array('where' => 'period_id = '.$period_id.' and state = '.CREDIT_ACCEPT);
+		// $credit_model = new Model_Credits($select);
+		// $credits = $credit_model->getAllRows();
 
-		if (!empty($credits))
+		// if (!empty($credits))
+		// {
+		// 	foreach ($credits as $key => $credit)
+		// 	{
+		// 		$select = array('where' => 'id = '.$credit['team_id']);
+		// 		$team_model = new Model_Teams($select);
+		// 		$team_model->fetchOne();
+		// 		$team_model->score += $credit['price'];
+
+		// 		$operation_model = new Model_Operations();
+		// 		$operation_model->team_id = $credit['team_id'];
+		// 		$operation_model->element_id = -$credit['id'];
+		// 		$operation_model->price = $credit['price'];
+		// 		$operation_model->residue += $team_model->score;
+		// 		$operation_model->name = 'Кредит';
+		// 		$operation_model->type = CREDIT;
+
+		// 		$team_model->update();
+		// 		$operation_model->save();
+		// 	}
+		// }
+
+		$team_model = new Model_Teams();
+		$teams = $team_model->getAllRows();
+		foreach ($teams as $key => $team)
 		{
-			foreach ($credits as $key => $credit)
-			{
-				$select = array('where' => 'id = '.$credit['team_id']);
-				$team_model = new Model_Teams($select);
-				$team_model->fetchOne();
-				$team_model->score += $credit['price'];
-
-				$operation_model = new Model_Operations();
-				$operation_model->team_id = $credit['team_id'];
-				$operation_model->element_id = -$credit['id'];
-				$operation_model->price = $credit['price'];
-				$operation_model->residue += $team_model->score;
-				$operation_model->name = 'Кредит';
-				$operation_model->type = CREDIT;
-
-				$team_model->update();
-				$operation_model->save();
-			}
+			$select = array('where' => 'id = '.$team['id']);
+			$t = new Model_Teams($select);
+			$t->fetchOne();
+			$t->credit += $t->credit * 0.1;
+			$t->update();
 		}
 
 		$select = array('where' => 'id = '.$period_id);
@@ -552,7 +564,6 @@ Class Controller_Admin Extends Controller_Base
 
 		$string = '+'.$game['value'].' minutes';
 		$period_model->end = $date->modify($string)->format('Y-m-d H:i:s');
-		// mpr($period_model);die();
 
 		$period_model->update();
 
@@ -632,6 +643,7 @@ Class Controller_Admin Extends Controller_Base
 			$team_model = new Model_Teams($select);
 			$team_model->fetchOne();
 			$team_model->score = DEFAULT_SCORE;
+			$team_model->credit = 'NULL';
 			$team_model->update();
 		}
 
@@ -639,30 +651,6 @@ Class Controller_Admin Extends Controller_Base
 		$credit_model->deleteBySelect();
 		$model = new Model_Operations();
 		$model->deleteBySelect();
-
-		$this->redirectToLink(REFERER);
-	}
-
-	function accept_credit()
-	{
-		$credit_id = $_POST['credit_id'];
-		$select = array('where' => 'id = '.$credit_id);
-		$credit_model = new Model_Credits($select);
-		$credit_model->fetchOne();
-		$credit_model->state = CREDIT_ACCEPT;
-		$credit_model->update();
-
-		$this->redirectToLink(REFERER);
-	}
-
-	function disable_credit()
-	{
-		$credit_id = $_POST['credit_id'];
-		$select = array('where' => 'id = '.$credit_id);
-		$credit_model = new Model_Credits($select);
-		$credit_model->fetchOne();
-		$credit_model->state = CREDIT_DISABLE;
-		$credit_model->update();
 
 		$this->redirectToLink(REFERER);
 	}
@@ -692,7 +680,7 @@ Class Controller_Admin Extends Controller_Base
 		$select = array('where' => "id = 'credit_rate'");
 		$game_model = new Model_Game($select);
 		$game_model->fetchOne();
-		$game_model->value = $period_rate;
+		$game_model->value = $credit_rate;
 		$game_model->update();
 
 		$this->redirectToAction('index');
@@ -827,18 +815,7 @@ Class Controller_Admin Extends Controller_Base
 	function delete_staff()
 	{
 		$staff_id = $_POST['staff_id'];
-
-		// $staff_model = new Model_Staffs();
-		// $staff = $staff_model->getRowById($staff_id);
-
-		// $staffname_model = new Model_Staffnames();
-		// $staffname = $staffname_model->getRowById($staff['name_id']);
-
-		// if ($staffname['type'] == STAFFNAME_UNBLOCK)
-		// {
-		// 	# code...
-		// }
-
+		
 		$select = array('where' => 'id = '.$staff_id);
 		$staff_model = new Model_Staffs();
 		$staff_model->deleteBySelect($select);

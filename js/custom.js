@@ -275,47 +275,51 @@ $(function()
 		}
 	})
 
-   if (period_result.state != parseFloat(3))
-   {
-	   changeNumber()
-	   setInterval(function()
+	if (period_result != undefined)
+	{
+	   if (period_result.state != parseFloat(3))
 	   {
 		   changeNumber()
-	   }, 1000)
-   }
-   else
-   {
-	   	var now = new Date()
-	   	var pause = new Date(period_result.pause)
-	   	var second = Math.floor(Math.abs(end - pause) / 1000);
-	   	second = (arguments.length == 1) ? second + now.getSeconds() : second;
-	   	endYear =  now.getFullYear();            
-	   	endMonth = now.getMonth();
-	   	endDay = now.getDate();    
-	   	endHour = now.getHours();
-	   	endMinute = now.getMinutes();
+		   setInterval(function()
+		   {
+			   changeNumber()
+		   }, 1000)
+	   }
+	   else
+	   {
+		   	var now = new Date()
+		   	var pause = new Date(period_result.pause)
+		   	var second = Math.floor(Math.abs(end - pause) / 1000);
+		   	second = (arguments.length == 1) ? second + now.getSeconds() : second;
+		   	endYear =  now.getFullYear();            
+		   	endMonth = now.getMonth();
+		   	endDay = now.getDate();    
+		   	endHour = now.getHours();
+		   	endMinute = now.getMinutes();
 
-   		var endDate = new Date(endYear,endMonth,endDay,endHour,endMinute,second+1); 
+	   		var endDate = new Date(endYear,endMonth,endDay,endHour,endMinute,second+1); 
 
-   		var time = endDate.getTime() - now.getTime();
+	   		var time = endDate.getTime() - now.getTime();
 
-   		var minutes = Math.floor(time / 6e4) % 60;
-   		var minutesText = minutes
-   		if (minutes < 10)
-   			minutesText = '0'+minutes
-   		var seconds = Math.floor(time / 1e3) % 60;  
-   		var secondsText = seconds
-   		if (seconds < 10)
-   			secondsText = '0'+seconds
-   		var digit='<div>'+
-   		'<div>';
-   		var text='</div><div>'
-   		var end='</div></div><div>:</div>'
+	   		var minutes = Math.floor(time / 6e4) % 60;
+	   		var minutesText = minutes
+	   		if (minutes < 10)
+	   			minutesText = '0'+minutes
+	   		var seconds = Math.floor(time / 1e3) % 60;  
+	   		var secondsText = seconds
+	   		if (seconds < 10)
+	   			secondsText = '0'+seconds
+	   		var digit='<div>'+
+	   		'<div>';
+	   		var text='</div><div>'
+	   		var end='</div></div><div>:</div>'
 
-   		 $('.number').append('<div class="numb">Время: '+digit+minutesText+text+end+digit+secondsText+text+'</div>');
-   		// $('.number').text(Math.ceil(sub)+' мин.')
-   }
+	   		 $('.number').append('<div class="numb">Время: '+digit+minutesText+text+end+digit+secondsText+text+'</div>');
+	   		// $('.number').text(Math.ceil(sub)+' мин.')
+	   }
 
+
+	}
 
 
 

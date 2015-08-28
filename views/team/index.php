@@ -22,7 +22,15 @@
 								<?php foreach ($team['operations'] as $key => $operation): ?>
 									<tr>
 										<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
-										<td class="<?php print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>">
+										<td class="
+											<?php if ($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE): ?>
+												<?php print 'danger'; ?>
+											<?php elseif($operation['type'] == CREDIT): ?>
+												<?php print 'warning'; ?> 
+											<?php else: ?>
+												<?php print 'success'; ?>	
+											<?php endif ?>
+										">
 											<?php if ($operation['price'] != 0): ?>
 												<?php
 													print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? '-' : '+')
@@ -45,81 +53,42 @@
 					Кредит
 				</div>
 				<div class="panel-body">
+					Текущая задолженность составляет <?php print $team['credit'] ?> р.
 					<?php if (!is_null(current_period())): ?>
-						<?php if (empty($team['next_credit']) && current_period() != 4): ?>
-							<?php if (!empty($team['now_credit'])): ?>
-								<div>
-									В этом периоде вы запросили кредит суммой <?php print $team['now_credit']['price'] ?> руб.
-									<?php if ($team['now_credit']['state'] == CREDIT_ACCEPT): ?>
-										<span class="label label-success">
-											одобрено
-										</span>
-									<?php elseif($team['now_credit']['state'] == CREDIT_ENABLE): ?>
-										<span class="label label-warning">
-											рассматривается
-										</span>
-									<?php else: ?>
-										<span class="label label-danger">
-											отклонено
-										</span>
-									<?php endif ?>
+						<hr>
+						<form action="/team/credit" method="post">
+							<div class="form-group">
+								<label for="">Введите сумму желаемого кредита на следующий период</label>
+								<div class="input-group spinner">
+									<input name="price" type="text" class="form-control" value="0">
+									<input name="team_id" type="hidden" value="<?php print $team['id'] ?>">
+									<input name="team_id" type="hidden" value="<?php print $team['id'] ?>">
+								    <div class="input-group-btn-vertical">
+								      <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-triangle-top"></i></button>
+								      <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-triangle-bottom"></i></button>
+								    </div>
 								</div>
-							<?php endif ?>
-							<form action="/team/credit" method="post">
-								<div class="form-group">
-									<label for="">Введите сумму желаемого кредита на следующий период</label>
-									<div class="input-group spinner">
-										<input name="price" type="text" class="form-control" value="0">
-										<input name="team_id" type="hidden" value="<?php print $team['id'] ?>">
-										<input name="team_id" type="hidden" value="<?php print $team['id'] ?>">
-									    <div class="input-group-btn-vertical">
-									      <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-triangle-top"></i></button>
-									      <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-triangle-bottom"></i></button>
-									    </div>
-									</div>
-								</div>
-								<button type="submit" class="btn btn-default">Взять кредит</button>
-							</form>	
-						<?php else: ?>
-							<?php if (!empty($team['now_credit'])): ?>
-								<div>
-									В этом периоде вы запросили кредит суммой <?php print $team['now_credit']['price'] ?> руб.
-									<?php if ($team['now_credit']['state'] == CREDIT_ACCEPT): ?>
-										<span class="label label-success">
-											одобрено
-										</span>
-									<?php elseif($team['now_credit']['state'] == CREDIT_ENABLE): ?>
-										<span class="label label-warning">
-											рассматривается
-										</span>
-									<?php else: ?>
-										<span class="label label-danger">
-											отклонено
-										</span>
-									<?php endif ?>
-								</div>
-							<?php endif ?>
-							<?php if (current_period() != 4): ?>
-								<div>
-									На следующий период вы запросили кредит суммой <?php print $team['next_credit']['price'] ?> руб.
-									<?php if ($team['next_credit']['state'] == CREDIT_ACCEPT): ?>
-										<span class="label label-success">
-											одобрено
-										</span>
-									<?php elseif ($team['next_credit']['state'] == CREDIT_ENABLE): ?>
-										<span class="label label-warning">
-											рассматривается
-										</span>
-									<?php else: ?>
-										<span class="label label-danger">
-											отклонено
-										</span>
-									<?php endif ?>
-								</div>
-							<?php endif ?>
-						<?php endif ?>
+							</div>
+							<button type="submit" class="btn btn-default">Взять кредит</button>
+						</form>	
 					<?php else: ?>
 
+					<?php endif ?>
+					<?php if ($team['credit'] > 0): ?>
+						<form action="/team/credit_accept" method="post">
+							<div class="form-group">
+								<label for="">Выплатить кредит суммой:</label>
+								<input name="credit_price" type="text" class="form-control" value="0">
+							</div>
+							<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
+							<button type="submit" class="btn btn-default">Выплатить</button>
+						</form>
+					<?php endif ?>
+					<hr>
+					<?php if (isset($_GET['data'])): ?>
+						<div class="alert alert-success" role="alert">
+							<?php print $_GET['data'] ?>
+						</div>
 					<?php endif ?>
 				</div>
 			</div>

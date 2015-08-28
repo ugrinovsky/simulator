@@ -27,7 +27,13 @@
 										<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
 										<td class="
 												<?php if ($operation['price'] != 0): ?>
-													<?php print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
+													<?php if ($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE): ?>
+														<?php print 'danger'; ?>
+													<?php elseif($operation['type'] == CREDIT): ?>
+														<?php print 'warning'; ?> 
+													<?php else: ?>
+														<?php print 'success'; ?>	
+													<?php endif ?>
 												<?php endif ?>
 													">
 											<?php
@@ -77,6 +83,9 @@
 												}
 												if ($operation['type'] == SALARY) {
 													print 'Зарплата';
+												}
+												if ($operation['type'] == REPAYMENT) {
+													print 'Выплата';
 												}
 											?>
 										</td>

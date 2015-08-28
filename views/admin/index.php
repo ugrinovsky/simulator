@@ -32,7 +32,13 @@
 										<?php if (isset($team['operation']) && !empty($team['operation'])): ?>
 											<td class="
 															<?php if ($team['operation']['price'] != 0): ?>
-																<?php print (($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER || $team['operation']['state'] == ORDER_OVERDUE) ? 'danger' : 'success')  ?>
+																<?php if ($team['operation']['type'] != PROM && $team['operation']['type'] != CREDIT && $team['operation']['type'] != ORDER || $team['operation']['state'] == ORDER_OVERDUE): ?>
+																	<?php print 'danger'; ?>
+																<?php elseif($team['operation']['type'] == CREDIT): ?>
+																	<?php print 'warning'; ?> 
+																<?php else: ?>
+																	<?php print 'success'; ?>	
+																<?php endif ?>
 															<?php endif ?>
 														">
 												<?php
@@ -86,6 +92,9 @@
 													}
 													if ($team['operation']['type'] == SALARY) {
 														print 'Зарплата';
+													}
+													if ($team['operation']['type'] == REPAYMENT) {
+														print 'Выплата';
 													}
 												?>
 											<?php endif ?>

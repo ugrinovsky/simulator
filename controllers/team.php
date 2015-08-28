@@ -71,14 +71,77 @@ Class Controller_Team Extends Controller_Base
 		$price = $_POST['price'];
 		$team_id = $_POST['team_id'];
 
-		$credit_model = new Model_Credits();
-		$credit_model->price = $price;
-		$credit_model->team_id = $team_id;
-		$credit_model->period_id = $current_period + 1;
-		$credit_model->state = PERIOD_ENABLE;
-		$credit_model->save();
+		// $credit_model = new Model_Credits();
+		// $credit_model->price = $price;
+		// $credit_model->team_id = $team_id;
+		// $credit_model->period_id = $current_period + 1;
+		// $credit_model->state = PERIOD_ENABLE;
+		// $credit_model->save();
+
+		$select = array('where' => 'id = '.$team_id);
+		$team_model = new Model_Teams($select);
+		$team_model->fetchOne();
+		$team_model->score += $price;
+		$team_model->credit += $price + ($price * 0.1);
+		$team_model->update();
+
+		$operation_model = new Model_Operations();
+		$operation_model->team_id = $team_id;
+		$operation_model->residue = $team_model->score;
+		$operation_model->price = $price;
+		$operation_model->period_id = current_period();
+		$operation_model->name = 'Кредит одобрен';
+		$operation_model->type = CREDIT;
+		$operation_model->save();
 
 		$this->redirectToAction('index');
+	}
+
+	function credit_accept()
+	{
+		$team_id = $_POST['team_id'];
+		$credit_price = $_POST['credit_price'];
+
+		$select = array('where' => 'id = '.$team_id);
+		$team_model = new Model_Teams($select);
+		$team_model->fetchOne();
+
+		if ($team_model->score > $credit_price)
+		{
+			$minus = 0;
+			$data = '';
+			if ($credit_price < $team_model->credit)
+			{
+				$team_model->credit -= $credit_price;
+				$team_model->score -= $credit_price;
+				$team_model->update();
+				$minus = $credit_price;
+				$data = $minus.' р. долга по кредиту погашено.';
+			}
+			else
+			{
+				$team_model->score -= $team_model->credit;
+				$minus = $team_model->credit;
+				$team_model->credit = 'NULL';
+				$team_model->update();
+				$data = 'Кредит в размере '.$minus.' р. полностью выплачен.';
+			}
+
+			$operation_model = new Model_Operations();
+			$operation_model->team_id = $team_id;
+			$operation_model->residue = $team_model->score;
+			$operation_model->price = $minus;
+			$operation_model->period_id = current_period();
+			$operation_model->name = 'Выплата кредита';
+			$operation_model->type = REPAYMENT;
+			$operation_model->save();
+		}
+
+		if (strlen($data) > 0) {
+			$this->redirectToAction('index?data='.$data);
+		}
+		else
+			$this->redirectToAction('index');
 	}
 
 	function credits()

@@ -104,7 +104,8 @@ Class Controller_Admin Extends Controller_Base
 		$team_id = $team->getLastRow()['id'];
 
 		$director = new Model_Users();
-		$director->login = 'fin'.sms_translit($name);
+		// $director->login = 'fin'.sms_translit($name);
+		$director->login = 'team'.$team_id;
 		$director->pass = substr(md5(uniqid(rand(), true)), 0, 6);
 		$director->team_id = $team_id;
 		$director->save();

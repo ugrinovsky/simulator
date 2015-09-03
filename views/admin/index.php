@@ -16,7 +16,6 @@
 								<th>Описание</th>
 								<th>Тип</th>
 								<th>Добавить расход</th>
-								<th>Кредиты</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -105,9 +104,6 @@
 												Добавить расход
 											</button>
 										</td>
-										<td>
-											<?php print $team['credit_count'] ?>
-										</td>
 									</tr>
 								<?php endforeach ?>
 							<?php endif ?>
@@ -118,49 +114,20 @@
 		</div>
 		<div class="col-md-4">
 			<div class="panel panel-default">
-				<div class="panel-heading">
-					Запрашиваемые кредиты
-				</div>
+				<div class="panel-heading">Игра</div>
 				<div class="panel-body">
-					<?php if (isset($data['credits']) && !empty($data['credits'])): ?>
-						<div>
-							Всего запрашиваемых кредитов: <?php print count($data['credits']) ?>
-						</div>
-						<div>
-							<?php
-								$now_credits = array_filter($data['credits'], function($a)
-								{
-									return $a['period_id'] == current_period();
-								});
-							?>
-							Кредитов на текущий период: <?php print count($now_credits) ?>
-						</div>
-						<div>
-							<?php 
-								$next_credits = array_filter($data['credits'], function($a)
-								{
-									return $a['period_id'] == current_period()+1;
-								});
-							?>
-							Кредитов на следующий период: <?php print count($next_credits) ?>
-						</div>
-					<?php else: ?>
-						Нет запрашиваемых кредитов
-					<?php endif ?>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-6">
-					<a href="/admin/clear_periods" class="btn btn-danger btn-block">
-						<span class="glyphicon glyphicon-refresh"></span>
-						Рестарт
-					</a>
-				</div>
-				<div class="col-xs-6">
-					<a href="/admin/clear" class="clear-periods btn btn-danger btn-block">
-						<span class="glyphicon glyphicon-trash"></span>
-						Удалить все
-					</a>
+					<div class="col-xs-6">
+						<a href="/admin/clear_periods" class="btn btn-danger btn-block">
+							<span class="glyphicon glyphicon-refresh"></span>
+							Рестарт
+						</a>
+					</div>
+					<div class="col-xs-6">
+						<a href="/admin/clear" class="clear-periods btn btn-danger btn-block">
+							<span class="glyphicon glyphicon-trash"></span>
+							Удалить все
+						</a>
+					</div>
 				</div>
 			</div>
 			<hr>

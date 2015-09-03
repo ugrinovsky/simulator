@@ -107,24 +107,27 @@ function end_period()
 		$team_model = new Model_Teams();
 		$teams = $team_model->getAllRows();
 
-		foreach ($teams as $key => $team)
+		if (!empty($teams))
 		{
-			$salary = get_salary($team['id']);
+			foreach ($teams as $key => $team)
+			{
+				$salary = get_salary($team['id']);
 
-			$select = array('where' => 'id = '.$team['id']);
-			$team_model = new Model_Teams($select);
-			$team_model->fetchOne();
-			$team_model->score -= $salary['price'];
-			$team_model->update();
+				$select = array('where' => 'id = '.$team['id']);
+				$team_model = new Model_Teams($select);
+				$team_model->fetchOne();
+				$team_model->score -= $salary['price'];
+				$team_model->update();
 
-			$operation_model = new Model_Operations();
-			$operation_model->team_id = $team['id'];
-			$operation_model->element_id = 0;
-			$operation_model->price = $salary['price'];
-			$operation_model->residue = $team_model->score;
-			$operation_model->type = SALARY;
-			$operation_model->name = $salary['name'];
-			$operation_model->save();
+				$operation_model = new Model_Operations();
+				$operation_model->team_id = $team['id'];
+				$operation_model->element_id = 0;
+				$operation_model->price = $salary['price'];
+				$operation_model->residue = $team_model->score;
+				$operation_model->type = SALARY;
+				$operation_model->name = $salary['name'];
+				$operation_model->save();
+			}
 		}
 	}
 }

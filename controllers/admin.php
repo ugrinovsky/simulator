@@ -34,41 +34,6 @@ Class Controller_Admin Extends Controller_Base
 		$model = new Model_Elements($select);
 		$data['fines'] = $model->getAllRows();
 
-		$periods = array(current_period());
-		if (!is_null(current_period()))
-		{
-			if (current_period() != 4)
-				$periods[1] = current_period()+1;
-			else
-				$periods[1] = current_period();
-			$select = array('where' => "state = '".CREDIT_ENABLE."' and period_id in (".$periods[0].",".$periods[1].")");
-			$credit_model = new Model_Credits($select);
-			$credits = $credit_model->getAllRows();
-			$data['credits'] = $credits;
-			if (!empty($data['teams']))
-			{
-				foreach ($data['teams'] as $key => $team)
-				{
-					$select = array('where' => 'team_id = '.$team['id']." and state = ".CREDIT_ENABLE." and ( period_id = ".current_period()." or period_id = ".(current_period()+1)." ) ");
-					$credit_model = new Model_Credits($select);
-					$credits = $credit_model->getAllRows();
-					$data['teams'][$key]['credit_count'] = 0;
-					if (isset($credits) && !empty($credits))
-						$data['teams'][$key]['credit_count'] = count($credits);
-				}
-			}
-		}
-		else
-		{
-			if (!empty($data['teams']))
-			{
-				foreach ($data['teams'] as $key => $team)
-				{
-					$data['teams'][$key]['credit_count'] = null;		
-				}
-			}
-		}
-
 		$select = array('where' => "id = 'fine_time'");
 		$game_model = new Model_Game($select);
 		$game = $game_model->getOneRow();
@@ -162,21 +127,6 @@ Class Controller_Admin Extends Controller_Base
 				$user_model = new Model_Users($select);
 				$user = $user_model->getOneRow();
 				$team['user'] = $user;
-
-				$periods = array(current_period());
-				if (!is_null(current_period()))
-				{
-					if (current_period() != 4)
-						$periods[1] = current_period()+1;
-					else
-						$periods[1] = current_period();
-					$select = array(
-						'where' => "state = '".CREDIT_ENABLE."' and team_id = '".$team_id."' and period_id in (".$periods[0].",".$periods[1].")"
-					);
-					$credit_model = new Model_Credits($select);
-					$credits = $credit_model->getAllRows();
-					$team['credits'] = $credits;
-				}
 
 				$this->template->vars('team', $team);
 				$this->template->view('team');
@@ -478,8 +428,6 @@ Class Controller_Admin Extends Controller_Base
 		$model->deleteBySelect();
 		$model = new Model_Teams();
 		$model->deleteBySelect();
-		$model = new Model_Credits();
-		$model->deleteBySelect();
 
 		$model = new Model_Staffs();
 		$model->deleteBySelect();
@@ -512,32 +460,6 @@ Class Controller_Admin Extends Controller_Base
 	function start()
 	{
 		$period_id = (isset($_GET['id'])) ? (int)$_GET['id'] : false;
-
-		// $select = array('where' => 'period_id = '.$period_id.' and state = '.CREDIT_ACCEPT);
-		// $credit_model = new Model_Credits($select);
-		// $credits = $credit_model->getAllRows();
-
-		// if (!empty($credits))
-		// {
-		// 	foreach ($credits as $key => $credit)
-		// 	{
-		// 		$select = array('where' => 'id = '.$credit['team_id']);
-		// 		$team_model = new Model_Teams($select);
-		// 		$team_model->fetchOne();
-		// 		$team_model->score += $credit['price'];
-
-		// 		$operation_model = new Model_Operations();
-		// 		$operation_model->team_id = $credit['team_id'];
-		// 		$operation_model->element_id = -$credit['id'];
-		// 		$operation_model->price = $credit['price'];
-		// 		$operation_model->residue += $team_model->score;
-		// 		$operation_model->name = 'Кредит';
-		// 		$operation_model->type = CREDIT;
-
-		// 		$team_model->update();
-		// 		$operation_model->save();
-		// 	}
-		// }
 
 		$team_model = new Model_Teams();
 		$teams = $team_model->getAllRows();
@@ -637,18 +559,7 @@ Class Controller_Admin Extends Controller_Base
 
 		$team_model = new Model_Teams();
 		$teams = $team_model->getAllRows();
-		foreach ($teams as $key => $team)
-		{
-			$select = array('where' => 'id = '.$team['id']);
-			$team_model = new Model_Teams($select);
-			$team_model->fetchOne();
-			$team_model->score = DEFAULT_SCORE;
-			$team_model->credit = 'NULL';
-			$team_model->update();
-		}
 
-		$credit_model = new Model_Credits();
-		$credit_model->deleteBySelect();
 		$model = new Model_Operations();
 		$model->deleteBySelect();
 

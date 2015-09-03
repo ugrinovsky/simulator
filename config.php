@@ -4,10 +4,10 @@
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'stupenkom_zavod');
+define('DB_NAME', 'business');
 
-date_default_timezone_set('Asia/Bishkek');
-// date_default_timezone_set('Asia/Yekaterinburg');
+// date_default_timezone_set('Asia/Bishkek');
+date_default_timezone_set('Asia/Yekaterinburg');
 
 define ('DS', DIRECTORY_SEPARATOR);
 
@@ -51,10 +51,6 @@ define('ORDER_OVERDUE', 3);
 
 define('PART_NOBUY', 0);
 define('PART_BUY', 1);
-
-define('CREDIT_ENABLE', 1);
-define('CREDIT_ACCEPT', 2);
-define('CREDIT_DISABLE', -1);
 
 define('ADMIN_LOGIN', 'admin');
 define('ADMIN_PASS', 'admin');

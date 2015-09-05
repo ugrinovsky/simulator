@@ -6,46 +6,63 @@ Class Controller_Customer Extends Controller_Base
 	
 	function index() 
 	{
-		$team_model = new Model_Teams();
-		$data['teams'] = $team_model->getAllRows();
+		$customer_login = $_SESSION['login'];
+		$select = array('where' => "login = '".$customer_login."'");
+		$customer_model = new Model_Customers($select);
+		$customer = $customer_model->getOneRow();
 
-		foreach ($data['teams'] as $key => $team)
+		if(isset($customer) && !empty($customer))
 		{
-			$select = array('where' => 'team_id = '.$team['id']);
-			$operation_model = new Model_Operations($select);
-			$operations = $operation_model->getAllRows();
-			if (!empty($operations))
-			{
-				foreach ($operations as $key2 => $operation)
-				{
-					$select = array('where' => 'id = '.$operation['element_id'].' and type = '.ORDER);
-					$element_model = new Model_Elements($select);
-					$element = $element_model->getOneRow();
+			$team_model = new Model_Teams();
+			$data['teams'] = $team_model->getAllRows();
 
-					if (isset($element) && !empty($element))
+			if (!empty($data['teams'])) 
+			{
+				foreach ($data['teams'] as $key => $team)
+				{
+					$select = array('where' => 'team_id = '.$team['id'].' and customer_id = '.$customer['id']);
+					$operation_model = new Model_Operations($select);
+					$operations = $operation_model->getAllRows();
+					if (!empty($operations))
 					{
-						$data['teams'][$key]['order'] = $element;
-						break;
+						foreach ($operations as $key2 => $operation)
+						{
+							$select = array('where' => 'id = '.$operation['element_id'].' and type = '.ORDER);
+							$element_model = new Model_Elements($select);
+							$element = $element_model->getOneRow();
+
+							if (isset($element) && !empty($element))
+							{
+								$data['teams'][$key]['order'] = $element;
+								break;
+							}
+						}
 					}
 				}
 			}
+
+			$select = array('where' => 'type = '.PROM);
+			$model = new Model_Elements($select);
+			$data['proms'] = $model->getAllRows();
+
+			$select = array('where' => 'type = '.CUST_FINE);
+			$model = new Model_Elements($select);
+			$data['cust_fines'] = $model->getAllRows();
+
+			$this->template->vars('data', $data);
+			$this->template->view('index');
 		}
 
-		$select = array('where' => 'type = '.PROM);
-		$model = new Model_Elements($select);
-		$data['proms'] = $model->getAllRows();
-
-		$select = array('where' => 'type = '.CUST_FINE);
-		$model = new Model_Elements($select);
-		$data['cust_fines'] = $model->getAllRows();
-
-		$this->template->vars('data', $data);
-		$this->template->view('index');
 	}
 
 	function orders()
 	{
-		$select = array('where' => 'type = '.ORDER);
+		$login = $_SESSION['login'];
+		$select = array('where' => "login = '".$login."'");
+		$customer_model = new Model_Customers($select);
+		$customer = $customer_model->getOneRow();
+
+		$select = array('where' => 'type = '.ORDER.' and customer_id = '.$customer['id']);
 		$element_model = new Model_Elements($select);
 		$data['orders'] = $element_model->getAllRows();
 
@@ -87,6 +104,11 @@ Class Controller_Customer Extends Controller_Base
 	function team($args)
 	{
 		$team_id = $args[0];
+
+		$login = $_SESSION['login'];
+		$select = array('where' => "login = '".$login."'");
+		$customer_model = new Model_Customers($select);
+		$customer = $customer_model->getOneRow();
 		
 		$team_model = new Model_Teams();
 		$team = $team_model->getRowById($team_id);
@@ -102,7 +124,7 @@ Class Controller_Customer Extends Controller_Base
 			{
 				foreach ($operations as $key => $operation)
 				{
-					$select = array('where' => 'id = '.$operation['element_id'].' and type = '.ORDER);
+					$select = array('where' => 'id = '.$operation['element_id'].' and type = '.ORDER.' and customer_id = '.$customer['id']);
 					$element_model = new Model_Elements($select);
 					$order = $element_model->getOneRow();
 					if (isset($order) && !empty($order))
@@ -132,6 +154,11 @@ Class Controller_Customer Extends Controller_Base
 		$order_id = $_POST['order_id'];
 		$team_id = $_POST['team_id'];
 
+		$login = $_SESSION['login'];
+		$select = array('where' => "login = '".$login."'");
+		$customer_model = new Model_Customers($select);
+		$customer = $customer_model->getOneRow();
+
 		$select = array('where' => 'id = '.$order_id.' and type = '.ORDER);
 		$element_model = new Model_Elements($select);
 		$order = $element_model->getOneRow();
@@ -154,6 +181,7 @@ Class Controller_Customer Extends Controller_Base
 
 				$operation_model->element_id = $order->id;
 				$operation_model->team_id = $team['id'];
+				$operation_model->customer_id = $customer['id'];
 				$operation_model->price = 0;
 				$operation_model->residue = $team['score'];
 				$operation_model->name = $order->name.', '.$order->price.' р.';

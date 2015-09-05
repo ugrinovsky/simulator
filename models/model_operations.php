@@ -5,6 +5,8 @@ Class Model_Operations Extends Model_Base {
 	public $id;
 	public $date_time;
 	public $team_id;
+	public $customer_id;
+	public $provider_id;
 	public $element_id;
 	public $residue;
 	public $price;
@@ -18,6 +20,8 @@ Class Model_Operations Extends Model_Base {
 			'id' => 'Id',
 			'date_create' => 'Дата создания',
 			'team_id' => 'Id команды',
+			'customer_id' => 'Id заказчика',
+			'provider_id' => 'Id поставщика',
 			'element_id' => 'Id элемента',
 			'residue' => 'Остаток',
 			'price' => 'Цена',

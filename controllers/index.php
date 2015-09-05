@@ -28,28 +28,33 @@ Class Controller_Index Extends Controller_Base
 				$this->redirectToAction('index', 'admin');
 			}
 		}
-		if ($login == CUSTOMER_LOGIN)
+
+		$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
+		$customer_model = new Model_Customers($select);
+		$customer = $customer_model->getOneRow();
+		if (isset($customer) && !empty($customer))
 		{
-			if($pass == CUSTOMER_PASS)
-			{
-				session_start();
-				$_SESSION['login'] = $login;
-				$_SESSION['type'] = CUSTOMER_LOGIN;
-				$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-				$this->redirectToAction('index', 'customer');
-			}
+			session_start();
+			$_SESSION['login'] = $login;
+			$_SESSION['type'] = 'customer';
+			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+
+			$this->redirectToAction('index', 'customer');
 		}
-		if ($login == PROVIDER_LOGIN)
+
+		$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
+		$provider_model = new Model_Providers($select);
+		$provider = $provider_model->getOneRow();
+		if (isset($provider) && !empty($provider))
 		{
-			if($pass == PROVIDER_PASS)
-			{
-				session_start();
-				$_SESSION['login'] = $login;
-				$_SESSION['type'] = PROVIDER_LOGIN;
-				$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-				$this->redirectToAction('index', 'provider');
-			}
+			session_start();
+			$_SESSION['login'] = $login;
+			$_SESSION['type'] = 'provider';
+			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+
+			$this->redirectToAction('index', 'provider');
 		}
+
 		$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
 		$user_model = new Model_Users($select);
 		$user = $user_model->getOneRow();

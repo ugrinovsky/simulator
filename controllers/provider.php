@@ -6,36 +6,48 @@ Class Controller_Provider Extends Controller_Base
 	
 	function index() 
 	{
-		$team_model = new Model_Teams();
-		$teams = $team_model->getAllRows();
+		$provider_login = $_SESSION['login'];
+		$select = array('where' => "login = '".$provider_login."'");
+		$provider_model = new Model_Providers($select);
+		$provider = $provider_model->getOneRow();
 
-		foreach ($teams as $key => $team)
+		if(isset($provider) && !empty($provider))
 		{
-			$select = array('where' => 'team_id = '.$team['id'].' and type = '.PART.' and state = '.PART_BUY);
-			$operation_model = new Model_Operations($select);
-			$operation = $operation_model->getOneRow();
+			$team_model = new Model_Teams();
+			$teams = $team_model->getAllRows();
 
-			$teams[$key]['operation'] = $operation;
+			foreach ($teams as $key => $team)
+			{
+				$select = array('where' => 'team_id = '.$team['id'].' and type = '.PART.' and state = '.PART_BUY.' and provider_id = '.$provider['id']);
+				$operation_model = new Model_Operations($select);
+				$operation = $operation_model->getOneRow();
 
+				$teams[$key]['operation'] = $operation;
+			}
+
+			$select = array('where' => 'type = '.PART);
+			$element_model = new Model_Elements($select);
+			$list_parts = $element_model->getAllRows();
+
+			$this->template->vars('teams', $teams);
+			$this->template->vars('list_parts', $list_parts);
+			$this->template->view('index');
 		}
-
-		$select = array('where' => 'type = '.PART);
-		$element_model = new Model_Elements($select);
-		$list_parts = $element_model->getAllRows();
-
-		$this->template->vars('teams', $teams);
-		$this->template->vars('list_parts', $list_parts);
-		$this->template->view('index');
 	}
 
 	function team($args)
 	{
 		$team_id = $args[0];
 
+		$provider_login = $_SESSION['login'];
+		$select = array('where' => "login = '".$provider_login."'");
+		$provider_model = new Model_Providers($select);
+		$provider = $provider_model->getOneRow();
+
 		$team_model = new Model_Teams();
 		$team = $team_model->getRowById($team_id);
 
-		$select = array('where' => 'team_id = '.$team_id.' and type = '.PART);
+		$select = array('where' => 'team_id = '.$team_id.' and type = '.PART.' and provider_id = '.$provider['id']);
 		$operation_model = new Model_Operations($select);
 		$team['parts'] = $operation_model->getAllRows();
 
@@ -65,9 +77,6 @@ Class Controller_Provider Extends Controller_Base
 				$select = array('where' => 'id = '.$part_id);
 				$element_model = new Model_Elements($select);
 				$element_model->fetchOne();
-				// $element_model->fetchOne();
-				// $element_model->state = PART_BUY;
-				// $element_model->update();
 
 				$select = array('where' => 'id = '.$team_id);
 				$team_model = new Model_Teams($select);
@@ -91,23 +100,32 @@ Class Controller_Provider Extends Controller_Base
 	}
 
 	function parts()
+
 	{
-		$select = array('where' => 'type = '.PART);
+		$provider_login = $_SESSION['login'];
+		$select = array('where' => "login = '".$provider_login."'");
+		$provider_model = new Model_Providers($select);
+		$provider = $provider_model->getOneRow();
+	
+		$select = array('where' => 'type = '.PART.' and provider_id = '.$provider['id']);
 		$element_model = new Model_Elements($select);
 		$parts = $element_model->getAllRows();
 
-		foreach ($parts as $key => $part)
+		if (!empty($parts))
 		{
-			$select = array('where' => 'element_id = '.$part['id'].' and state = '.PART_BUY);
-			$operation_model = new Model_Operations($select);
-			$operation = $operation_model->getOneRow();
-
-			if (isset($operation) && !empty($operation))
+			foreach ($parts as $key => $part)
 			{
-				$team_model = new Model_Teams();
-				$team = $team_model->getRowById($operation['team_id']);
+				$select = array('where' => 'element_id = '.$part['id'].' and state = '.PART_BUY.' and provider_id = '.$provider['id']);
+				$operation_model = new Model_Operations($select);
+				$operation = $operation_model->getOneRow();
 
-				$parts[$key]['team'] = $team['name'];
+				if (isset($operation) && !empty($operation))
+				{
+					$team_model = new Model_Teams();
+					$team = $team_model->getRowById($operation['team_id']);
+
+					$parts[$key]['team'] = $team['name'];
+				}
 			}
 		}
 

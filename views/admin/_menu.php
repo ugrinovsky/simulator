@@ -109,28 +109,7 @@
 		<?php endif ?>
 	<?php endif ?>
 </div>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-     <form action="/admin/add_team" method="post">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">Добавление команды</h4>
-      </div>
-      <div class="modal-body">
-          <div class="form-group">
-            <label for="recipient-name" class="control-label">Название:</label>
-            <input type="text" name="team_name" class="form-control" id="recipient-name">
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-        <button type="submit" class="btn btn-primary">Добавить</button>
-      </div>
-     </form>
-    </div>
-  </div>
-</div>
+
 <div class="container"><div class="row">
 		<nav class="navbar navbar-default">
 		  <div class="container-fluid">
@@ -203,18 +182,66 @@
 					</li>
 		    	</ul>
 		      <ul class="nav navbar-nav visible-lg">
-			    	<li>
-			    		<a href="#" data-toggle="modal" data-target="#myModal">
-			    			<span class="glyphicon glyphicon-plus"></span>
-			    			Добавить команду
-			    		</a>
-			    	</li>
-	            <li>
-	            	<a href="/admin">
-	            		<span class="glyphicon glyphicon-list-alt"></span>
-	            		Список команд
-	            	</a>
-	            </li>
+		      	<li class="dropdown">
+		      		<a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+		      			<span class="glyphicon glyphicon-list-alt"></span>
+		      			Команды <span class="caret"></span>
+		      		</a>
+		      		<ul class="dropdown-menu">
+		      			<li>
+				    		<a href="#" data-toggle="modal" data-target="#addTeam">
+				    			<span class="glyphicon glyphicon-plus"></span>
+				    			Добавить команду
+				    		</a>
+				    	</li>
+			            <li>
+			            	<a href="/admin">
+			            		<span class="glyphicon glyphicon-list-alt"></span>
+			            		Список команд
+			            	</a>
+			            </li>
+		      		</ul>
+		      	</li>
+		      	<li class="dropdown">
+		      		<a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+		      			<span class="glyphicon glyphicon-list-alt"></span>
+		      			Заказчики <span class="caret"></span>
+		      		</a>
+		      		<ul class="dropdown-menu">
+		      			<li>
+				    		<a href="/admin/add_customer">
+				    			<span class="glyphicon glyphicon-plus"></span>
+				    			Добавить заказчика
+				    		</a>
+				    	</li>
+			            <li>
+			            	<a href="/admin/customers">
+			            		<span class="glyphicon glyphicon-list-alt"></span>
+			            		Список заказчиков
+			            	</a>
+			            </li>
+		      		</ul>
+		      	</li>
+		      	<li class="dropdown">
+		      		<a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+		      			<span class="glyphicon glyphicon-list-alt"></span>
+		      			Поставщики <span class="caret"></span>
+		      		</a>
+		      		<ul class="dropdown-menu">
+		      			<li>
+				    		<a href="/admin/add_provider">
+				    			<span class="glyphicon glyphicon-plus"></span>
+				    			Добавить поставщика
+				    		</a>
+				    	</li>
+			            <li>
+			            	<a href="/admin/providers">
+			            		<span class="glyphicon glyphicon-list-alt"></span>
+			            		Список поставщиков
+			            	</a>
+			            </li>
+		      		</ul>
+		      	</li>
 	            <li>
 	            	<a href="/admin/stat">
 	            		<span class="glyphicon glyphicon-stats"></span>
@@ -263,4 +290,26 @@
 		  </div>
 		</nav>		
 	</div>
-	
+
+<div class="modal fade" id="addTeam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+     <form action="/admin/add_team" method="post">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Добавление команды</h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="recipient-name" class="control-label">Название:</label>
+            <input type="text" name="team_name" class="form-control" id="recipient-name">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+      </div>
+     </form>
+    </div>
+  </div>
+</div>

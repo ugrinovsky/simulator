@@ -108,7 +108,13 @@
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 		          	<span class="glyphicon glyphicon-user"></span>
-		          	Поставщик <span class="caret"></span>
+      	          	<?php
+      	          		$login = $_SESSION['login'];
+      					$select = array('where' => "login = '".$login."'");
+      					$provider_model = new Model_Providers($select);
+      					$provider = $provider_model->getOneRow();
+      	          	?>
+		          	Поставщик №<?php print $provider['id'] ?><span class="caret"></span>
 		          </a>
 		          <ul class="dropdown-menu">
 		            <li><a href="/logout/">Выйти</a></li>

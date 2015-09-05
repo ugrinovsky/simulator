@@ -194,7 +194,15 @@ Class Controller_Admin Extends Controller_Base
 			}
 		}
 
+		$customer_model = new Model_Customers();
+		$customers = $customer_model->getAllRows();
+
+		$provider_model = new Model_Providers();
+		$providers = $provider_model->getAllRows();
+
 		$this->template->vars('data', $data);
+		$this->template->vars('customers', $customers);
+		$this->template->vars('providers', $providers);
 		$this->template->view('elements2');
 	}
 
@@ -334,9 +342,11 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$name = $_POST['order_name'];
 		$price = $_POST['order_price'];
+		$customer_id = $_POST['order_customer_id'];
 
 		$element_model = new Model_Elements();
 		$element_model->name = $name;
+		$element_model->customer_id = $customer_id;
 		$element_model->price = $price;
 		$element_model->type = ORDER;
 		$element_model->state = ORDER_NOCONTROL;
@@ -350,12 +360,14 @@ Class Controller_Admin Extends Controller_Base
 		$id = $_POST['order_id'];
 		$name = $_POST['order_name'];
 		$price = $_POST['order_price'];
+		$customer_id = $_POST['order_customer_id'];
 
 		$select = array('where' => 'id = '.$id);
 
 		$element_model = new Model_Elements($select);
 		$element_model->fetchOne();
 		$element_model->name = $name;
+		$element_model->customer_id = $customer_id;
 		$element_model->price = $price;
 		$element_model->update();
 
@@ -377,10 +389,12 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$name = $_POST['part_name'];
 		$price = $_POST['part_price'];
+		$provider_id = $_POST['part_provider_id'];
 
 		$element_model = new Model_Elements();
 		$element_model->name = $name;
 		$element_model->price = $price;
+		$element_model->provider_id = $provider_id;
 		$element_model->type = PART;
 		$element_model->state = PART_NOBUY;
 		$element_model->save();
@@ -393,12 +407,14 @@ Class Controller_Admin Extends Controller_Base
 		$id = $_POST['part_id'];
 		$name = $_POST['part_name'];
 		$price = $_POST['part_price'];
+		$provider_id = $_POST['part_provider_id'];
 
 		$select = array('where' => 'id = '.$id);
 
 		$element_model = new Model_Elements($select);
 		$element_model->fetchOne();
 		$element_model->name = $name;
+		$element_model->provider_id = $provider_id;
 		$element_model->price = $price;
 		$element_model->update();
 
@@ -427,6 +443,10 @@ Class Controller_Admin Extends Controller_Base
 		$model = new Model_Elements();
 		$model->deleteBySelect();
 		$model = new Model_Teams();
+		$model->deleteBySelect();
+		$model = new Model_Customers();
+		$model->deleteBySelect();
+		$model = new Model_Providers();
 		$model->deleteBySelect();
 
 		$model = new Model_Staffs();
@@ -746,5 +766,81 @@ Class Controller_Admin Extends Controller_Base
 		$staff_model->save();
 
 		$this->redirectToLink(REFERER);
+	}
+
+	function add_customer()
+	{
+		$customer_model = new Model_Customers();
+		$customer_model->save();
+
+		$customer_model = new Model_Customers();
+		$customer = $customer_model->getLastRow();
+
+		$select = array('where' => 'id = '.$customer['id']);
+		$customer_model = new Model_Customers($select);
+		$customer_model->fetchOne();
+		$customer_model->login = 'customer'.$customer_model->id;
+		$customer_model->pass = substr(md5(uniqid(rand(), true)), 0, 6);
+		$customer_model->update();
+
+		$this->redirectToAction('customers');
+	}
+
+	function add_provider()
+	{
+		$provider_model = new Model_Providers();
+		$provider_model->save();
+
+		$provider_model = new Model_Providers();
+		$provider = $provider_model->getLastRow();
+
+		$select = array('where' => 'id = '.$provider['id']);
+		$provider_model = new Model_Providers($select);
+		$provider_model->fetchOne();
+		$provider_model->login = 'provider'.$provider_model->id;
+		$provider_model->pass = substr(md5(uniqid(rand(), true)), 0, 6);
+		$provider_model->update();
+
+		$this->redirectToAction('providers');
+	}
+
+	function customers()
+	{
+		$customer_model = new Model_Customers();
+		$customers = $customer_model->getAllRows();
+
+		$this->template->vars('customers', $customers);
+		$this->template->view('customers');
+	}
+
+	function providers()
+	{
+		$provider_model = new Model_Providers();
+		$providers = $provider_model->getAllRows();
+
+		$this->template->vars('providers', $providers);
+		$this->template->view('providers');
+	}
+
+	function delete_customer()
+	{
+		$customer_id = $_POST['customer_id'];
+
+		$select = array('where' => 'id = '.$customer_id);
+		$customer_model = new Model_Customers();
+		$customer_model->deleteBySelect($select);
+
+		$this->redirectToAction('customers');
+	}
+
+	function delete_provider()
+	{
+		$provider_id = $_POST['provider_id'];
+
+		$select = array('where' => 'id = '.$provider_id);
+		$provider_model = new Model_Providers();
+		$provider_model->deleteBySelect($select);
+
+		$this->redirectToAction('providers');
 	}
 }

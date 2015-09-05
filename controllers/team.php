@@ -71,13 +71,6 @@ Class Controller_Team Extends Controller_Base
 		$price = $_POST['price'];
 		$team_id = $_POST['team_id'];
 
-		// $credit_model = new Model_Credits();
-		// $credit_model->price = $price;
-		// $credit_model->team_id = $team_id;
-		// $credit_model->period_id = $current_period + 1;
-		// $credit_model->state = PERIOD_ENABLE;
-		// $credit_model->save();
-
 		$select = array('where' => 'id = '.$team_id);
 		$team_model = new Model_Teams($select);
 		$team_model->fetchOne();

@@ -7,6 +7,8 @@ Class Model_Elements Extends Model_Base {
 	public $price;
 	public $type;
 	public $state;
+	public $customer_id;
+	public $provider_id;
 	
 	public function fieldsTable(){
 		return array(		
@@ -14,7 +16,9 @@ Class Model_Elements Extends Model_Base {
 			'name' => 'Название',
 			'price' => 'Цена',
 			'type' => 'Тип',
-			'state' => 'Состояние'
+			'state' => 'Состояние',
+			'customer_id' => 'Id заказчика',
+			'provider_id' => 'Id поставщика'
 		);
 	}
 	

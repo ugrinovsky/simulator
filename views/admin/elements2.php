@@ -17,6 +17,7 @@
                        <th>Цена, р.</th>
                        <th width="120">Штрих-код</th>
                        <th>Исполнитель</th>
+                       <th>Заказчик</th>
                        <th>Статус</th>
                        <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
                        <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
@@ -37,6 +38,9 @@
                              </td>
                              <td>
                                 <?php print $order['team'] ?>
+                             </td>
+                             <td>
+                                Заказчик №<?php print $order['customer_id'] ?>
                              </td>
                              <td>
                                 <?php
@@ -75,7 +79,7 @@
                        <?php endforeach ?>
                     <?php else: ?>
                     <tr>
-                       <td colspan="7">
+                       <td colspan="9">
                           пусто
                        </td>
                     </tr>
@@ -101,6 +105,7 @@
                        <th>Название</th>
                        <th>Цена, р.</th>
                        <th width="120">Штрих-код</th>
+                       <th width="200">Поставщик</th>
                 <!--        <th>Кто купил</th>
                        <th>Статус</th> -->
                        <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
@@ -119,6 +124,9 @@
                                   $code = sprintf('%06d', $part['id']);
                                 ?>
                                <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $code ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
+                             </td>
+                             <td>
+                               Поставщик №<?php print $part['provider_id'] ?>
                              </td>
                              <!-- <td>
                                 <?php print $part['team'] ?>
@@ -148,7 +156,7 @@
                        <?php endforeach ?>
                     <?php else: ?>
                     <tr>
-                       <td colspan="5">
+                       <td colspan="7">
                           пусто
                        </td>
                     </tr>
@@ -179,6 +187,15 @@
             <label for="recipient-name" class="control-label">Цена:</label>
             <input type="text" name="order_price" class="form-control">
          </div>
+         <div class="form-group">
+            <label for="recipient-name" class="control-label">Заказчик:</label>
+            <select class="form-control" name="order_customer_id" id="">
+              <option value=""></option>
+              <?php foreach ($customers as $key => $customer): ?>
+                <option value="<?php print $customer['id'] ?>">Заказчик №<?php print $customer['id'] ?></option>
+              <?php endforeach ?>
+            </select>
+         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
@@ -207,6 +224,15 @@
          <label for="recipient-name" class="control-label">Цена:</label>
          <input type="text" name="order_price" class="form-control">
       </div>
+      <div class="form-group">
+         <label for="recipient-name" class="control-label">Заказчик:</label>
+         <select class="form-control" name="order_customer_id" id="">
+           <option value=""></option>
+           <?php foreach ($customers as $key => $customer): ?>
+             <option value="<?php print $customer['id'] ?>">Заказчик №<?php print $customer['id'] ?></option>
+           <?php endforeach ?>
+         </select>
+      </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
@@ -233,6 +259,15 @@
          <div class="form-group">
             <label for="recipient-name" class="control-label">Цена:</label>
             <input type="text" name="part_price" class="form-control">
+         </div>
+         <div class="form-group">
+            <label for="recipient-name" class="control-label">Поставщик:</label>
+            <select class="form-control" name="part_provider_id" id="">
+              <option value=""></option>
+              <?php foreach ($providers as $key => $provider): ?>
+                <option value="<?php print $provider['id'] ?>">Поставщик №<?php print $provider['id'] ?></option>
+              <?php endforeach ?>
+            </select>
          </div>
       </div>
       <div class="modal-footer">
@@ -261,6 +296,15 @@
       <div class="form-group">
          <label for="recipient-name" class="control-label">Цена:</label>
          <input type="text" name="part_price" class="form-control">
+      </div>
+      <div class="form-group">
+         <label for="recipient-name" class="control-label">Поставщик:</label>
+         <select class="form-control" name="part_provider_id" id="">
+           <option value=""></option>
+           <?php foreach ($providers as $key => $provider): ?>
+             <option value="<?php print $provider['id'] ?>">Поставщик №<?php print $provider['id'] ?></option>
+           <?php endforeach ?>
+         </select>
       </div>
       </div>
       <div class="modal-footer">

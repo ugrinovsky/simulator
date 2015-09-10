@@ -58,10 +58,7 @@ Class Controller_Admin Extends Controller_Base
 
 	function add_team()
 	{
-		$name = $_POST['team_name'];
-
 		$team = new Model_Teams();
-		$team->name = $name;
 		$team->score = DEFAULT_SCORE;
 		$team->credit = 0;
 		$team->save();
@@ -70,7 +67,6 @@ Class Controller_Admin Extends Controller_Base
 		$team_id = $team->getLastRow()['id'];
 
 		$director = new Model_Users();
-		// $director->login = 'fin'.sms_translit($name);
 		$director->login = 'team'.$team_id;
 		$director->pass = substr(md5(uniqid(rand(), true)), 0, 6);
 		$director->team_id = $team_id;
@@ -353,11 +349,9 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$name = $_POST['order_name'];
 		$price = $_POST['order_price'];
-		$customer_id = $_POST['order_customer_id'];
 
 		$element_model = new Model_Elements();
 		$element_model->name = $name;
-		$element_model->customer_id = $customer_id;
 		$element_model->price = $price;
 		$element_model->type = ORDER;
 		$element_model->state = ORDER_NOCONTROL;
@@ -371,14 +365,12 @@ Class Controller_Admin Extends Controller_Base
 		$id = $_POST['order_id'];
 		$name = $_POST['order_name'];
 		$price = $_POST['order_price'];
-		$customer_id = $_POST['order_customer_id'];
 
 		$select = array('where' => 'id = '.$id);
 
 		$element_model = new Model_Elements($select);
 		$element_model->fetchOne();
 		$element_model->name = $name;
-		$element_model->customer_id = $customer_id;
 		$element_model->price = $price;
 		$element_model->update();
 
@@ -400,12 +392,10 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$name = $_POST['part_name'];
 		$price = $_POST['part_price'];
-		$provider_id = $_POST['part_provider_id'];
 
 		$element_model = new Model_Elements();
 		$element_model->name = $name;
 		$element_model->price = $price;
-		$element_model->provider_id = $provider_id;
 		$element_model->type = PART;
 		$element_model->state = PART_NOBUY;
 		$element_model->save();
@@ -418,14 +408,12 @@ Class Controller_Admin Extends Controller_Base
 		$id = $_POST['part_id'];
 		$name = $_POST['part_name'];
 		$price = $_POST['part_price'];
-		$provider_id = $_POST['part_provider_id'];
 
 		$select = array('where' => 'id = '.$id);
 
 		$element_model = new Model_Elements($select);
 		$element_model->fetchOne();
 		$element_model->name = $name;
-		$element_model->provider_id = $provider_id;
 		$element_model->price = $price;
 		$element_model->update();
 
@@ -446,22 +434,22 @@ Class Controller_Admin Extends Controller_Base
 	function clear()
 	{
 		$model = new Model_Users();
-		$model->deleteBySelect();
-		$model = new Model_Teams();
-		$model->deleteBySelect();
+		$model->truncateTable();
 		$model = new Model_Operations();
-		$model->deleteBySelect();
+		$model->truncateTable();
 		$model = new Model_Elements();
-		$model->deleteBySelect();
+		$model->truncateTable();
 		$model = new Model_Teams();
-		$model->deleteBySelect();
+		$model->truncateTable();
 		$model = new Model_Customers();
-		$model->deleteBySelect();
+		$model->truncateTable();
 		$model = new Model_Providers();
-		$model->deleteBySelect();
+		$model->truncateTable();
+		$model = new Model_Teams();
+		$model->truncateTable();
 
 		$model = new Model_Staffs();
-		$model->deleteBySelect();
+		$model->truncateTable();
 
 		$this->redirectToAction('index');
 	}
@@ -551,6 +539,35 @@ Class Controller_Admin Extends Controller_Base
 		$period_model->state = PERIOD_COMPLETED;
 
 		$period_model->update();
+
+		if ($period_id == PERIOD4)
+		{
+			$team_model = new Model_Teams();
+			$teams = $team_model->getAllRows();
+			foreach ($teams as $key => $team)
+			{
+				if ($team['credit'] > 0)
+				{
+					$select = array('where' => 'id = '.$team['id']);
+					$t = new Model_Teams($select);
+					$t->fetchOne();
+
+					$operation_model = new Model_Operations();
+					$operation_model->team_id = $team['id'];
+					$operation_model->name = 'Выплата кредита';
+					$operation_model->type = REPAYMENT;
+					$operation_model->price = $t->credit;
+
+					$t->score -= $t->credit;
+
+					$operation_model->residue = $t->score;
+					$operation_model->save();
+
+					$t->credit = 0;
+					$t->update();
+				}
+			}
+		}
 
 		$this->redirectToLink(REFERER);
 	}

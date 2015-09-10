@@ -45,7 +45,7 @@ Class Controller_Index Extends Controller_Base
 			}
 		}
 
-		if (substr_count($login, 'provier') > 0)
+		if (substr_count($login, 'provider') > 0)
 		{
 			$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
 			$provider_model = new Model_Providers($select);

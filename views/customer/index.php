@@ -10,7 +10,7 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>Команда</th>
+								<th>Завод</th>
 								<th>Заказ</th>
 								<th>Статус</th>
 								<?php if (game()): ?>
@@ -24,7 +24,7 @@
 									<tr>
 										<td>
 											<a href="/customer/team/<?php print $team['id'] ?>">
-												<?php print $team['name'] ?>
+												Завод №<?php print $team['id'] ?>
 											</a>
 										</td>
 										<td>
@@ -104,7 +104,7 @@
 	      <div class="modal-body">
 				<div class="form-group">
 					<label for="recipient-name" class="control-label">Идентификатор:</label>
-					<input name="order_id" class="form-control" type="text">
+					<input name="order_name" class="form-control" type="text">
 				</div>
 				<input type="hidden" name="team_id" value="">
 	      </div>
@@ -128,7 +128,7 @@
 	      <div class="modal-body">
 				<div class="form-group">
 					<label for="recipient-name" class="control-label">Идентификатор:</label>
-					<input name="order_id" class="form-control" type="text">
+					<input name="order_name" class="form-control" type="text">
 				</div>      
 			</div>
 	      <div class="modal-footer">

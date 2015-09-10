@@ -72,7 +72,7 @@
    	        <li>
    	        		<a href="/provider/">
    	        			<span class="glyphicon glyphicon-list-alt"></span>
-   		        		Команды
+   		        		Заводы
    	        		</a>
    	        </li>
 		        <li>

@@ -1,6 +1,6 @@
 	<?php include_once('_menu.php') ?>
 		<h3>
-			<?php print $team['name']; ?>
+			Завод №<?php print $team['id']; ?>
 		</h3>
 	<div class="row">
 		<div class="col-md-8">
@@ -17,7 +17,7 @@
 								<th>Транзакция</th>
 								<th>Описание</th>
 								<th>Тип</th>
-								<th>Cчет</th>
+								<th>Остаток на счете</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -73,7 +73,7 @@
 													print 'Поощрение';
 												}
 												if ($operation['type'] == CUST_FINE) {
-													print 'Штраф заказчика';
+													print 'Штраф покупателя';
 												}
 												if ($operation['type'] == CREDIT) {
 													print 'Кредит';
@@ -122,53 +122,6 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							Запрашиваемые кредиты	
-						</div>
-						<div class="panel-body text-center">
-							<?php if (isset($team['credits']) && !empty($team['credits'])): ?>
-								Кредит на текущий период: <?php print $team['credits'][0]['price'] ?> руб.
-								<hr>
-								<div class="col-md-6">
-									<form action="/admin/accept_credit" method="post">
-										<input name="credit_id" type="hidden" value="<?php print $team['credits'][0]['id'] ?>">
-										<button class="btn btn-success btn-block" type="submit">Одобрить</button>
-									</form>
-								</div>
-								<div class="col-md-6">
-									<form action="/admin/disable_credit" method="post">
-										<input name="credit_id" type="hidden" value="<?php print $team['credits'][0]['id'] ?>">
-										<button class="btn btn-danger btn-block" type="submit">Отклонить</button>
-									</form>
-								</div>
-								<?php if (isset($team['credits'][1])): ?>
-									Кредит на следующий период: <?php print $team['credits'][1]['price'] ?> руб.
-									<hr>
-									<div class="col-md-6">
-										<form action="/admin/accept_credit" method="post">
-											<input name="credit_id" type="hidden" value="<?php print $team['credits'][1]['id'] ?>">
-											<button class="btn btn-success btn-block" type="submit">Одобрить</button>
-										</form>
-									</div>
-									<div class="col-md-6">
-										<form action="/admin/disable_credit" method="post">
-											<input name="credit_id" type="hidden" value="<?php print $team['credits'][1]['id'] ?>">
-											<button class="btn btn-danger btn-block" type="submit">Отклонить</button>
-										</form>
-									</div>
-								<?php endif ?>
-							<?php else: ?>
-								<div class="text-left">
-									Нет запрашиваемых кредитов
-								</div>
-							<?php endif ?>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
 					<a class="btn btn-default" href="/admin/staffs/<?php print $team['id'] ?>">
 						<span class="glyphicon glyphicon-user"></span>
 						Сотрудники
@@ -190,7 +143,7 @@
       </div>
       <div class="modal-body">
 			<div class="form-group">
-				<label for="recipient-name" class="control-label">Название:</label>
+				<label for="recipient-name" class="control-label">Тип:</label>
 				<select id="select-elements" class="form-control">
 					<option value=""></option>
 					<?php if (!empty($team['costs'])): ?>
@@ -202,16 +155,18 @@
 				</select>
 			</div>
 			<div class="select-element select-cost form-group">
+				<label for="recipient-name" class="control-label">Цена | Название:</label>
 				<select id="" class="form-control">
 					<?php foreach ($team['costs'] as $key => $cost): ?>
-						<option value="<?php print $cost['id'] ?>"><?php print $cost['name'] ?></option>
+						<option value="<?php print $cost['id'] ?>"><?php print $cost['price'] ?> руб. | <?php print $cost['name'] ?></option>
 					<?php endforeach ?>
 				</select>
 			</div>
 			<div class="select-element select-fine form-group">
+				<label for="recipient-name" class="control-label">Цена | Название:</label>
 				<select id="" class="form-control">
 					<?php foreach ($team['fines'] as $key => $fine): ?>
-						<option value="<?php print $fine['id'] ?>"><?php print $fine['name'] ?></option>
+						<option value="<?php print $fine['id'] ?>"><?php print $fine['price'] ?> руб. | <?php print $fine['name'] ?></option>
 					<?php endforeach ?>
 				</select>
 			</div>

@@ -24,7 +24,7 @@
 						<span class="glyphicon glyphicon-pause"></span>
 					</a>
 					<a href="/admin/complete_period/<?php print $period['id'] ?>" class="btn btn-default">
-						<span class="glyphicon glyphicon-stop"></span>
+						<span class="glyphicon glyphicon-step-forward"></span>
 					</a>
 				</div>
 			</div>
@@ -42,7 +42,7 @@
 						<span class="glyphicon glyphicon-pause"></span>
 					</div>
 					<a class="btn btn-default" href="/admin/complete_period/<?php print $period['id'] ?>/<?php prmt ?>">
-						<span class="glyphicon glyphicon-stop"></span>
+						<span class="glyphicon glyphicon-step-forward"></span>
 					</a>
 				</div>
 			</div>
@@ -107,19 +107,19 @@
 		    		<li class="dropdown">
 		    		  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 		    		  	<span class="glyphicon glyphicon-user"></span>
-		    		  	Команды <span class="caret"></span>
+		    		  	Заводы <span class="caret"></span>
 		    		  </a>
 		    		  <ul class="dropdown-menu">
 	  				    	<li>
-	  				    		<a href="#" data-toggle="modal" data-target="#myModal">
+	  				    		<a href="/admin/add_team" data-toggle="modal">
 	  				    			<span class="glyphicon glyphicon-plus"></span>
-	  				    			Добавить команду
+	  				    			Добавить завод
 	  				    		</a>
 	  				    	</li>
 	  		            <li>
 	  		            	<a href="/admin">
 	  		            		<span class="glyphicon glyphicon-list-alt"></span>
-	  		            		Список команд
+	  		            		Список заводов
 	  		            	</a>
 	  		            </li>
 	  		            <li>
@@ -145,7 +145,7 @@
 							<li>
 								<a href="/admin/elements3">
 									<span class="glyphicon glyphicon-ruble"></span>
-									Штрафы заказчика/поощрения
+									Штрафы покупателя/поощрения
 								</a>
 							</li>
 							<li>
@@ -161,19 +161,19 @@
 		      	<li class="dropdown">
 		      		<a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 		      			<span class="glyphicon glyphicon-list-alt"></span>
-		      			Команды <span class="caret"></span>
+		      			Заводы <span class="caret"></span>
 		      		</a>
 		      		<ul class="dropdown-menu">
 		      			<li>
-				    		<a href="#" data-toggle="modal" data-target="#addTeam">
+				    		<a href="/admin/add_team" data-toggle="modal">
 				    			<span class="glyphicon glyphicon-plus"></span>
-				    			Добавить команду
+				    			Добавить завод
 				    		</a>
 				    	</li>
 			            <li>
 			            	<a href="/admin">
 			            		<span class="glyphicon glyphicon-list-alt"></span>
-			            		Список команд
+			            		Список заводов
 			            	</a>
 			            </li>
 		      		</ul>
@@ -181,7 +181,7 @@
 		      	<li class="dropdown">
 		      		<a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 		      			<span class="glyphicon glyphicon-list-alt"></span>
-		      			Заказчики <span class="caret"></span>
+		      			Покупатели <span class="caret"></span>
 		      		</a>
 		      		<ul class="dropdown-menu">
 		      			<li>
@@ -266,26 +266,3 @@
 		  </div>
 		</nav>		
 	</div>
-
-<div class="modal fade" id="addTeam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-     <form action="/admin/add_team" method="post">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">Добавление команды</h4>
-      </div>
-      <div class="modal-body">
-          <div class="form-group">
-            <label for="recipient-name" class="control-label">Название:</label>
-            <input type="text" name="team_name" class="form-control" id="recipient-name">
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-        <button type="submit" class="btn btn-primary">Добавить</button>
-      </div>
-     </form>
-    </div>
-  </div>
-</div>

@@ -18,7 +18,7 @@ Class Controller_Provider Extends Controller_Base
 
 			foreach ($teams as $key => $team)
 			{
-				$select = array('where' => 'team_id = '.$team['id'].' and type = '.PART.' and state = '.PART_BUY.' and provider_id = '.$provider['id']);
+				$select = array('where' => 'team_id = '.$team['id'].' and type = '.PART.' and provider_id = '.$provider['id']);
 				$operation_model = new Model_Operations($select);
 				$operation = $operation_model->getOneRow();
 
@@ -28,7 +28,8 @@ Class Controller_Provider Extends Controller_Base
 			$select = array('where' => 'type = '.PART);
 			$element_model = new Model_Elements($select);
 			$list_parts = $element_model->getAllRows();
-
+			
+			$this->template->vars('provider', $provider);
 			$this->template->vars('teams', $teams);
 			$this->template->vars('list_parts', $list_parts);
 			$this->template->view('index');
@@ -56,6 +57,7 @@ Class Controller_Provider Extends Controller_Base
 		$team['list_parts'] = $element_model->getAllRows();
 
 		$this->template->vars('team', $team);
+		$this->template->vars('provider', $provider);
 		$this->template->view('team');
 	}
 
@@ -63,6 +65,7 @@ Class Controller_Provider Extends Controller_Base
 	{
 		$part_id = $_POST['part_id'];
 		$team_id = $_POST['team_id'];
+		$provider_id = $_POST['provider_id'];
 
 		$team_model = new Model_Teams();
 		$team = $team_model->getRowById($team_id);
@@ -86,6 +89,7 @@ Class Controller_Provider Extends Controller_Base
 
 				$operation_model = new Model_Operations();
 				$operation_model->element_id = $element_model->id;
+				$operation_model->provider_id = $provider_id;
 				$operation_model->team_id = $team_id;
 				$operation_model->name = $element_model->name;
 				$operation_model->type = $element_model->type;
@@ -100,7 +104,6 @@ Class Controller_Provider Extends Controller_Base
 	}
 
 	function parts()
-
 	{
 		$provider_login = $_SESSION['login'];
 		$select = array('where' => "login = '".$provider_login."'");
@@ -110,12 +113,11 @@ Class Controller_Provider Extends Controller_Base
 		$select = array('where' => 'type = '.PART.' and provider_id = '.$provider['id']);
 		$element_model = new Model_Elements($select);
 		$parts = $element_model->getAllRows();
-
 		if (!empty($parts))
 		{
 			foreach ($parts as $key => $part)
 			{
-				$select = array('where' => 'element_id = '.$part['id'].' and state = '.PART_BUY.' and provider_id = '.$provider['id']);
+				$select = array('where' => 'element_id = '.$part['id'].' and provider_id = '.$provider['id']);
 				$operation_model = new Model_Operations($select);
 				$operation = $operation_model->getOneRow();
 

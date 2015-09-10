@@ -72,7 +72,7 @@
    	        <li>
    	        		<a href="/customer/">
    	        			<span class="glyphicon glyphicon-list-alt"></span>
-   		        		Команды
+   		        		Заводы
    	        		</a>
    	        </li>
 		        <li>
@@ -98,7 +98,7 @@
 						$customer_model = new Model_Customers($select);
 						$customer = $customer_model->getOneRow();
 		          	?>
-		          	Заказчик №<?php print $customer['id'] ?><span class="caret"></span>
+		          	Покупатель №<?php print $customer['id'] ?><span class="caret"></span>
 		          </a>
 		          <ul class="dropdown-menu">
 		            <li><a href="/logout/">Выйти</a></li>

@@ -12,11 +12,11 @@
               <table class="table table-bordered">
                  <thead>
                     <tr>
-                       <th>id</th>
+                       <!-- <th>id</th> -->
                        <th>Название</th>
                        <th>Цена, р.</th>
                        <th>Исполнитель</th>
-                       <th>Заказчик</th>
+                       <th>Покупатель</th>
                        <th>Статус</th>
                        <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
                        <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
@@ -26,14 +26,16 @@
                     <?php if (!empty($data['orders'])): ?>
                        <?php foreach ($data['orders'] as $key => $order): ?>
                           <tr>
-                             <td class="order-key"><?php print $order['id'] ?></td>
+                             <!-- <td class="order-key"><?php print $order['id'] ?></td> -->
                              <td class="order-name"><?php print $order['name'] ?></td>
                              <td class="order-price"><?php print $order['price'] ?></td>
                              <td>
                                 <?php print $order['team'] ?>
                              </td>
                              <td>
-                                Заказчик №<?php print $order['customer_id'] ?>
+                                <?php if ($order['customer_id'] != 0): ?>
+                                  Покупатель №<?php print $order['customer_id'] ?>
+                                <?php endif ?>
                              </td>
                              <td>
                                 <?php
@@ -72,7 +74,7 @@
                        <?php endforeach ?>
                     <?php else: ?>
                     <tr>
-                       <td colspan="9">
+                       <td colspan="8">
                           пусто
                        </td>
                     </tr>
@@ -82,6 +84,11 @@
             </div>
          </div>
          <button class="btn btn-default" data-toggle="modal" data-target="#addOrder">Добавить новый</button>
+         <form enctype="multipart/form-data" action="__URL__" method="POST">
+             <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+             Отправить этот файл: <input name="userfile" type="file" class="alert alert-default" />
+             <button type="submit">Загрузить</button>
+         </form>
          <hr>
       </div>
       <div class="col-md-12">
@@ -173,15 +180,6 @@
             <label for="recipient-name" class="control-label">Цена:</label>
             <input type="text" name="order_price" class="form-control">
          </div>
-         <div class="form-group">
-            <label for="recipient-name" class="control-label">Заказчик:</label>
-            <select class="form-control" name="order_customer_id" id="">
-              <option value=""></option>
-              <?php foreach ($customers as $key => $customer): ?>
-                <option value="<?php print $customer['id'] ?>">Заказчик №<?php print $customer['id'] ?></option>
-              <?php endforeach ?>
-            </select>
-         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
@@ -198,27 +196,18 @@
      <form action="/admin/edit_order" method="post">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">Редактирование записи <span id="title-order-id"></span></h4>
+        <h4 class="modal-title" id="exampleModalLabel">Редактирование заказа <span id="title-order-id"></span></h4>
       </div>
       <div class="modal-body">
-      <input type="hidden" name="order_id">
-      <div class="form-group">
-         <label for="recipient-name" class="control-label">Название:</label>
-         <input type="text" name="order_name" class="form-control">
-      </div>
-      <div class="form-group">
-         <label for="recipient-name" class="control-label">Цена:</label>
-         <input type="text" name="order_price" class="form-control">
-      </div>
-      <div class="form-group">
-         <label for="recipient-name" class="control-label">Заказчик:</label>
-         <select class="form-control" name="order_customer_id" id="">
-           <option value=""></option>
-           <?php foreach ($customers as $key => $customer): ?>
-             <option value="<?php print $customer['id'] ?>">Заказчик №<?php print $customer['id'] ?></option>
-           <?php endforeach ?>
-         </select>
-      </div>
+        <input type="hidden" name="order_id">
+        <div class="form-group">
+           <label for="recipient-name" class="control-label">Название:</label>
+           <input type="text" name="order_name" class="form-control">
+        </div>
+        <div class="form-group">
+           <label for="recipient-name" class="control-label">Цена:</label>
+           <input type="text" name="order_price" class="form-control">
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
@@ -245,15 +234,6 @@
          <div class="form-group">
             <label for="recipient-name" class="control-label">Цена:</label>
             <input type="text" name="part_price" class="form-control">
-         </div>
-         <div class="form-group">
-            <label for="recipient-name" class="control-label">Поставщик:</label>
-            <select class="form-control" name="part_provider_id" id="">
-              <option value=""></option>
-              <?php foreach ($providers as $key => $provider): ?>
-                <option value="<?php print $provider['id'] ?>">Поставщик №<?php print $provider['id'] ?></option>
-              <?php endforeach ?>
-            </select>
          </div>
       </div>
       <div class="modal-footer">
@@ -282,15 +262,6 @@
       <div class="form-group">
          <label for="recipient-name" class="control-label">Цена:</label>
          <input type="text" name="part_price" class="form-control">
-      </div>
-      <div class="form-group">
-         <label for="recipient-name" class="control-label">Поставщик:</label>
-         <select class="form-control" name="part_provider_id" id="">
-           <option value=""></option>
-           <?php foreach ($providers as $key => $provider): ?>
-             <option value="<?php print $provider['id'] ?>">Поставщик №<?php print $provider['id'] ?></option>
-           <?php endforeach ?>
-         </select>
       </div>
       </div>
       <div class="modal-footer">

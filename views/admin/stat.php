@@ -1,6 +1,6 @@
 	<?php include_once('_menu.php') ?>
 	<h3>
-		Статистика по командам
+		Статистика по заводам
 	</h3>
 	<div class="row">
 		<div class="col-md-8">

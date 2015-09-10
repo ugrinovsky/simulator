@@ -1,6 +1,6 @@
 <?php include_once('_menu.php') ?>
 	<h3>
-		Команда <?php print $team['name'] ?>
+		Завод №<?php print $team['id'] ?>
 	</h3>
 	<div class="row">
 		<div class="col-md-10">
@@ -16,7 +16,6 @@
 								<th>#</th>
 								<th>Название</th>
 								<th>Цена, руб.</th>
-								<th>Штрих-код</th>
 								<th>Статус</th>
 								<?php if (game()): ?>
 									<th width="150">Действие</th>
@@ -28,14 +27,8 @@
 								<?php foreach ($team['orders'] as $key => $order): ?>
 									<tr>
 										<td><?php print $key+1 ?></td>
-										<td>
-											<a href="/customer/order/<?php print $order['id'] ?>">
-												<?php print $order['name'] ?></td>
-											</a>
+										<td><?php print $order['name'] ?></td>
 										<td><?php print $order['price'] ?></td>
-										<td width="200" class="text-center">
-											<img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $order['id'] ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
-										</td>
 										<td>
 										   <?php
 										      $state_text = '';
@@ -153,7 +146,7 @@
 	      <div class="modal-body">
 				<div class="form-group">
 					<label for="recipient-name" class="control-label">Идентификатор:</label>
-					<input name="order_id" class="form-control" type="text">
+					<input name="order_name" class="form-control" type="text">
 				</div>
 				<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
 	      </div>
@@ -177,7 +170,7 @@
 	      <div class="modal-body">
 				<div class="form-group">
 					<label for="recipient-name" class="control-label">Идентификатор:</label>
-					<input name="order_id" class="form-control" type="text">
+					<input name="order_name" class="form-control" type="text">
 				</div>
 				<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
 	      </div>

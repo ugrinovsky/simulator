@@ -57,27 +57,25 @@ Class Controller_Customer Extends Controller_Base
 
 	function orders()
 	{
-		$login = $_SESSION['login'];
-		$select = array('where' => "login = '".$login."'");
-		$customer_model = new Model_Customers($select);
-		$customer = $customer_model->getOneRow();
-
-		$select = array('where' => 'type = '.ORDER.' and customer_id = '.$customer['id']);
+		$select = array('where' => 'type = '.ORDER);
 		$element_model = new Model_Elements($select);
 		$data['orders'] = $element_model->getAllRows();
 
-		foreach ($data['orders'] as $key => $order)
+		if (!empty($data['orders']))
 		{
-			$select = array('where' => 'element_id = '.$order['id']);
-			$operation_model = new Model_Operations($select);
-			$operation = $operation_model->getOneRow();
-
-			if (isset($operation))
+			foreach ($data['orders'] as $key => $order)
 			{
-				$team_model = new Model_Teams();
-				$team = $team_model->getRowById($operation['team_id']);
+				$select = array('where' => 'element_id = '.$order['id']);
+				$operation_model = new Model_Operations($select);
+				$operation = $operation_model->getOneRow();
 
-				$data['orders'][$key]['team'] = $team['name'];
+				if (isset($operation))
+				{
+					$team_model = new Model_Teams();
+					$team = $team_model->getRowById($operation['team_id']);
+
+					$data['orders'][$key]['team'] = $team;
+				}
 			}
 		}
 
@@ -151,7 +149,7 @@ Class Controller_Customer Extends Controller_Base
 
 	function add_order_team()
 	{
-		$order_id = $_POST['order_id'];
+		$order_name = $_POST['order_name'];
 		$team_id = $_POST['team_id'];
 
 		$login = $_SESSION['login'];
@@ -159,7 +157,7 @@ Class Controller_Customer Extends Controller_Base
 		$customer_model = new Model_Customers($select);
 		$customer = $customer_model->getOneRow();
 
-		$select = array('where' => 'id = '.$order_id.' and type = '.ORDER);
+		$select = array('where' => 'name = '.$order_name.' and type = '.ORDER);
 		$element_model = new Model_Elements($select);
 		$order = $element_model->getOneRow();
 
@@ -173,10 +171,11 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model = new Model_Operations();
 				$operation_model->type = $order['type'];
 
-				$select = array('where' => 'id = '.$order_id);
+				$select = array('where' => 'name = '.$order_name);
 				$order = new Model_Elements($select);
 				$order->fetchOne();
 				$order->state = ORDER_CONTROL;
+				$order->customer_id = $customer['id'];
 				$order->update();
 
 				$operation_model->element_id = $order->id;
@@ -184,7 +183,7 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model->customer_id = $customer['id'];
 				$operation_model->price = 0;
 				$operation_model->residue = $team['score'];
-				$operation_model->name = $order->name.', '.$order->price.' р.';
+				$operation_model->name = '№'.$order->name.', '.$order->price.' р.';
 				$operation_model->state = $order->state;
 				$operation_model->save();
 			}
@@ -194,9 +193,13 @@ Class Controller_Customer Extends Controller_Base
 
 	function accept_order_teams()
 	{
-		$order_id = $_POST['order_id'];
+		$order_name = $_POST['order_name'];
 
-		$select = array('where' => 'element_id = '.$order_id.' and type = '.ORDER.' and state = '.ORDER_CONTROL);
+		$select = array('where' => 'name = '.$order_name);
+		$element_model = new Model_Elements($select);
+		$order = $element_model->getOneRow();
+
+		$select = array('where' => 'element_id = '.$order['id'].' and type = '.ORDER.' and state = '.ORDER_CONTROL);
 		$operation_model = new Model_Operations($select);
 		$operation = $operation_model->getOneRow();
 
@@ -210,7 +213,7 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model = new Model_Operations();
 				$operation_model->type = $operation['type'];
 
-				$select = array('where' => 'id = '.$order_id);
+				$select = array('where' => 'name = '.$order_name);
 				$order = new Model_Elements($select);
 				$order->fetchOne();
 				$order->state = ORDER_COMPLETED;
@@ -227,7 +230,7 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model->price = $order->price;
 				$operation_model->residue = $team->score;
 				$operation_model->state = $order->state;
-				$operation_model->name = $order->name;
+				$operation_model->name = '№'.$order->name;
 				$operation_model->save();
 			}
 			$this->redirectToAction('team/'.$team->id);
@@ -238,10 +241,10 @@ Class Controller_Customer Extends Controller_Base
 
 	function accept_order_team()
 	{
-		$order_id = $_POST['order_id'];
+		$order_name = $_POST['order_name'];
 		$team_id = $_POST['team_id'];
 
-		$select = array('where' => 'id = '.$order_id.' and type = '.ORDER);
+		$select = array('where' => 'name = '.$order_name.' and type = '.ORDER);
 		$element_model = new Model_Elements($select);
 		$order = $element_model->getOneRow();
 
@@ -255,7 +258,7 @@ Class Controller_Customer Extends Controller_Base
 				$operation_model = new Model_Operations();
 				$operation_model->type = $order['type'];
 
-				$select = array('where' => 'id = '.$order_id);
+				$select = array('where' => 'name = '.$order_name);
 				$order = new Model_Elements($select);
 
 				$select = array('where' => "id = 'fine_time'");
@@ -266,12 +269,15 @@ Class Controller_Customer Extends Controller_Base
 				$price = 0;
 				if ($order->state == ORDER_OVERDUE)
 				{
-					$operation_model->name = $order->name.' (-'.$game['value'].'% за просрочку)';
+					$operation_model->name = '№'.$order->name.' (-'.$game['value'].'% за просрочку)';
 					$percent = $order->price * $game['value'] / 100;
 					$price = $order->price - $percent;
 				}
 				else
-					$operation_model->name = $order->name;
+				{
+					$operation_model->name = '№'.$order->name;
+					$price = $order->price;
+				}
 
 				$order->state = ORDER_COMPLETED;
 				$order->update();
@@ -458,7 +464,7 @@ Class Controller_Customer Extends Controller_Base
 
 		$team_model->update();
 
-		$operation_model->name = $element['name']." (".$element['price']."% на заказ №".$order['id'].")";
+		$operation_model->name = $element['name']." (".$element['price']."% на заказ №".$order['name'].")";
 		$operation_model->type = $element['type'];
 		$operation_model->state = $element['state'];
 		$operation_model->price = $price;

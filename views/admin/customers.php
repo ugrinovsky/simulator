@@ -1,6 +1,6 @@
 	<?php include_once('_menu.php') ?>
 		<h3>
-			Заказчики
+			Покупатели
 		</h3>
 	<div class="row">
 		<div class="col-md-8">
@@ -23,7 +23,7 @@
 								<?php foreach ($customers as $key => $customer): ?>
 								    <tr>
 								    	<td>
-									    	Заказчик <?php print $customer['id'] ?>
+									    	Покупатель <?php print $customer['id'] ?>
 								    	</td>
 								    	<td>
 								    		<?php print $customer['login'] ?>

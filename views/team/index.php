@@ -1,6 +1,6 @@
 <?php include_once('_menu.php') ?>
 	<h3>
-		Команда "<?php print $team['name'] ?>"
+		Завод <?php print $team['id'] ?>
 	</h3>
 	<div class="row">
 		<div class="col-md-8">

@@ -10,7 +10,7 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>Команда</th>
+								<th>Завод</th>
 								<th>Деталь</th>
 								<?php if (game()): ?>
 									<?php if (isset($list_parts) && !empty($list_parts)): ?>
@@ -25,7 +25,7 @@
 									<tr>
 										<td>
 											<a href="/provider/team/<?php print $team['id'] ?>">
-												<?php print $team['name'] ?>
+												Завод №<?php print $team['id'] ?>
 											</a>
 										</td>
 										<td>
@@ -66,15 +66,16 @@
 		        <h4 class="modal-title" id="exampleModalLabel">Продать деталь</span></h4>
 		      </div>
 		      <div class="modal-body">
-					<div class="form-group">
-						<label for="recipient-name" class="control-label">Деталь:</label>
-						<input type="text" name="part_id" class="form-control">
-					</div>
-					<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
+				<div class="form-group">
+					<label for="recipient-name" class="control-label">Деталь:</label>
+					<input type="text" name="part_id" class="form-control">
+				</div>
+				<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
+				<input type="hidden" name="provider_id" value="<?php print $provider['id'] ?>">
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-		        <button type="submit" class="btn btn-primary">Добавить</button>
+		        <button type="submit" class="btn btn-primary">Продать</button>
 		      </div>
 		     </form>
 		    </div>

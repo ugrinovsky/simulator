@@ -10,12 +10,13 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>Команда</th>
-								<th>Cчет</th>
+								<th>Завод</th>
+								<th>Остаток на счете</th>
 								<th>Транзакция</th>
 								<th>Описание</th>
 								<th>Тип</th>
-								<th>Добавить расход</th>
+								<th>Штраф/расход</th>
+								<th width="50" class="text-center"><span class="glyphicon glyphicon-user"></span></th>
 								<th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
 							</tr>
 						</thead>
@@ -25,7 +26,7 @@
 									<tr>
 										<td>
 											<a href="/admin/team/<?php print $team['id'] ?>">
-												<?php print $team['name'] ?>
+												Завод №<?php print $team['id'] ?>
 											</a>
 										</td>
 										<td><?php print $team['score'] ?></td>
@@ -55,8 +56,6 @@
 										<td>
 											<?php if (isset($team['operation'])): ?>
 												<?php print $team['operation']['name'] ?>
-											<?php else: ?>
-												-
 											<?php endif ?>
 										</td>
 										<td>
@@ -82,7 +81,7 @@
 														print 'Поощрение';
 													}
 													if ($team['operation']['type'] == CUST_FINE) {
-														print 'Штраф заказчика';
+														print 'Штраф покупателя';
 													}
 													if ($team['operation']['type'] == CREDIT) {
 														print 'Кредит';
@@ -102,8 +101,13 @@
 										<td class="text-center">
 											<button class="btn-add-cost btn btn-default" data-id="<?php print $team['id'] ?>" data-toggle="modal" data-target="#addCostTeam">
 												<span class="glyphicon glyphicon-plus"></span>
-												Добавить расход
+												Штраф/расход
 											</button>
+										</td>
+										<td>
+										   <a class="btn btn-default" href="/admin/staffs/<?php print $team['id'] ?>">
+											   	<span class="glyphicon glyphicon-user"></span>
+										   </a>
 										</td>
 										<td>
 										   <form action="/admin/delete_team" method="post">
@@ -183,7 +187,7 @@
       </div>
       <div class="modal-body">
 			<div class="form-group">
-				<label for="recipient-name" class="control-label">Название:</label>
+				<label for="recipient-name" class="control-label">Тип:</label>
 				<select id="select-elements" class="form-control">
 					<option value=""></option>
 					<?php if (!empty($data['costs'])): ?>
@@ -195,6 +199,7 @@
 				</select>
 			</div>
 			<div class="select-element select-cost form-group">
+				<label for="recipient-name" class="control-label">Цена | Название:</label>
 				<select id="" class="form-control">
 					<?php foreach ($data['costs'] as $key => $cost): ?>
 						<option value="<?php print $cost['id'] ?>"><?php print $cost['price'] ?> руб. | <?php print $cost['name'] ?></option>
@@ -202,6 +207,7 @@
 				</select>
 			</div>
 			<div class="select-element select-fine form-group">
+				<label for="recipient-name" class="control-label">Цена | Название:</label>
 				<select id="" class="form-control">
 					<?php foreach ($data['fines'] as $key => $fine): ?>
 						<option value="<?php print $fine['id'] ?>"><?php print $fine['price'] ?> руб. | <?php print $fine['name'] ?></option>

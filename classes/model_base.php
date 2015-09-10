@@ -210,6 +210,23 @@ Abstract Class Model_Base {
 		}
 		return $result;
 	}
+
+	// удаление всех записей и сброс id
+	public function truncateTable(){
+		try {
+			$db = $this->db;
+			$result = $db->exec("TRUNCATE TABLE $this->table");
+			// if ($this->table == 'teams') {
+			// 	mpr($result);
+			// 	die;
+			// }
+		}catch(PDOException $e){
+			echo 'Error : '.$e->getMessage();
+			echo '<br/>Error sql : ' . "'TRUNCATE TABLE $this->table"; 
+			exit();
+		}
+		return $result;
+	} 
 	
 	// обновление записи. Происходит по ID
 	public function update(){

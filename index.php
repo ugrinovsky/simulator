@@ -81,26 +81,6 @@ function end_period()
 				$element_model->fetchOne();
 				$element_model->state = ORDER_OVERDUE;
 				$element_model->update();
-
-				// $select = array('where' => 'element_id = '.$element['id']);
-				// $operation_model = new Model_Operations($select);
-				// $old_operation = $operation_model->getOneRow();
-
-				// $select = array('where' => 'id = '.$old_operation['team_id']);
-				// $team_model = new Model_Teams($select);
-				// $team_model->fetchOne();
-				// $team_model->score -= $game['value'];
-				// $team_model->update();
-
-				// $operation_model = new Model_Operations();
-				// $operation_model->team_id = $old_operation['team_id'];
-				// $operation_model->element_id = $element['id'];
-				// $operation_model->price = $game['value'];
-				// $operation_model->residue = $team_model->score;
-				// $operation_model->state = $element['state'];
-				// $operation_model->type = $element['type'];
-				// $operation_model->name = $element['name'];
-				// $operation_model->save();
 			}
 		}
 
@@ -121,10 +101,10 @@ function end_period()
 
 				$operation_model = new Model_Operations();
 				$operation_model->team_id = $team['id'];
-				$operation_model->element_id = 0;
 				$operation_model->price = $salary['price'];
 				$operation_model->residue = $team_model->score;
 				$operation_model->type = SALARY;
+				$operation_model->period_id = current_period();
 				$operation_model->name = $salary['name'];
 				$operation_model->save();
 			}
@@ -143,8 +123,6 @@ $controller = explode('/',$_SERVER['REQUEST_URI']);
 if (isset($_COOKIE[session_name()]))
 {
 	session_start();
-mpr($_SESSION);
-mpr($_COOKIE);
 	if (!isset($_SESSION['type']))
 	{
 		setcookie(session_name(), "", time() - 3600, "/");

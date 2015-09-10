@@ -1,6 +1,6 @@
 <?php include_once('_menu.php') ?>
 	<h3>
-		Команда <?php print $team['name'] ?>
+		Завод №<?php print $team['id'] ?>
 	</h3>
 	<div class="row">
 		<div class="col-md-10">
@@ -12,8 +12,7 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>id</th>
-								<th>Название</th>
+								<th>Название детали</th>
 								<th>Цена, руб.</th>
 							</tr>
 						</thead>
@@ -21,7 +20,6 @@
 							<?php if (!empty($team['parts'])): ?>
 								<?php foreach ($team['parts'] as $key => $part): ?>
 									<tr>
-										<td><?php print $part['id'] ?></td>
 										<td>
 											<?php print $part['name'] ?></td>
 										<td><?php print $part['price'] ?></td>
@@ -61,6 +59,7 @@
 						<input type="text" name="part_id" class="form-control">
 					</div>
 					<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
+					<input type="hidden" name="provider_id" value="<?php print $provider['id'] ?>">
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>

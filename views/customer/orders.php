@@ -13,10 +13,8 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>id</th>
 								<th>Название</th>
 								<th>Цена, руб.</th>
-								<th>Штрих-код</th>
 								<th>Исполнитель</th>
 								<th>Статус</th>
 								<th width="50">Печать</th>
@@ -26,20 +24,11 @@
 							<?php if (!empty($data['orders'])): ?>
 								<?php foreach ($data['orders'] as $key => $order): ?>
 									<tr>
-										<td><?php print $order['id'] ?></td>
 										<td>
-											<a href="/customer/order/<?php print $order['id'] ?>">
-												<?php print $order['name'] ?></td>
-											</a>
+											<?php print $order['name'] ?></td>
 										<td><?php print $order['price'] ?></td>
-										<td width="200" class="text-center">
-											<?php
-                                  	$code = sprintf('%06d', $order['id']);
-                                	?>
-											<img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $code ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
-										</td>
 										<td>
-										   <?php print $order['team'] ?>
+										   Завод №<?php print $order['id'] ?>
 										</td>
 										<td>
 										   <?php

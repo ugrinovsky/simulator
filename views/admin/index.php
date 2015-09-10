@@ -16,6 +16,7 @@
 								<th>Описание</th>
 								<th>Тип</th>
 								<th>Добавить расход</th>
+								<th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -104,6 +105,14 @@
 												Добавить расход
 											</button>
 										</td>
+										<td>
+										   <form action="/admin/delete_team" method="post">
+										      <input name="team_id" type="hidden" value="<?php print $team['id'] ?>">
+										      <button type="submit" class="btn-team-delete btn btn-danger">
+										         <span class="glyphicon glyphicon-remove-circle"></span>
+										      </button>
+										   </form>
+										</td>
 									</tr>
 								<?php endforeach ?>
 							<?php endif ?>
@@ -151,15 +160,6 @@
 										<input class="form-control" name="credit_rate" type="text" value="<?php print $data['credit_rate']['value'] ?>">
 									</div>
 								</div>
-								<?php if (is_null(current_period())): ?>
-									<div class="form-group">
-										<label class="control-label" for="">Время одного периода</label>	
-										<div class="input-group">
-											<div class="input-group-addon">мин.</div>
-											<input class="form-control" name="period_time" type="text" value="<?php print $data['period_time']['value'] ?>">
-										</div>
-									</div>
-								<?php endif ?>
 								<button type="submit" class="btn btn-default">
 									<span class="glyphicon glyphicon-floppy-disk"></span>
 									Сохранить

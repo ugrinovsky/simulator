@@ -4,9 +4,9 @@
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'stupenkom_zavod');
+define('DB_NAME', 'business');
 
-date_default_timezone_set('Asia/Bishkek');
+// date_default_timezone_set('Asia/Bishkek');
 // date_default_timezone_set('Asia/Yekaterinburg');
 
 define ('DS', DIRECTORY_SEPARATOR);

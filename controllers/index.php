@@ -29,47 +29,56 @@ Class Controller_Index Extends Controller_Base
 			}
 		}
 
-		$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
-		$customer_model = new Model_Customers($select);
-		$customer = $customer_model->getOneRow();
-		if (isset($customer) && !empty($customer))
+		if (substr_count($login, 'customer') > 0)
 		{
-			session_start();
-			$_SESSION['login'] = $login;
-			$_SESSION['type'] = 'customer';
-			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+			$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
+			$customer_model = new Model_Customers($select);
+			$customer = $customer_model->getOneRow();
+			if (isset($customer) && !empty($customer))
+			{
+				session_start();
+				$_SESSION['login'] = $login;
+				$_SESSION['type'] = 'customer';
+				$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 
-			$this->redirectToAction('index', 'customer');
+				$this->redirectToAction('index', 'customer');
+			}
 		}
 
-		$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
-		$provider_model = new Model_Providers($select);
-		$provider = $provider_model->getOneRow();
-		if (isset($provider) && !empty($provider))
+		if (substr_count($login, 'provier') > 0)
 		{
-			session_start();
-			$_SESSION['login'] = $login;
-			$_SESSION['type'] = 'provider';
-			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+			$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
+			$provider_model = new Model_Providers($select);
+			$provider = $provider_model->getOneRow();
+			if (isset($provider) && !empty($provider))
+			{
+				session_start();
+				$_SESSION['login'] = $login;
+				$_SESSION['type'] = 'provider';
+				$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 
-			$this->redirectToAction('index', 'provider');
+				$this->redirectToAction('index', 'provider');
+			}
 		}
 
-		$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
-		$user_model = new Model_Users($select);
-		$user = $user_model->getOneRow();
-
-		if (isset($user) && !empty($user))
+		if (substr_count($login, 'team') > 0)
 		{
-			session_start();
-			$_SESSION['login'] = $login;
-			$_SESSION['type'] = 'team';
-			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+			$select = array("where" => "login = '".$login."' and pass = '".$pass."'");
+			$user_model = new Model_Users($select);
+			$user = $user_model->getOneRow();
 
-			$this->redirectToAction('index', 'team');
+			if (isset($user) && !empty($user))
+			{
+				session_start();
+				$_SESSION['login'] = $login;
+				$_SESSION['type'] = 'team';
+				$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+
+				$this->redirectToAction('index', 'team');
+			}
 		}
-		else
-			$this->redirectToLink('/');
+
+		$this->redirectToLink('/');
 	}
 
 	function logout()

@@ -15,7 +15,6 @@
                        <th>id</th>
                        <th>Название</th>
                        <th>Цена, р.</th>
-                       <th width="120">Штрих-код</th>
                        <th>Исполнитель</th>
                        <th>Заказчик</th>
                        <th>Статус</th>
@@ -30,12 +29,6 @@
                              <td class="order-key"><?php print $order['id'] ?></td>
                              <td class="order-name"><?php print $order['name'] ?></td>
                              <td class="order-price"><?php print $order['price'] ?></td>
-                             <td width="140" class="text-center">
-                                <?php
-                                  $code = sprintf('%06d', $order['id']);
-                                ?>
-                                <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $code ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
-                             </td>
                              <td>
                                 <?php print $order['team'] ?>
                              </td>
@@ -104,7 +97,6 @@
                        <th>id</th>
                        <th>Название</th>
                        <th>Цена, р.</th>
-                       <th width="120">Штрих-код</th>
                        <th width="200">Поставщик</th>
                 <!--        <th>Кто купил</th>
                        <th>Статус</th> -->
@@ -119,12 +111,6 @@
                              <td class="part-key"><?php print $part['id'] ?></td>
                              <td class="part-name"><?php print $part['name'] ?></td>
                              <td class="part-price"><?php print $part['price'] ?></td>
-                             <td class="text-center">
-                                <?php
-                                  $code = sprintf('%06d', $part['id']);
-                                ?>
-                               <img src='http://barcode.tec-it.com/barcode.ashx?data=<?php print $code ?>&code=Code128&dpi=96' alt='Barcode Generator TEC-IT'/>
-                             </td>
                              <td>
                                Поставщик №<?php print $part['provider_id'] ?>
                              </td>

@@ -9,59 +9,31 @@
 	<?php if (isset($periods) && !empty($periods)): ?>
 		<?php
 			$period = $periods[0];
-
-			$now = new DateTime();
-			$period_date = new DateTime($period['start']);
-
-			$end = new DateTime($period['end']);
 		?>
 		<?php if ($period['state'] == PERIOD_ENABLE): ?>
-			<?php if ($now < $end): ?>
-				<!-- ТЕКУЩИЙ ПЕРИОД -->
-				<div class="alert alert-info">
-					<div class="period label label-info">
-						Период <?php print $period['id'] ?>
-					</div>
-					<div class="number"></div>
-					<div>
-						<div class="btn btn-default" disabled>
-							<span class="glyphicon glyphicon-play" disabled></span>
-						</div>
-						<a href="/admin/pause_period/<?php print $period['id'] ?>" class="btn btn-default">
-							<span class="glyphicon glyphicon-pause"></span>
-						</a>
-						<!-- <a href="/admin/pause_period/<?php print $period['id'] ?>" class="btn btn-default">
-							<span class="glyphicon glyphicon-stop"></span>
-						</a> -->
-					</div>
+			<!-- ТЕКУЩИЙ ПЕРИОД -->
+			<div class="alert alert-info">
+				<div class="period label label-info">
+					Период <?php print $period['id'] ?>
 				</div>
-			<?php else: ?>
-				<!-- ПЕРИОД ЗАВЕРШЕН -->
-				<?php
-					$select = array('where' => 'id = '.$period['id']);
-					$period_model = new Model_Periods($select);
-					$period_model->fetchOne();
-					$period_model->state = PERIOD_COMPLETED;
-					$period_model->update();
-
-					end_period();
-				?>
-				<div class="alert alert-danger">
-					Период <?php print $period['id'] ?> завершен!
-					<?php if ($period['id'] < 4): ?>
-						<a class="btn btn-default" href="/admin/start?id=<?php print $period['id']+1 ?>">
-							<span class="glyphicon glyphicon-play"></span>
-						</a>
-					<?php endif ?>
+				<div>
+					<div class="btn btn-default" disabled>
+						<span class="glyphicon glyphicon-play" disabled></span>
+					</div>
+					<a href="/admin/pause_period/<?php print $period['id'] ?>" class="btn btn-default">
+						<span class="glyphicon glyphicon-pause"></span>
+					</a>
+					<a href="/admin/complete_period/<?php print $period['id'] ?>" class="btn btn-default">
+						<span class="glyphicon glyphicon-stop"></span>
+					</a>
 				</div>
-			<?php endif ?>
+			</div>
 		<?php elseif($period['state'] == PERIOD_PAUSE): ?>
 			<!-- ПАУЗА ПЕРИОДА -->
 			<div class="alert alert-warning">
 				<div class="period label label-warning">
 					Период <?php print $period['id'] ?>
 				</div>
-				<div class="number"></div>
 				<div>
 					<a class="btn btn-default" href="/admin/continue_period/<?php print $period['id'] ?>">
 						<span class="glyphicon glyphicon-play"></span>
@@ -69,13 +41,23 @@
 					<div class="btn btn-default" disabled>
 						<span class="glyphicon glyphicon-pause"></span>
 					</div>
-					<!-- <a class="btn btn-default" href="/admin/reset_period/<?php print $period['id'] ?>/<?php prmt ?>">
+					<a class="btn btn-default" href="/admin/complete_period/<?php print $period['id'] ?>/<?php prmt ?>">
 						<span class="glyphicon glyphicon-stop"></span>
-					</a> -->
+					</a>
 				</div>
 			</div>
+		<?php elseif($period['state'] == PERIOD_COMPLETED): ?>
+			<!-- ПЕРИОД ЗАВЕРШЕН -->
+			<div class="alert alert-danger">
+				Период <?php print $period['id'] ?> завершен!
+				<?php if ($period['id'] < 4): ?>
+					<a class="btn btn-default" href="/admin/start?id=<?php print $period['id']+1 ?>">
+						<span class="glyphicon glyphicon-play"></span>
+					</a>
+				<?php endif ?>
+			</div>
 		<?php endif ?>
-	<!-- ЕСЛИ ИГРА НЕ ЗАПУСКАЛАСЬ ИЛИ ПЕРЕРЫв -->
+	<!-- ЕСЛИ ИГРА НЕ ЗАПУСКАЛАСЬ ИЛИ ПЕРЕРЫВ -->
 	<?php else: ?>
 		<?php
 			$select = array('where' => 'state = '.PERIOD_COMPLETED);
@@ -98,12 +80,6 @@
 					<a class="btn btn-default" href="/admin/start?id=1">
 						<span class="glyphicon glyphicon-play"></span>
 					</a>
-					<div class="btn btn-default" disabled>
-						<span class="glyphicon glyphicon-pause"></span>
-					</div>
-					<!-- <div class="btn btn-default" disabled>
-						<span class="glyphicon glyphicon-stop"></span>
-					</div> -->
 				</div>
 			</div>
 		<?php endif ?>

@@ -40,7 +40,14 @@ $(function()
 		}
 	})
 
-	$('.clear-periods').click(function()
+	$('.btn-cost-delete').click(function()
+	{
+		if (!confirm("Вы уверены?")) {
+		 	return false 
+		}
+	})
+
+	$('.btn-team-delete').click(function()
 	{
 		if (!confirm("Вы уверены?")) {
 		 	return false 
@@ -185,78 +192,6 @@ $(function()
 		// }
 	})
 
-	function countDown(second,endMinute,endHour,endDay,endMonth,endYear)
-	{
-		var now = new Date();
-		second = (arguments.length == 1) ? second + now.getSeconds() : second;
-		endYear =  typeof(endYear) != 'undefined' ?  endYear : now.getFullYear();            
-		endMonth = endMonth ? endMonth - 1 : now.getMonth();
-		endDay = typeof(endDay) != 'undefined' ? endDay :  now.getDate();    
-		endHour = typeof(endHour) != 'undefined' ?  endHour : now.getHours();
-		endMinute = typeof(endMinute) != 'undefined' ? endMinute : now.getMinutes();
-
-		var endDate = new Date(endYear,endMonth,endDay,endHour,endMinute,second+1); 
-		var interval = setInterval(function() 
-		{
-		    var time = endDate.getTime() - now.getTime();
-
-	        var days = Math.floor(time / 864e5);
-	        var hours = Math.floor(time / 36e5) % 24; 
-	        var minutes = Math.floor(time / 6e4) % 60;
-	        var minutesText = minutes
-	        if (minutes < 10)
-	        	minutesText = '0'+minutes
-	        var seconds = Math.floor(time / 1e3) % 60;  
-	        var secondsText = seconds
-	        if (seconds < 10)
-	        	secondsText = '0'+seconds
-	        var digit='<div>'+
-	        '<div>';
-	        var text='</div><div>'
-	        var end='</div></div><div>:</div>'
-	        $('.numb').remove()
-	        $('.number').append('<div class="numb">Время: '+digit+minutesText+text+end+digit+secondsText+text+'</div>');
-	        // if (!seconds && !minutes && !days && !hours) 
-	        // {              
-	        //     clearInterval(interval);        
-	        // }    
-	        
-		    now.setSeconds(now.getSeconds() + 1);
-		}, 1000);
-	}
-
-	var end;
-	function changeNumber()
-	{
-		$.ajax(
-		{
-			url: '/get_periods',
-			type: 'post',
-			async: false,
-			dataType: 'json',
-			success: function(result)
-			{
-				end = new Date(result.end)
-			},
-			error: function(xhr)
-			{
-				console.log(xhr)
-			}
-		})
-	   	var now = new Date()
-	   	
-	   	if (now > end)
-	   	{
-	   		location.reload()
-	   	}
-	   	else
-	   	{
-	   		var sub = Math.floor(Math.abs(end - now) / 1000);
-	   		// $('.number').text(Math.ceil(sub)+' мин.')
-	   		countDown(sub); 
-	   	}
-	}
-
 	var period_result;
 	$.ajax(
 	{
@@ -274,52 +209,6 @@ $(function()
 			console.log(xhr)
 		}
 	})
-
-	if (period_result != undefined)
-	{
-	   if (period_result.state != parseFloat(3))
-	   {
-		   changeNumber()
-		   setInterval(function()
-		   {
-			   changeNumber()
-		   }, 1000)
-	   }
-	   else
-	   {
-		   	var now = new Date()
-		   	var pause = new Date(period_result.pause)
-		   	var second = Math.floor(Math.abs(end - pause) / 1000);
-		   	second = (arguments.length == 1) ? second + now.getSeconds() : second;
-		   	endYear =  now.getFullYear();            
-		   	endMonth = now.getMonth();
-		   	endDay = now.getDate();    
-		   	endHour = now.getHours();
-		   	endMinute = now.getMinutes();
-
-	   		var endDate = new Date(endYear,endMonth,endDay,endHour,endMinute,second+1); 
-
-	   		var time = endDate.getTime() - now.getTime();
-
-	   		var minutes = Math.floor(time / 6e4) % 60;
-	   		var minutesText = minutes
-	   		if (minutes < 10)
-	   			minutesText = '0'+minutes
-	   		var seconds = Math.floor(time / 1e3) % 60;  
-	   		var secondsText = seconds
-	   		if (seconds < 10)
-	   			secondsText = '0'+seconds
-	   		var digit='<div>'+
-	   		'<div>';
-	   		var text='</div><div>'
-	   		var end='</div></div><div>:</div>'
-
-	   		 $('.number').append('<div class="numb">Время: '+digit+minutesText+text+end+digit+secondsText+text+'</div>');
-	   		// $('.number').text(Math.ceil(sub)+' мин.')
-	   }
-
-
-	}
 
 
 

@@ -139,9 +139,12 @@ $router->setPath (SITE_PATH . 'controllers');
 
 $controller = explode('/',$_SERVER['REQUEST_URI']);
 
+
 if (isset($_COOKIE[session_name()]))
 {
 	session_start();
+mpr($_SESSION);
+mpr($_COOKIE);
 	if (!isset($_SESSION['type']))
 	{
 		setcookie(session_name(), "", time() - 3600, "/");

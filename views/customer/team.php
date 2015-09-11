@@ -3,7 +3,7 @@
 		Завод №<?php print $team['id'] ?>
 	</h3>
 	<div class="row">
-		<div class="col-md-10">
+		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					Общие данные
@@ -15,6 +15,7 @@
 							<tr>
 								<th>#</th>
 								<th>Название</th>
+								<th>Комментарий</th>
 								<th>Цена, руб.</th>
 								<th>Статус</th>
 								<?php if (game()): ?>
@@ -28,6 +29,7 @@
 									<tr>
 										<td><?php print $key+1 ?></td>
 										<td><?php print $order['name'] ?></td>
+										<td><?php print $order['comment'] ?></td>
 										<td><?php print $order['price'] ?></td>
 										<td>
 										   <?php
@@ -145,7 +147,7 @@
 	      </div>
 	      <div class="modal-body">
 				<div class="form-group">
-					<label for="recipient-name" class="control-label">Идентификатор:</label>
+					<label for="recipient-name" class="control-label">Название:</label>
 					<input name="order_name" class="form-control" type="text">
 				</div>
 				<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">
@@ -169,7 +171,7 @@
 	      </div>
 	      <div class="modal-body">
 				<div class="form-group">
-					<label for="recipient-name" class="control-label">Идентификатор:</label>
+					<label for="recipient-name" class="control-label">Название:</label>
 					<input name="order_name" class="form-control" type="text">
 				</div>
 				<input type="hidden" name="team_id" value="<?php print $team['id'] ?>">

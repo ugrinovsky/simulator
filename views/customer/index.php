@@ -1,6 +1,6 @@
 <?php include_once('_menu.php') ?>
 	<div class="row">
-		<div class="col-md-8">
+		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					Общие данные
@@ -12,6 +12,7 @@
 							<tr>
 								<th>Завод</th>
 								<th>Заказ</th>
+								<th>Коментарий</th>
 								<th>Статус</th>
 								<?php if (game()): ?>
 									<th width="150">Действие</th>
@@ -30,6 +31,11 @@
 										<td>
 											<?php if (isset($team['order'])): ?>
 												<?php print $team['order']['name'] ?>
+											<?php endif ?>
+										</td>
+										<td>
+											<?php if (isset($team['order'])): ?>
+												<?php print $team['order']['comment'] ?>
 											<?php endif ?>
 										</td>
 										<td>
@@ -81,14 +87,6 @@
 				</button>
 			<?php endif ?>
 		</div>
-		<div class="col-md-4">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-				</div>
-				<div class="panel-body">
-				</div>
-			</div>
-		</div>
 	</div>
 </div>
 
@@ -103,7 +101,7 @@
 	      </div>
 	      <div class="modal-body">
 				<div class="form-group">
-					<label for="recipient-name" class="control-label">Идентификатор:</label>
+					<label for="recipient-name" class="control-label">Название:</label>
 					<input name="order_name" class="form-control" type="text">
 				</div>
 				<input type="hidden" name="team_id" value="">
@@ -127,7 +125,7 @@
 	      </div>
 	      <div class="modal-body">
 				<div class="form-group">
-					<label for="recipient-name" class="control-label">Идентификатор:</label>
+					<label for="recipient-name" class="control-label">Название:</label>
 					<input name="order_name" class="form-control" type="text">
 				</div>      
 			</div>

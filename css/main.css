@@ -315,3 +315,108 @@ input[type="radio"]:checked+label{
 table form{
   margin-bottom: 0;
 }
+.btn-add-order{
+  float: left;
+}
+/*.file_upload {
+  position: relative;
+  overflow: hidden;
+  background: #eee;
+  border: 1px solid #ccc;
+  line-height: 1;
+  text-align: center;
+
+  margin-left: 5px;
+
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  text-shadow: 0 1px 0 #fff;
+  background-image: -webkit-linear-gradient(top,#fff 0,#e0e0e0 100%);
+  background-image: -o-linear-gradient(top,#fff 0,#e0e0e0 100%);
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#e0e0e0));
+  background-image: linear-gradient(to bottom,#fff 0,#e0e0e0 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe0e0e0', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  background-repeat: repeat-x;
+  border-color: #dbdbdb;
+  border-color: #ccc;
+
+  margin-right: 10px;
+}
+ 
+.file_upload input[type=file] {
+  position: absolute;
+  top: 0; right: 0;
+  font-size: 200px;
+  filter: alpha(opacity=0);
+  cursor: pointer;
+}
+*/
+.form-order-csv{
+  display: inline-block;
+  padding-left: 10px;
+  border-left: 1px solid #eee;
+  margin-left: 10px;
+}
+.file_upload{
+    /*position: relative;*/
+    overflow: hidden;
+    width: 350px;
+    display: inline-flex;
+    margin-left: 10px;
+}
+.file_upload > button, .file_upload > div{
+    cursor: pointer
+}
+.file_upload > button{
+    float: right;
+    width: 8em;            /* example */
+    height: 100%
+}
+.file_upload > div{
+    padding-left: 1em;
+    line-height: 33px;
+}
+.file_upload input[type=file]{
+    position: absolute;
+    top: 0;
+    visibility: hidden
+}
+
+/* Making it beautiful */
+
+.file_upload{
+    border-radius: 3px;
+    transition: box-shadow 0.1s linear
+}
+.file_upload.focus{
+    box-shadow: 0 0 5px rgba(0,30,255,0.4)
+}
+.table-orders{
+  max-height: 600px;
+  overflow: scroll;
+}
+label.col-sm-2.control-label{
+  line-height: 33px;
+}
+.form-control.textarea-comment{
+  height: 135px;
+}

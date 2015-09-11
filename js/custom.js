@@ -1,6 +1,39 @@
 var data;
 $(function()
 {
+	 var wrapper = $( ".file_upload" ),
+	        inp = wrapper.find( "input" ),
+	        btn = wrapper.find( "button" ),
+	        lbl = wrapper.find( "div" );
+
+	    btn.focus(function(){
+	        wrapper.addClass( "focus" );
+	    }).blur(function(){
+	        wrapper.removeClass( "focus" );
+	    });
+
+	    btn.add( lbl ).click(function(){
+	        inp.click();
+	    });
+
+	    var file_api = ( window.File && window.FileReader && window.FileList && window.Blob ) ? true : false;
+
+	    inp.change(function(){
+
+	        var file_name;
+	        if( file_api && inp[ 0 ].files[ 0 ] )
+	            file_name = inp[ 0 ].files[ 0 ].name;
+	        else
+	            file_name = inp.val().replace( "C:\\fakepath\\", '' );
+	        if( ! file_name.length )
+	            return;
+
+	        if( lbl.is( ":visible" ) ){
+	            lbl.text( file_name );
+	            btn.text( "Выбрать" );
+	        }else
+	            btn.text( file_name );
+	    }).change();
 	$('.spinner .btn:first-of-type').on('click', function() {
 	   $('.spinner input').val( parseInt($('.spinner input').val(), 10) + 1);
 	 });
@@ -105,6 +138,7 @@ $(function()
 		$('#editOrder input[name="order_id"]').val($(this).data('id'))
 		$('#editOrder input[name="order_name"]').val($(this).closest('tr').find('.order-name').text())
 		$('#editOrder input[name="order_price"]').val($(this).closest('tr').find('.order-price').text())
+		$('#editOrder textarea[name="order_comment"]').val($(this).closest('tr').find('.order-comment').text())
 		$('#title-order-id').text('#'+$(this).closest('tr').find('.order-key').text())
 	})
 	$('.btn-order-delete').click(function()

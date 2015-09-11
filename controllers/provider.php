@@ -97,10 +97,16 @@ Class Controller_Provider Extends Controller_Base
 				$operation_model->residue = $team_model->score;
 				$operation_model->state = $element_model->state;
 				$operation_model->save();
+				
+				$this->redirectToAction('team/'.$team_id);
+			}
+			else
+			{
+				$data = 'Цена детали больше остатка на счете. Операция невозможна.';
+				$this->redirectToAction('team/'.$team_id.'?data='.$data);
 			}
 		}
 
-		$this->redirectToAction('team/'.$team_id);
 	}
 
 	function parts()

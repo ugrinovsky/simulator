@@ -20,22 +20,17 @@ Class Controller_Customer Extends Controller_Base
 			{
 				foreach ($data['teams'] as $key => $team)
 				{
-					$select = array('where' => 'team_id = '.$team['id'].' and customer_id = '.$customer['id']);
+					$select = array('where' => 'team_id = '.$team['id'].' and customer_id = '.$customer['id'].' and type = '.ORDER);
 					$operation_model = new Model_Operations($select);
-					$operations = $operation_model->getAllRows();
-					if (!empty($operations))
+					$operation = $operation_model->getLastRow();
+					if (!empty($operation))
 					{
-						foreach ($operations as $key2 => $operation)
+						$select = array('where' => 'id = '.$operation['element_id'].' and type = '.ORDER);
+						$element_model = new Model_Elements($select);
+						$element = $element_model-> getOneRow();
+						if (isset($element) && !empty($element))
 						{
-							$select = array('where' => 'id = '.$operation['element_id'].' and type = '.ORDER);
-							$element_model = new Model_Elements($select);
-							$element = $element_model->getOneRow();
-
-							if (isset($element) && !empty($element))
-							{
-								$data['teams'][$key]['order'] = $element;
-								break;
-							}
+							$data['teams'][$key]['order'] = $element;
 						}
 					}
 				}

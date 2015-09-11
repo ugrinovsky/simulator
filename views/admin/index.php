@@ -164,6 +164,37 @@
 										<input class="form-control" name="credit_rate" type="text" value="<?php print $data['credit_rate']['value'] ?>">
 									</div>
 								</div>
+								<?php if (!game()): ?>
+									<div class="form-group">
+										<label class="control-label" for="">Стартовый счет завода</label>	
+										<div class="input-group">
+											<div class="input-group-addon">руб.</div>
+											<input class="form-control" name="default_score" type="text" value="<?php print $data['default_score']['value'] ?>">
+										</div>
+									</div>
+									<hr>
+									<div class="form-group">
+										<label class="control-label" for="">Зарплата стажера</label>	
+										<div class="input-group">
+											<div class="input-group-addon">руб.</div>
+											<input class="form-control" name="salary_trainee" type="text" value="<?php print $data['salary_trainee']['price'] ?>">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label" for="">Зарплата мастера</label>	
+										<div class="input-group">
+											<div class="input-group-addon">руб.</div>
+											<input class="form-control" name="salary_master" type="text" value="<?php print $data['salary_master']['price'] ?>">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label" for="">Зарплата профи</label>	
+										<div class="input-group">
+											<div class="input-group-addon">руб.</div>
+											<input class="form-control" name="salary_prof" type="text" value="<?php print $data['salary_prof']['price'] ?>">
+										</div>
+									</div>
+								<?php endif ?>
 								<button type="submit" class="btn btn-default">
 									<span class="glyphicon glyphicon-floppy-disk"></span>
 									Сохранить

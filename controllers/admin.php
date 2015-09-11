@@ -52,6 +52,30 @@ Class Controller_Admin Extends Controller_Base
 
 		$data['credit_rate'] = $game;
 
+		$select = array('where' => "id = 'default_score'");
+		$game_model = new Model_Game($select);
+		$game = $game_model->getOneRow();
+
+		$data['default_score'] = $game;
+
+		$select = array('where' => "id = ".SKILL1);
+		$skill_model = new Model_Skills($select);
+		$skill = $skill_model->getOneRow();
+
+		$data['salary_trainee'] = $skill;
+
+		$select = array('where' => "id = ".SKILL2);
+		$skill_model = new Model_Skills($select);
+		$skill = $skill_model->getOneRow();
+
+		$data['salary_master'] = $skill;
+
+		$select = array('where' => "id = ".SKILL3);
+		$skill_model = new Model_Skills($select);
+		$skill = $skill_model->getOneRow();
+
+		$data['salary_prof'] = $skill;
+
 		$this->template->vars('data', $data);
 		$this->template->view('index');
 	}
@@ -173,8 +197,7 @@ Class Controller_Admin Extends Controller_Base
 				{
 					$team_model = new Model_Teams();
 					$team = $team_model->getRowById($operation['team_id']);
-
-					$data['orders'][$key]['team'] = $team['name'];
+					$data['orders'][$key]['team'] = $team;
 				}
 			}
 		}
@@ -349,12 +372,14 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$name = $_POST['order_name'];
 		$price = $_POST['order_price'];
+		$comment = $_POST['comment_price'];
 
 		$element_model = new Model_Elements();
 		$element_model->name = $name;
 		$element_model->price = $price;
 		$element_model->type = ORDER;
 		$element_model->state = ORDER_NOCONTROL;
+		$element_model->comment = $comment;
 		$element_model->save();
 
 		$this->redirectToAction('elements2');
@@ -365,6 +390,7 @@ Class Controller_Admin Extends Controller_Base
 		$id = $_POST['order_id'];
 		$name = $_POST['order_name'];
 		$price = $_POST['order_price'];
+		$comment = $_POST['comment_price'];
 
 		$select = array('where' => 'id = '.$id);
 
@@ -372,6 +398,7 @@ Class Controller_Admin Extends Controller_Base
 		$element_model->fetchOne();
 		$element_model->name = $name;
 		$element_model->price = $price;
+		$element_model->comment = $comment;
 		$element_model->update();
 
 		$this->redirectToAction('elements2');
@@ -614,6 +641,11 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$fine_time = $_POST['fine_time'];
 		$credit_rate = $_POST['credit_rate'];
+		$default_score = $_POST['default_score'];
+
+		$salary_trainee = $_POST['salary_trainee'];
+		$salary_master = $_POST['salary_master'];
+		$salary_prof = $_POST['salary_prof'];
 
 		if (isset($_POST['period_time']))
 		{
@@ -637,6 +669,30 @@ Class Controller_Admin Extends Controller_Base
 		$game_model->fetchOne();
 		$game_model->value = $credit_rate;
 		$game_model->update();
+
+		$select = array('where' => "id = 'default_score'");
+		$game_model = new Model_Game($select);
+		$game_model->fetchOne();
+		$game_model->value = $default_score;
+		$game_model->update();
+
+		$select = array('where' => "id = ".SKILL1);
+		$skill_model = new Model_Skills($select);
+		$skill_model->fetchOne();
+		$skill_model->price = $salary_trainee;
+		$skill_model->update();
+
+		$select = array('where' => "id = ".SKILL2);
+		$skill_model = new Model_Skills($select);
+		$skill_model->fetchOne();
+		$skill_model->price = $salary_master;
+		$skill_model->update();
+
+		$select = array('where' => "id = ".SKILL3);
+		$skill_model = new Model_Skills($select);
+		$skill_model->fetchOne();
+		$skill_model->price = $salary_prof;
+		$skill_model->update();
 
 		$this->redirectToAction('index');
 	}
@@ -866,5 +922,46 @@ Class Controller_Admin Extends Controller_Base
 		$provider_model->deleteBySelect($select);
 
 		$this->redirectToAction('providers');
+	}
+
+	function upload_orders()
+	{
+		if (file_exists($_FILES["filename"]["name"]))
+			unlink($_FILES["filename"]["name"]);
+
+		if(is_uploaded_file($_FILES["filename"]["tmp_name"]))
+	     move_uploaded_file($_FILES["filename"]["tmp_name"], $_FILES["filename"]["name"]);
+
+		if ($_FILES['filename']['name'] != "")
+		{
+			$filename = $_FILES['filename']['name'];
+			$str = file_get_contents($filename);
+			$lines = explode("\n", $str);
+			for ($i = 0; $i < count($lines); $i++)
+			{
+				$line = explode(";", $lines[$i]);
+				if (count($line) == 11 && $i > 0)
+				{
+					$name = $line[0];
+					$price = $line[5];
+					$desc = "Тип детали: ".$line[1].";\n";
+					$desc .= "Упаковка: ".$line[3].";\n";
+					$desc .= "Кол-во деталей: ".$line[6].";\n";
+					$desc .= "S: ".$line[8].";\n";
+					$desc .= "M: ".$line[9].";\n";
+					$desc .= "L: ".$line[10];
+					
+					$element_model = new Model_Elements();
+					$element_model->name = $name;
+					$element_model->price = $price;
+					$element_model->type = ORDER;
+					$element_model->state = ORDER_NOCONTROL;
+					$element_model->comment = $desc;
+					$element_model->save();
+				}
+			}
+
+			$this->redirectToAction('elements2');
+		}
 	}
 }

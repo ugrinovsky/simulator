@@ -8,12 +8,13 @@
             <div class="panel-heading">
                Заказы
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive table-orders">
               <table class="table table-bordered">
                  <thead>
                     <tr>
                        <!-- <th>id</th> -->
                        <th>Название</th>
+                       <th>Комментарий</th>
                        <th>Цена, р.</th>
                        <th>Исполнитель</th>
                        <th>Покупатель</th>
@@ -28,9 +29,12 @@
                           <tr>
                              <!-- <td class="order-key"><?php print $order['id'] ?></td> -->
                              <td class="order-name"><?php print $order['name'] ?></td>
+                             <td class="order-comment"><?php print $order['comment'] ?></td>
                              <td class="order-price"><?php print $order['price'] ?></td>
                              <td>
-                                <?php print $order['team'] ?>
+                                <?php if (!empty($order['team'])): ?>
+                                  Завод №<?php print $order['team']['id'] ?>
+                                <?php endif ?>
                              </td>
                              <td>
                                 <?php if ($order['customer_id'] != 0): ?>
@@ -83,11 +87,15 @@
               </table>
             </div>
          </div>
-         <button class="btn btn-default" data-toggle="modal" data-target="#addOrder">Добавить новый</button>
-         <form enctype="multipart/form-data" action="__URL__" method="POST">
-             <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
-             Отправить этот файл: <input name="userfile" type="file" class="alert alert-default" />
-             <button type="submit">Загрузить</button>
+         <button class="btn-add-order btn btn-default" data-toggle="modal" data-target="#addOrder">Добавить новый</button>
+         <form class="form-order-csv" enctype="multipart/form-data" action="/admin/upload_orders" method="post">
+            <label for="">Загрузить из CSV</label>
+             <div class="file_upload">
+                 <button class="btn btn-default" type="button">Выбрать</button>
+                 <div>Файл не выбран</div>
+                 <input type="file" name="filename">
+             </div>
+             <button class="btn btn-default" type="submit">Загрузить</button>
          </form>
          <hr>
       </div>
@@ -104,9 +112,6 @@
                        <th>id</th>
                        <th>Название</th>
                        <th>Цена, р.</th>
-                       <th width="200">Поставщик</th>
-                <!--        <th>Кто купил</th>
-                       <th>Статус</th> -->
                        <th width="50" class="text-center"><span class="glyphicon glyphicon-edit"></span></th>
                        <th width="50" class="text-center"><span class="glyphicon glyphicon-remove-circle"></span></th>
                     </tr>
@@ -118,20 +123,6 @@
                              <td class="part-key"><?php print $part['id'] ?></td>
                              <td class="part-name"><?php print $part['name'] ?></td>
                              <td class="part-price"><?php print $part['price'] ?></td>
-                             <td>
-                               Поставщик №<?php print $part['provider_id'] ?>
-                             </td>
-                             <!-- <td>
-                                <?php print $part['team'] ?>
-                             </td>
-                             <td>
-                                <?php
-                                  if ($part['state'] == PART_NOBUY)
-                                    print 'не куплено';
-                                  elseif($part['state'] == PART_BUY)
-                                    print 'куплено';
-                                ?>
-                             </td> -->
                              <td>
                                 <button class="btn-part-edit btn btn-default" data-id="<?php print $part['id'] ?>" data-toggle="modal" data-target="#editPart">
                                    <span class="glyphicon glyphicon-edit"></span>
@@ -180,6 +171,10 @@
             <label for="recipient-name" class="control-label">Цена:</label>
             <input type="text" name="order_price" class="form-control">
          </div>
+         <div class="form-group">
+            <label for="recipient-name" class="control-label">Комментарий:</label>
+            <textarea name="order_comment" class="form-control"></textarea>
+         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
@@ -207,6 +202,10 @@
         <div class="form-group">
            <label for="recipient-name" class="control-label">Цена:</label>
            <input type="text" name="order_price" class="form-control">
+        </div>
+        <div class="form-group">
+           <label for="recipient-name" class="control-label">Комментарий:</label>
+           <textarea name="order_comment" class="textarea-comment form-control"></textarea>
         </div>
       </div>
       <div class="modal-footer">

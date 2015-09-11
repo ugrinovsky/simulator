@@ -134,6 +134,5 @@ if (isset($_COOKIE[session_name()]))
 elseif($controller[1] != '' && $controller[1] != 'auth')
 		header('Location: http://'.SITE_HOST.'/');
 
-
 // запускаем маршрутизатор
 $router->start();

@@ -4,6 +4,11 @@
 	</h3>
 	<div class="row">
 		<div class="col-md-10">
+			<?php if (strlen($_GET['data']) > 0): ?>
+			  <div class="alert alert-danger">
+			    <?php print $_GET['data'] ?>
+			  </div>
+			<?php endif ?>
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					Общие данные

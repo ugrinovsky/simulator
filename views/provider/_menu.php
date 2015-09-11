@@ -61,7 +61,7 @@
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		      </button>
-		      <a class="navbar-brand" href="#">
+		      <a class="navbar-brand" href="/provider/">
 		      	<span class="glyphicon glyphicon-ruble"></span>
 		      	<?php print BRAND ?>
 		      </a>
@@ -78,7 +78,7 @@
 		        <li>
 		        		<a href="/provider/parts">
 		        			<span class="glyphicon glyphicon-cog"></span>
-			        		Детали
+			        		Список всех деталей
 		        		</a>
 		        </li>
 		      </ul>

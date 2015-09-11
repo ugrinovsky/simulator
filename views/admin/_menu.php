@@ -187,13 +187,13 @@
 		      			<li>
 				    		<a href="/admin/add_customer">
 				    			<span class="glyphicon glyphicon-plus"></span>
-				    			Добавить заказчика
+				    			Добавить покупателя
 				    		</a>
 				    	</li>
 			            <li>
 			            	<a href="/admin/customers">
 			            		<span class="glyphicon glyphicon-list-alt"></span>
-			            		Список заказчиков
+			            		Список покупателей
 			            	</a>
 			            </li>
 		      		</ul>

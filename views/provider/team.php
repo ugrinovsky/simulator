@@ -4,7 +4,7 @@
 	</h3>
 	<div class="row">
 		<div class="col-md-10">
-			<?php if (strlen($_GET['data']) > 0): ?>
+			<?php if (!empty($_GET['data']) && strlen($_GET['data']) > 0): ?>
 			  <div class="alert alert-danger">
 			    <?php print $_GET['data'] ?>
 			  </div>
@@ -17,17 +17,31 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>Название детали</th>
+								<th>Название</th>
 								<th>Цена, руб.</th>
+								<th>Тип</th>
 							</tr>
 						</thead>
 						<tbody>
+							<?php $total = 0 ?>
 							<?php if (!empty($team['parts'])): ?>
 								<?php foreach ($team['parts'] as $key => $part): ?>
+								<?php if ($part['type'] == PART): ?>
+									<?php $total += $part['price']; ?>
+								<?php endif ?>
 									<tr>
 										<td>
-											<?php print $part['name'] ?></td>
+											<?php print $part['name'] ?>
+										</td>
 										<td><?php print $part['price'] ?></td>
+										<td>
+											<?php
+												if($part['type'] == PART)
+													print 'Деталь';
+												else
+													print 'Упаковка';
+											?>
+										</td>
 									</tr>
 								<?php endforeach ?>
 							<?php endif ?>
@@ -35,11 +49,20 @@
 					</table>
 				</div>
 			</div>
-			<?php if (game()): ?>
+			<div>	
+				Итого по деталям: <?php print $total ?>
+			</div>
+			<?php if (game() && !stop() && !pause()): ?>
 				<?php if (isset($team['list_parts']) && !empty($team['list_parts'])): ?>
 					<button class="btn btn-default" data-toggle="modal" data-target="#sellPart">
 						Продать деталь
-					</button>
+					</button>					
+					<hr>					
+					<form action="/provider/add_income_team/<?php print $team['id'] ?>/<?php print $provider['id'] ?>" method="post">						
+					<button class="btn btn-default">							
+					Купить упаковку						
+					</button>					
+					</form>
 				<?php else: ?>
 					Деталей нет
 				<?php endif ?>
@@ -48,7 +71,7 @@
 	</div>
 </div>
 
-<?php if (game()): ?>
+<?php if (game() && !stop() && !pause()): ?>
 	<?php if (isset($team['list_parts']) && !empty($team['list_parts'])): ?>
 		<div class="modal fade" id="sellPart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
 		  <div class="modal-dialog" role="document">

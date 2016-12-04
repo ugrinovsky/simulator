@@ -81,9 +81,9 @@ Class Controller_Admin Extends Controller_Base
 	}
 
 	function add_team()
-	{
+	{			$select = array('where' => "id = 'default_score'");		$game_model = new Model_Game($select);		$game = $game_model->getOneRow();				
 		$team = new Model_Teams();
-		$team->score = DEFAULT_SCORE;
+		$team->score = $game['value'];
 		$team->credit = 0;
 		$team->save();
 
@@ -92,7 +92,8 @@ Class Controller_Admin Extends Controller_Base
 
 		$director = new Model_Users();
 		$director->login = 'team'.$team_id;
-		$director->pass = substr(md5(uniqid(rand(), true)), 0, 6);
+		$crypt_pass = generate_password(10);
+		$director->pass = $crypt_pass;
 		$director->team_id = $team_id;
 		$director->save();
 
@@ -159,7 +160,36 @@ Class Controller_Admin Extends Controller_Base
 				$user = $user_model->getOneRow();
 				$team['user'] = $user;
 
+				$data['price_parts'] = 0;
+				$data['price_incomes'] = 0;
+				$data['price_repayment'] = 0;
+				$data['price_orders'] = 0;
+
+				if (!empty($team['operations']))
+				{
+					foreach ($team['operations'] as $key => $operation)
+					{
+						if ($operation['type'] == PART)
+						{
+							$data['price_parts'] += $operation['price'];
+						}
+						if ($operation['type'] == INCOME)
+						{
+							$data['price_incomes'] += $operation['price'];
+						}
+						if ($operation['type'] == REPAYMENT)
+						{
+							$data['price_repayment'] += $operation['price'];
+						}
+						if ($operation['type'] == ORDER)
+						{
+							$data['price_orders'] += $operation['price'];
+						}
+					}	
+				}
+
 				$this->template->vars('team', $team);
+				$this->template->vars('data', $data);
 				$this->template->view('team');
 			}
 		}
@@ -372,11 +402,12 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$name = $_POST['order_name'];
 		$price = $_POST['order_price'];
-		$comment = $_POST['comment_price'];
+		$comment = $_POST['order_comment'];
 
 		$element_model = new Model_Elements();
 		$element_model->name = $name;
 		$element_model->price = $price;
+                $element_model->old_price = $price;
 		$element_model->type = ORDER;
 		$element_model->state = ORDER_NOCONTROL;
 		$element_model->comment = $comment;
@@ -390,7 +421,7 @@ Class Controller_Admin Extends Controller_Base
 		$id = $_POST['order_id'];
 		$name = $_POST['order_name'];
 		$price = $_POST['order_price'];
-		$comment = $_POST['comment_price'];
+		$comment = $_POST['order_comment'];
 
 		$select = array('where' => 'id = '.$id);
 
@@ -398,6 +429,7 @@ Class Controller_Admin Extends Controller_Base
 		$element_model->fetchOne();
 		$element_model->name = $name;
 		$element_model->price = $price;
+                $element_model->old_price = $price;
 		$element_model->comment = $comment;
 		$element_model->update();
 
@@ -596,6 +628,70 @@ Class Controller_Admin Extends Controller_Base
 			}
 		}
 
+		// действия при конце периода
+
+		$select = array('where' => "id = 'fine_time'");
+		$game_model = new Model_Game($select);
+		$game = $game_model->getOneRow();
+
+		$select = array('where' => 'type = '.ORDER. ' and state = '.ORDER_CONTROL);
+		$element_model = new Model_Elements($select);
+		$elements = $element_model->getAllRows();
+
+		if (isset($elements) && !empty($elements))
+		{
+			foreach ($elements as $key => $element)
+			{
+				$select = array('where' => 'id = '.$element['id']);
+				$element_model = new Model_Elements($select);
+				$element_model->fetchOne();
+				$element_model->state = ORDER_OVERDUE;
+				$element_model->update();
+			}
+		}
+
+		$team_model = new Model_Teams();
+		$teams = $team_model->getAllRows();
+
+		if (!empty($teams))
+		{
+			foreach ($teams as $key => $team)
+			{
+				$salary = get_salary($team['id']);
+
+				$select = array('where' => 'id = '.$team['id']);
+				$team_model = new Model_Teams($select);
+				$team_model->fetchOne();
+				$team_model->score -= $salary['price'];
+				$team_model->update();
+
+				$operation_model = new Model_Operations();
+				$operation_model->team_id = $team['id'];
+				$operation_model->price = $salary['price'];
+				$operation_model->residue = $team_model->score;
+				$operation_model->type = SALARY;
+				$operation_model->period_id = current_period();
+				$operation_model->name = $salary['name'];
+				$operation_model->save();
+                               
+            $price = 195000;
+            $select = array('where' => 'id = '.$team['id']);
+				$team_model = new Model_Teams($select);
+				$team_model->fetchOne();
+				$team_model->score -= $price;
+				$team_model->update();
+
+				$operation_model = new Model_Operations();
+				$operation_model->team_id = $team['id'];
+				$operation_model->price = $price;
+				$operation_model->residue = $team_model->score;
+				$operation_model->type = SALARY;
+				$operation_model->period_id = current_period();
+				$operation_model->name = 'Зарплата руководящему составу';
+				$operation_model->save();
+			}
+		}
+
 		$this->redirectToLink(REFERER);
 	}
 
@@ -625,8 +721,8 @@ Class Controller_Admin Extends Controller_Base
 		{
 			$select = array('where' => 'id = '.$team['id']);
 			$team_model = new Model_Teams($select);
-			$team_model->fetchOne();
-			$team_model->score = DEFAULT_SCORE;
+			$team_model->fetchOne();									$select = array('where' => "id = 'default_score'");			$game_model = new Model_Game($select);			$game = $game_model->getOneRow();			
+			$team_model->score = $game['value'];
 			$team_model->credit = 'NULL';
 			$team_model->update();
 		}
@@ -641,24 +737,12 @@ Class Controller_Admin Extends Controller_Base
 	{
 		$fine_time = $_POST['fine_time'];
 		$credit_rate = $_POST['credit_rate'];
-		$default_score = $_POST['default_score'];
 
 		$salary_trainee = $_POST['salary_trainee'];
 		$salary_master = $_POST['salary_master'];
 		$salary_prof = $_POST['salary_prof'];
 
-		if (isset($_POST['period_time']))
-		{
-			$period_time = $_POST['period_time'];
-
-			$select = array('where' => "id = 'period_time'");
-			$game_model = new Model_Game($select);
-			$game_model->fetchOne();
-			$game_model->value = $period_time;
-			$game_model->update();
-		}
-
-		$select = array('where' => "id = 'fine_time'");
+                $select = array('where' => "id = 'fine_time'");
 		$game_model = new Model_Game($select);
 		$game_model->fetchOne();
 		$game_model->value = $fine_time;
@@ -670,11 +754,15 @@ Class Controller_Admin Extends Controller_Base
 		$game_model->value = $credit_rate;
 		$game_model->update();
 
-		$select = array('where' => "id = 'default_score'");
-		$game_model = new Model_Game($select);
-		$game_model->fetchOne();
-		$game_model->value = $default_score;
-		$game_model->update();
+                if(isset($_POST['default_score']))
+                {
+                     $default_score = $_POST['default_score'];
+		     $select = array('where' => "id = 'default_score'");
+		     $game_model = new Model_Game($select);
+		     $game_model->fetchOne();
+		     $game_model->value = $default_score;
+		     $game_model->update();
+                }
 
 		$select = array('where' => "id = ".SKILL1);
 		$skill_model = new Model_Skills($select);
@@ -860,7 +948,8 @@ Class Controller_Admin Extends Controller_Base
 		$customer_model = new Model_Customers($select);
 		$customer_model->fetchOne();
 		$customer_model->login = 'customer'.$customer_model->id;
-		$customer_model->pass = substr(md5(uniqid(rand(), true)), 0, 6);
+		$crypt_pass = generate_password(10);
+		$customer_model->pass = $crypt_pass;
 		$customer_model->update();
 
 		$this->redirectToAction('customers');
@@ -878,7 +967,8 @@ Class Controller_Admin Extends Controller_Base
 		$provider_model = new Model_Providers($select);
 		$provider_model->fetchOne();
 		$provider_model->login = 'provider'.$provider_model->id;
-		$provider_model->pass = substr(md5(uniqid(rand(), true)), 0, 6);
+		$crypt_pass = generate_password(10);
+		$provider_model->pass = $crypt_pass;
 		$provider_model->update();
 
 		$this->redirectToAction('providers');
@@ -954,6 +1044,7 @@ Class Controller_Admin Extends Controller_Base
 					$element_model = new Model_Elements();
 					$element_model->name = $name;
 					$element_model->price = $price;
+					$element_model->old_price = $price;
 					$element_model->type = ORDER;
 					$element_model->state = ORDER_NOCONTROL;
 					$element_model->comment = $desc;
@@ -963,5 +1054,69 @@ Class Controller_Admin Extends Controller_Base
 
 			$this->redirectToAction('elements2');
 		}
+	}
+
+	function delete_all_orders()
+	{
+		$select = array('where' => 'type = '.ORDER);
+		$element_model = new Model_Elements();
+		$element_model->deleteBySelect($select);
+
+		$this->redirectToAction('elements2');
+	}
+
+	function table_teams()
+	{
+		$team_model = new Model_Teams();
+		$teams = $team_model->getAllRows();
+
+		foreach ($teams as $key => $team)
+		{
+			$select = array('where' => 'team_id = '.$team['id']);
+			$user_model = new Model_Users($select);
+			$user = $user_model->getOneRow();
+
+			$teams[$key]['login'] = $user['login'];
+			$teams[$key]['pass'] = $user['pass'];
+		}
+
+		$this->template->layouts = 'order_layouts';
+
+		$this->template->vars('teams', $teams);
+		$this->template->view('table_teams');
+	}
+
+	function table_customers()
+	{
+		$customer_model = new Model_Customers();
+		$customers = $customer_model->getAllRows();
+
+		$this->template->layouts = 'order_layouts';
+		$this->template->vars('customers', $customers);
+
+		$this->template->view('table_customers');
+	}
+
+	function table_providers()
+	{
+		$provider_model = new Model_Providers();
+		$providers = $provider_model->getAllRows();
+
+		$this->template->layouts = 'order_layouts';
+		$this->template->vars('providers', $providers);
+		
+		$this->template->view('table_providers');
+	}
+
+	function table_parts()
+	{
+		$select = array('where' => 'type = '.PART);
+		$element_model = new Model_Elements($select);
+		$parts = $element_model->getAllRows();
+
+		$this->template->layouts = 'order_layouts';
+		$this->template->vars('parts', $parts);
+		
+		$this->template->view('table_parts');
 	}
 }

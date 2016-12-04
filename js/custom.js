@@ -59,6 +59,11 @@ $(function()
 		}
 	})
 
+	$('.btn-sell-part').click(function()
+	{
+		$('#sellPart input[name=team_id]').val($(this).data('team-id'))
+	})
+
 	$('.btn-cost-edit').click(function()
 	{
 		$('#editCost input[name="cost_id"]').val($(this).data('id'))
@@ -206,7 +211,7 @@ $(function()
 	$('.btn-add-fine-prom').click(function()
 	{
 		$('input[name="team_id"]').val($(this).data('team-id'))
-		$('input[name="order_id"]').val($(this).data('order-id'))
+		$('input[name="order_id"]').val($(this).data('order-id'));
 	})
 	$('.btn-add-order-team').click(function()
 	{
@@ -226,6 +231,10 @@ $(function()
 		success: function(result)
 		{
 			data = result
+			for(var i = 0; i < data.length; i++)
+			{
+				data[i].name = 'Завод '+data[i].id
+			}
 		},
 		// error: function(xhr)
 		// {
@@ -264,11 +273,13 @@ $(function()
 			var el = {}
 			el.label = data[i].name
 			el.data = []
+			var c = 0
 			for(var j = 0; j < data[i].operations.length; j++)
 			{
+				c++
 				var d = new Date(data[i].operations[j].date_time)
 				var m = d.getMinutes()
-				el.data.push([d, data[i].operations[j].residue])
+				el.data.push([c, data[i].operations[j].residue])
 			}
 			mid.push(el)
 		}
@@ -280,7 +291,7 @@ $(function()
 		      },
 		      points: {
 		         show: true,
-					radius: 3,
+					radius: 0,
 		      },
 		  		bars: {
 		  		   zero: true
@@ -372,10 +383,17 @@ $(function() {
 		var el = {}
 		el.team = data[i].name
 		el.price = 0
+		el.price2 = 0
 		for(var j = 0; j < data[i].operations.length; j++)
 		{
-			el.price += parseFloat(data[i].operations[j].price)
+			if (data[i].operations[j].type == 9 || data[i].operations[j].type == 5 || data[i].operations[j].type == -1 || data[i].operations[j].type == 2)
+			{
+				el.price2 += parseFloat(data[i].operations[j].price)
+			}
+			else
+				el.price += parseFloat(data[i].operations[j].price)
 		}
+		console.log(el)
 		bar.push(el)
 	}
 
@@ -383,12 +401,13 @@ $(function() {
 	    element: 'morris-bar-chart',
 	    data: bar,
 	    xkey: 'team',
-	    ykeys: ['price'],
-	    labels: ['Расходы'],
+	    ykeys: ['price', 'price2'],
+	    labels: ['Расходы', 'Доходы'],
 	    barRatio: 0.9,
 	    xLabelAngle: 35,
 	    hideHover: 'auto',
-	    resize: true
+	    resize: true,
+	    lineColors:['gray','red']
 	});
 
 });

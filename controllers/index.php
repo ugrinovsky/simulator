@@ -2,10 +2,9 @@
 // контролер
 Class Controller_Index Extends Controller_Base 
 {
-	
 	// шаблон
 	public $layouts = "first_layouts";
-	
+
 	// экшен
 	function index() 
 	{
@@ -102,8 +101,8 @@ Class Controller_Index Extends Controller_Base
 			$data['end'] = $period['end'];
 			$data['pause'] = $period['pause'];
 			$data['state'] = $period['state'];
+
 			echo json_encode($data); 
 		}
 	}
-	
 }

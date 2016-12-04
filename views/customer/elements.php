@@ -77,7 +77,7 @@
 									<td class="prom-key"><?php print $key+1 ?></td>
 									<td class="prom-name"><?php print $prom['name'] ?></td>
 									<td class="prom-price"><?php print $prom['price'] ?></td>
-									<?php if (!game()): ?>
+									<?php if (game()): ?>
 										<td>
 											<button class="btn-prom-edit btn btn-default" data-id="<?php print $prom['id'] ?>"  data-toggle="modal" data-target="#editProm">
 												<span class="glyphicon glyphicon-edit"></span>

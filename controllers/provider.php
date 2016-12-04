@@ -20,7 +20,7 @@ Class Controller_Provider Extends Controller_Base
 			{
 				$select = array('where' => 'team_id = '.$team['id'].' and type = '.PART.' and provider_id = '.$provider['id']);
 				$operation_model = new Model_Operations($select);
-				$operation = $operation_model->getOneRow();
+				$operation = $operation_model->getLastRow();
 
 				$teams[$key]['operation'] = $operation;
 			}
@@ -48,7 +48,7 @@ Class Controller_Provider Extends Controller_Base
 		$team_model = new Model_Teams();
 		$team = $team_model->getRowById($team_id);
 
-		$select = array('where' => 'team_id = '.$team_id.' and type = '.PART.' and provider_id = '.$provider['id']);
+		$select = array('where' => 'team_id = '.$team_id.' and (type = '.PART.' or type = '.INCOME.') and provider_id = '.$provider['id']);
 		$operation_model = new Model_Operations($select);
 		$team['parts'] = $operation_model->getAllRows();
 
@@ -63,50 +63,54 @@ Class Controller_Provider Extends Controller_Base
 
 	function sell_part()
 	{
-		$part_id = $_POST['part_id'];
-		$team_id = $_POST['team_id'];
-		$provider_id = $_POST['provider_id'];
-
-		$team_model = new Model_Teams();
-		$team = $team_model->getRowById($team_id);
-
-		$element_model = new Model_Elements();
-		$part = $element_model->getRowById($part_id);
-
-		if (isset($part) && !empty($part))
+		if (game() && !stop() && !pause()) 
 		{
-			if ($team['score'] > $part['price'])
-			{
-				$select = array('where' => 'id = '.$part_id);
-				$element_model = new Model_Elements($select);
-				$element_model->fetchOne();
+			$part_id = $_POST['part_id'];
+			$team_id = $_POST['team_id'];
+			$provider_id = $_POST['provider_id'];
 
-				$select = array('where' => 'id = '.$team_id);
-				$team_model = new Model_Teams($select);
-				$team_model->fetchOne();
-				$team_model->score -= $element_model->price;
-				$team_model->update();
+			$team_model = new Model_Teams();
+			$team = $team_model->getRowById($team_id);
 
-				$operation_model = new Model_Operations();
-				$operation_model->element_id = $element_model->id;
-				$operation_model->provider_id = $provider_id;
-				$operation_model->team_id = $team_id;
-				$operation_model->name = $element_model->name;
-				$operation_model->type = $element_model->type;
-				$operation_model->price = $element_model->price;
-				$operation_model->residue = $team_model->score;
-				$operation_model->state = $element_model->state;
-				$operation_model->save();
-				
-				$this->redirectToAction('team/'.$team_id);
-			}
-			else
+			$select = array('where' => 'id = '.$part_id.' and type = '.PART);
+			$element_model = new Model_Elements($select);
+			$part = $element_model->getOneRow();
+
+			if (isset($part) && !empty($part))
 			{
-				$data = 'Цена детали больше остатка на счете. Операция невозможна.';
-				$this->redirectToAction('team/'.$team_id.'?data='.$data);
+				if ($team['score'] > $part['price'])
+				{
+					$select = array('where' => 'id = '.$part_id);
+					$element_model = new Model_Elements($select);
+					$element_model->fetchOne();
+
+					$select = array('where' => 'id = '.$team_id);
+					$team_model = new Model_Teams($select);
+					$team_model->fetchOne();
+					$team_model->score -= $element_model->price;
+					$team_model->update();
+
+					$operation_model = new Model_Operations();
+					$operation_model->element_id = $element_model->id;
+					$operation_model->provider_id = $provider_id;
+					$operation_model->team_id = $team_id;
+					$operation_model->name = $element_model->name;
+					$operation_model->type = $element_model->type;
+					$operation_model->price = $element_model->price;
+					$operation_model->residue = $team_model->score;
+					$operation_model->state = $element_model->state;
+					$operation_model->save();
+					
+					$this->redirectToAction('team/'.$team_id);
+				}
+				else
+				{
+					$data = 'Цена детали больше остатка на счете. Операция невозможна.';
+					$this->redirectToAction('team/'.$team_id.'?data='.$data);
+				}
 			}
 		}
-
+		$this->redirectToAction('index');
 	}
 
 	function parts()
@@ -116,28 +120,34 @@ Class Controller_Provider Extends Controller_Base
 		$provider_model = new Model_Providers($select);
 		$provider = $provider_model->getOneRow();
 	
-		$select = array('where' => 'type = '.PART.' and provider_id = '.$provider['id']);
+		$select = array('where' => 'type = '.PART);
 		$element_model = new Model_Elements($select);
 		$parts = $element_model->getAllRows();
-		if (!empty($parts))
-		{
-			foreach ($parts as $key => $part)
-			{
-				$select = array('where' => 'element_id = '.$part['id'].' and provider_id = '.$provider['id']);
-				$operation_model = new Model_Operations($select);
-				$operation = $operation_model->getOneRow();
-
-				if (isset($operation) && !empty($operation))
-				{
-					$team_model = new Model_Teams();
-					$team = $team_model->getRowById($operation['team_id']);
-
-					$parts[$key]['team'] = $team['name'];
-				}
-			}
-		}
 
 		$this->template->vars('parts', $parts);
 		$this->template->view('parts');
+	}		
+	
+	function add_income_team($args)	
+	{		
+		if (game() && !stop() && !pause()) 
+		{
+			$team_id = $args[0];		
+			$provider_id = $args[1];
+			$select = array('where' => 'id = '.$team_id);		
+			$team_model = new Model_Teams($select);		
+			$team_model->fetchOne();		
+			$team_model->score += INCOME_PRICE;		
+			$team_model->update();								
+			$operation_model = new Model_Operations();		
+			$operation_model->team_id = $team_id;		
+			$operation_model->type = INCOME;		
+			$operation_model->price = INCOME_PRICE;		
+			$operation_model->provider_id = $provider_id;	
+			$operation_model->name = 'Продажа упаковки';		
+			$operation_model->residue = $team_model->score;		
+			$operation_model->save();				
+		}
+		$this->redirectToLink(REFERER);	
 	}
 }

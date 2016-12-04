@@ -21,9 +21,9 @@
 							<?php if (!empty($team['operations'])): ?>
 								<?php foreach ($team['operations'] as $key => $operation): ?>
 									<tr>
-										<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
+										<td><?php print $operation['date_time']->format('H:i:s d.m.Y') ?></td>
 										<td class="
-											<?php if ($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE): ?>
+											<?php if ($operation['type'] != INCOME && $operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE): ?>
 												<?php print 'danger'; ?>
 											<?php elseif($operation['type'] == CREDIT): ?>
 												<?php print 'warning'; ?> 
@@ -33,7 +33,7 @@
 										">
 											<?php if ($operation['price'] != 0): ?>
 												<?php
-													print (($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? '-' : '+')
+													print (($operation['type'] != INCOME && $operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) ? '-' : '+')
 												?>
 											<?php endif ?>
 											<?php print $operation['price'] ?>
@@ -58,7 +58,7 @@
 						<hr>
 						<form action="/team/credit" method="post">
 							<div class="form-group">
-								<label for="">Введите сумму желаемого кредита на следующий период</label>
+								<label for="">Введите сумму желаемого кредита:</label>
 								<div class="input-group spinner">
 									<input name="price" type="text" class="form-control" value="0">
 									<input name="team_id" type="hidden" value="<?php print $team['id'] ?>">
@@ -71,6 +71,7 @@
 							</div>
 							<button type="submit" class="btn btn-default">Взять кредит</button>
 						</form>	
+                  <hr>
 					<?php else: ?>
 
 					<?php endif ?>

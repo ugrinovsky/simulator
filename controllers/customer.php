@@ -129,6 +129,22 @@ Class Controller_Customer Extends Controller_Base
 			$orders = array_unique($orders, SORT_REGULAR);
 			$team['orders'] = $orders;
 
+                        foreach($team['orders'] as $key => $order)
+                        {
+                                $select = array('where' => 'element_id = '.$order['id'].' and (type = '.CUST_FINE.' or type = '.PROM.' or type = '.ORDER.')');
+                                $operation_model = new Model_Operations($select);
+                                $operations = $operation_model->getAllRows();								
+                                $total = $order['old_price'];
+                                foreach($operations as $key2 => $o)
+                                {
+                                        if($o['type'] == CUST_FINE)
+                                               $total -= $o['price'];
+                                        elseif($o['type'] == PROM)
+                                               $total += $o['price'];										elseif($o['type'] == ORDER && $o['price'] != $order['old_price'] && $o['price'] != 0)												$total -= $order['old_price'] - $o['price'];
+                                }
+                                $team['orders'][$key]['total'] = $total;
+                        }
+
 			$select = array('where' => 'type = '.PROM);
 			$model = new Model_Elements($select);
 			$team['proms'] = $model->getAllRows();
@@ -144,29 +160,30 @@ Class Controller_Customer Extends Controller_Base
 
 	function add_order_team()
 	{
-		$order_name = $_POST['order_name'];
-		$team_id = $_POST['team_id'];
-
-		$login = $_SESSION['login'];
-		$select = array('where' => "login = '".$login."'");
-		$customer_model = new Model_Customers($select);
-		$customer = $customer_model->getOneRow();
-
-		$select = array('where' => 'name = '.$order_name.' and type = '.ORDER);
-		$element_model = new Model_Elements($select);
-		$order = $element_model->getOneRow();
-
-		$team_model = new Model_Teams();
-		$team = $team_model->getRowById($team_id);
-
-		if(isset($order) && !empty($order))
+		if (game() && !stop() && !pause())
 		{
-			if ($order['state'] == ORDER_NOCONTROL)
+			$order_name = $_POST['order_name'];
+			$team_id = $_POST['team_id'];
+
+			$login = $_SESSION['login'];
+			$select = array('where' => "login = '".$login."'");
+			$customer_model = new Model_Customers($select);
+			$customer = $customer_model->getOneRow();
+
+			$select = array('where' => "name = '".$order_name."' and type = ".ORDER." and state = ".ORDER_NOCONTROL);
+			$element_model = new Model_Elements($select);
+			$order = $element_model->getOneRow();
+
+			$team_model = new Model_Teams();
+			$team = $team_model->getRowById($team_id);
+
+
+			if(isset($order) && !empty($order))
 			{
 				$operation_model = new Model_Operations();
 				$operation_model->type = $order['type'];
 
-				$select = array('where' => 'name = '.$order_name);
+				$select = array('where' => 'id = '.$order['id']);
 				$order = new Model_Elements($select);
 				$order->fetchOne();
 				$order->state = ORDER_CONTROL;
@@ -188,108 +205,134 @@ Class Controller_Customer Extends Controller_Base
 
 	function accept_order_teams()
 	{
-		$order_name = $_POST['order_name'];
-
-		$select = array('where' => 'name = '.$order_name);
-		$element_model = new Model_Elements($select);
-		$order = $element_model->getOneRow();
-
-		$select = array('where' => 'element_id = '.$order['id'].' and type = '.ORDER.' and state = '.ORDER_CONTROL);
-		$operation_model = new Model_Operations($select);
-		$operation = $operation_model->getOneRow();
-
-		$team_model = new Model_Teams();
-		$team = $team_model->getRowById($operation['team_id']);
-
-		if(isset($operation) && !empty($operation))
+		if (game() && !stop() && !pause())
 		{
-			if ($operation['state'] == ORDER_CONTROL)
+			$order_name = $_POST['order_name'];
+
+			$select = array('where' => "name = '".$order_name."' and type = ".ORDER.' and (state = '.ORDER_CONTROL.' or state = '.ORDER_OVERDUE.')');
+			$element_model = new Model_Elements($select);
+			$order = $element_model->getOneRow();
+
+			if (!empty($order) && isset($order))
 			{
-				$operation_model = new Model_Operations();
-				$operation_model->type = $operation['type'];
+				$select = array('where' => 'element_id = '.$order['id']);
+				$operation_model = new Model_Operations($select);
+				$operation = $operation_model->getOneRow();
 
-				$select = array('where' => 'name = '.$order_name);
-				$order = new Model_Elements($select);
-				$order->fetchOne();
-				$order->state = ORDER_COMPLETED;
-				$order->update();
+				$team_model = new Model_Teams();
+				$team = $team_model->getRowById($operation['team_id']);
 
-				$select = array('where' => 'id = '.$team['id']);
-				$team = new Model_Teams($select);
-				$team->fetchOne();
-				$team->score += $order->price;
-				$team->update();	
+				if($order['state'] == ORDER_CONTROL || $order['state'] == ORDER_OVERDUE)
+				{
+					$operation_model = new Model_Operations();
+					$operation_model->type = $operation['type'];
 
-				$operation_model->element_id = $order->id;
-				$operation_model->team_id = $team->id;
-				$operation_model->price = $order->price;
-				$operation_model->residue = $team->score;
-				$operation_model->state = $order->state;
-				$operation_model->name = '№'.$order->name;
-				$operation_model->save();
+					$select = array('where' => 'id = '.$operation['element_id']);
+					$order = new Model_Elements($select);
+
+					$select = array('where' => "id = 'fine_time'");
+					$game_model = new Model_Game($select);
+					$game = $game_model->getOneRow();
+
+					$order->fetchOne();
+					// mpr($order);die;
+
+					$price = 0;
+					if ($order->state == ORDER_OVERDUE)
+					{
+						$operation_model->name = '№'.$order->name.' (-'.$game['value'].'% за просрочку)';
+						$percent = $order->price * $game['value'] / 100;
+						$price = $order->price - $percent;
+					}
+					else
+					{
+						$operation_model->name = '№'.$order->name;
+						$price = $order->price;
+					}
+
+					$order->state = ORDER_COMPLETED;
+					$order->update();
+
+					$select = array('where' => 'id = '.$team['id']);
+					$team = new Model_Teams($select);
+					$team->fetchOne();
+					$team->score += $order->price;
+					$team->update();	
+
+					$operation_model->element_id = $order->id;
+					$operation_model->team_id = $team->id;
+					$operation_model->residue = $team->score;
+					$operation_model->price = $price;
+					$operation_model->state = ORDER_COMPLETED;
+					$operation_model->save();
+
+					$this->redirectToAction('team/'.$team->id);
+				}
+				else
+					$this->redirectToAction('index');
 			}
-			$this->redirectToAction('team/'.$team->id);
 		}
-		else
-			$this->redirectToAction('index');
+		$this->redirectToAction('index');
 	}
 
 	function accept_order_team()
 	{
-		$order_name = $_POST['order_name'];
-		$team_id = $_POST['team_id'];
-
-		$select = array('where' => 'name = '.$order_name.' and type = '.ORDER);
-		$element_model = new Model_Elements($select);
-		$order = $element_model->getOneRow();
-
-		$team_model = new Model_Teams();
-		$team = $team_model->getRowById($team_id);
-
-		if(isset($order) && !empty($order))
+		if (game() && !stop() && !pause())
 		{
-			if($order['state'] == ORDER_CONTROL || $order['state'] == ORDER_OVERDUE)
+			$order_name = $_POST['order_name'];
+			$team_id = $_POST['team_id'];
+
+			$select = array('where' => "name = '".$order_name."' and type = ".ORDER." and (state = ".ORDER_CONTROL." or state = ".ORDER_OVERDUE.")");
+			$element_model = new Model_Elements($select);
+			$order = $element_model->getOneRow();
+
+			$team_model = new Model_Teams();
+			$team = $team_model->getRowById($team_id);
+			if(isset($order) && !empty($order))
 			{
-				$operation_model = new Model_Operations();
-				$operation_model->type = $order['type'];
-
-				$select = array('where' => 'name = '.$order_name);
-				$order = new Model_Elements($select);
-
-				$select = array('where' => "id = 'fine_time'");
-				$game_model = new Model_Game($select);
-				$game = $game_model->getOneRow();
-
-				$order->fetchOne();
-				$price = 0;
-				if ($order->state == ORDER_OVERDUE)
+				if($order['state'] == ORDER_CONTROL || $order['state'] == ORDER_OVERDUE)
 				{
-					$operation_model->name = '№'.$order->name.' (-'.$game['value'].'% за просрочку)';
-					$percent = $order->price * $game['value'] / 100;
-					$price = $order->price - $percent;
+					$operation_model = new Model_Operations();
+					$operation_model->type = $order['type'];
+
+					$select = array('where' => 'id = '.$order['id']);
+					$order = new Model_Elements($select);
+
+					$select = array('where' => "id = 'fine_time'");
+					$game_model = new Model_Game($select);
+					$game = $game_model->getOneRow();
+
+					$order->fetchOne();
+					$price = 0;
+					if ($order->state == ORDER_OVERDUE)
+					{
+						$operation_model->name = '№'.$order->name.' (-'.$game['value'].'% за просрочку)';
+						$percent = $order->price * $game['value'] / 100;
+						$price = $order->price - $percent;
+					}
+					else
+					{
+						$operation_model->name = '№'.$order->name;
+						$price = $order->price;
+					}
+
+					$order->state = ORDER_COMPLETED;
+					$order->update();
+
+					$select = array('where' => 'id = '.$team_id);
+					$team = new Model_Teams($select);
+					$team->fetchOne();
+					$team->score += $price;
+					$team->update();	
+
+					$operation_model->element_id = $order->id;
+					$operation_model->team_id = $team->id;
+					$operation_model->price = $price;
+					$operation_model->residue = $team->score;
+					$operation_model->state = $order->state;
+
+					$operation_model->save();
 				}
-				else
-				{
-					$operation_model->name = '№'.$order->name;
-					$price = $order->price;
-				}
-
-				$order->state = ORDER_COMPLETED;
-				$order->update();
-
-				$select = array('where' => 'id = '.$team_id);
-				$team = new Model_Teams($select);
-				$team->fetchOne();
-				$team->score += $price;
-				$team->update();	
-
-				$operation_model->element_id = $order->id;
-				$operation_model->team_id = $team->id;
-				$operation_model->price = $price;
-				$operation_model->residue = $team->score;
-				$operation_model->state = $order->state;
-
-				$operation_model->save();
 			}
 		}
 		$this->redirectToAction('team/'.$team_id);
@@ -393,43 +436,6 @@ Class Controller_Customer Extends Controller_Base
 		$this->redirectToAction('elements');
 	}
 
-	// function add_fine_prom_team()
-	// {
-	// 	$element_id = $_POST['team_element'];
-	// 	$team_id = $_POST['team_cost_id'];
-
-	// 	$operation_model = new Model_Operations();
-	// 	$operation_model->element_id = $element_id;
-	// 	$operation_model->team_id = $team_id;
-
-	// 	$element_model = new Model_Elements();
-	// 	$element = $element_model->getRowById($element_id);
-
-	// 	$select = array('where' => 'id = '.$team_id);
-	// 	$team_model = new Model_Teams($select);
-	// 	$team_model->fetchOne();
-
-	// 	if ($element['type'] == PROM)
-	// 		$team_model->score += $element['price'];
-	// 	elseif($element['type'] == CUST_FINE)
-	// 		$team_model->score -= $element['price'];
-
-	// 	$team_model->update();
-
-	// 	$operation_model->name = $element['name'];
-	// 	$operation_model->type = $element['type'];
-	// 	$operation_model->state = $element['state'];
-	// 	$operation_model->price = $element['price'];
-	// 	$operation_model->residue = $team_model->score;
-	// 	$operation_model->save();
-
-
-	// 	$location = $_POST['location'];
-	// 	if ($location == 'index')
-	// 		$this->redirectToAction('index');
-	// 	if ($location == 'team')
-	// 		$this->redirectToAction('team/'.$team_id);
-	// }
 	function add_fine_prom_team()
 	{
 		$element_id = $_POST['team_element'];
@@ -437,7 +443,7 @@ Class Controller_Customer Extends Controller_Base
 		$order_id = $_POST['order_id'];
 
 		$operation_model = new Model_Operations();
-		$operation_model->element_id = $element_id;
+		$operation_model->element_id = $order_id;
 		$operation_model->team_id = $team_id;
 
 		$element_model = new Model_Elements();
@@ -450,7 +456,7 @@ Class Controller_Customer Extends Controller_Base
 		$element_model = new Model_Elements();
 		$order = $element_model->getRowById($order_id);
 
-		$price = $order['price'] * $element['price'] / 100;
+		$price = $order['old_price'] * $element['price'] / 100;
 
 		if ($element['type'] == PROM)
 			$team_model->score += $price;

@@ -10,6 +10,7 @@ Class Model_Elements Extends Model_Base {
 	public $customer_id;
 	public $provider_id;
 	public $comment;
+        public $old_price;
 	
 	public function fieldsTable(){
 		return array(		
@@ -20,7 +21,8 @@ Class Model_Elements Extends Model_Base {
 			'state' => 'Состояние',
 			'customer_id' => 'Id заказчика',
 			'provider_id' => 'Id поставщика',
-			'comment' => 'Комментарий'
+			'comment' => 'Комментарий',
+                        'old_price' => 'Старая цена'
 		);
 	}
 	

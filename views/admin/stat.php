@@ -6,7 +6,7 @@
 		<div class="col-md-8">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Динамика
+					Динамика транзакций
 				</div>
 			</div>
 			<div class="flot-chart">
@@ -16,7 +16,7 @@
 		<div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					График расходов
+					График доходов и расходов
 				</div>
 			</div>
 			<div class="flot-chart">

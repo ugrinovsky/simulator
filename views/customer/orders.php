@@ -28,7 +28,9 @@
 											<?php print $order['name'] ?></td>
 										<td><?php print $order['price'] ?></td>
 										<td>
+                                                                                    <?php if (!empty($order['team'])): ?>
 										   Завод №<?php print $order['id'] ?>
+                                                                                          <?php endif ?>
 										</td>
 										<td>
 										   <?php

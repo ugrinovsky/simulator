@@ -1,8 +1,14 @@
 <?php
+
 // включим отображение всех ошибок
-error_reporting (E_ALL); 
+
+
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
 // подключаем конфиг
+
 include ('config.php'); 
 
 // Соединяемся с БД
@@ -20,6 +26,8 @@ function current_period()
 	return $period['id'];
 }
 
+
+
 function game()
 {
 	$select = array('where' => "state = '".PERIOD_DISABLE."'");
@@ -31,12 +39,39 @@ function game()
 		return false;
 }
 
+
+
+function pause()
+{
+	$select = array('where' => "state = '".PERIOD_PAUSE."'");
+	$period_model = new Model_Periods($select);
+	$period = $period_model->getAllRows();
+	if ($period == false)
+		return false;
+	elseif(count($period) != 4 && count($period) > 0)
+		return true;	
+}
+
+
+function stop()
+{
+	$select = array('where' => "state = '".PERIOD_ENABLE."'");
+	$period_model = new Model_Periods($select);
+	$period = $period_model->getAllRows();
+	if (count($period) > 0 && $period != false)
+	{
+		return false;
+	}
+	else return true;
+}
+
+
 function get_salary($team_id)
+
 {
 	$select = array('where' => 'team_id = '.$team_id);
 	$staff_model = new Model_Staffs($select);
 	$staffs = $staff_model->getAllRows();
-
 	$data['price'] = 0;
 	$sk1 = 0;
 	$sk2 = 0;
@@ -60,57 +95,43 @@ function get_salary($team_id)
 	return $data;
 }
 
+
+
 function end_period()
 {
 	if (game())
 	{
-		$select = array('where' => "id = 'fine_time'");
-		$game_model = new Model_Game($select);
-		$game = $game_model->getOneRow();
 
-		$select = array('where' => 'type = '.ORDER. ' and state = '.ORDER_CONTROL);
-		$element_model = new Model_Elements($select);
-		$elements = $element_model->getAllRows();
-
-		if (isset($elements) && !empty($elements))
-		{
-			foreach ($elements as $key => $element)
-			{
-				$select = array('where' => 'id = '.$element['id']);
-				$element_model = new Model_Elements($select);
-				$element_model->fetchOne();
-				$element_model->state = ORDER_OVERDUE;
-				$element_model->update();
-			}
-		}
-
-		$team_model = new Model_Teams();
-		$teams = $team_model->getAllRows();
-
-		if (!empty($teams))
-		{
-			foreach ($teams as $key => $team)
-			{
-				$salary = get_salary($team['id']);
-
-				$select = array('where' => 'id = '.$team['id']);
-				$team_model = new Model_Teams($select);
-				$team_model->fetchOne();
-				$team_model->score -= $salary['price'];
-				$team_model->update();
-
-				$operation_model = new Model_Operations();
-				$operation_model->team_id = $team['id'];
-				$operation_model->price = $salary['price'];
-				$operation_model->residue = $team_model->score;
-				$operation_model->type = SALARY;
-				$operation_model->period_id = current_period();
-				$operation_model->name = $salary['name'];
-				$operation_model->save();
-			}
-		}
 	}
 }
+
+
+function generate_password($number)  
+{  
+   $arr = array('a','b','c','d','e','f',  
+       'g','h','i','j','k','l',  
+       'm','n','o','p','r','s',  
+	   't','u','v','x','y','z',  
+       'A','B','C','D','E','F',  
+       'G','H','I','J','K','L',  
+       'M','N','O','P','R','S',  
+       'T','U','V','X','Y','Z',  
+       '1','2','3','4','5','6',  
+       '7','8','9','0','!','?',  
+       '&','^','%','@','*','$');  
+
+   $pass = "";  
+   for($i = 0; $i < $number; $i++)  
+   {  
+     $index = rand(0, count($arr) - 1);  
+     $pass .= $arr[$index];  
+   }  
+
+   return $pass;  
+
+}  
+
+
 
 // Загружаем router
 $router = new Router();
@@ -118,7 +139,6 @@ $router = new Router();
 $router->setPath (SITE_PATH . 'controllers');
 
 $controller = explode('/',$_SERVER['REQUEST_URI']);
-
 
 if (isset($_COOKIE[session_name()]))
 {
@@ -131,8 +151,13 @@ if (isset($_COOKIE[session_name()]))
 	if ($controller[1] != $_SESSION['type'] && $controller[1] != 'logout' && $controller[1] != 'get_periods')
 		header('Location: http://'.SITE_HOST.'/'.$_SESSION['type']);
 }
+
 elseif($controller[1] != '' && $controller[1] != 'auth')
 		header('Location: http://'.SITE_HOST.'/');
 
+
+
 // запускаем маршрутизатор
+
 $router->start();
+

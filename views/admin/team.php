@@ -24,10 +24,10 @@
 							<?php if (isset($team['operations']) && !empty($team['operations'])): ?>
 								<?php foreach ($team['operations'] as $key => $operation): ?>
 									<tr>
-										<td><?php print $operation['date_time']->format('H:m:i d.m.Y') ?></td>
+										<td><?php print $operation['date_time']->format('H:i:s d.m.Y') ?></td>
 										<td class="
 												<?php if ($operation['price'] != 0): ?>
-													<?php if ($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE): ?>
+													<?php if ($operation['type'] != INCOME && $operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE): ?>
 														<?php print 'danger'; ?>
 													<?php elseif($operation['type'] == CREDIT): ?>
 														<?php print 'warning'; ?> 
@@ -39,7 +39,7 @@
 											<?php
 												if ($operation['price'] != 0)
 												{
-													if ($operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) {
+													if ($operation['type'] != INCOME && $operation['type'] != PROM && $operation['type'] != CREDIT && $operation['type'] != ORDER || $operation['state'] == ORDER_OVERDUE) {
 														print '-';
 													}
 													else
@@ -86,7 +86,7 @@
 												}
 												if ($operation['type'] == REPAYMENT) {
 													print 'Выплата';
-												}
+												}																								if ($operation['type'] == INCOME) {													print 'Приход';												}
 											?>
 										</td>
 										<td><?php print $operation['residue'] ?></td>
@@ -116,6 +116,38 @@
 						<div class="panel-body">
 							<h5>Логин: <?php print $team['user']['login'] ?></h5>
 							<h5>Пароль: <?php print $team['user']['pass'] ?></h5>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							Прочие данные	
+						</div>
+						<div class="panel-body">
+							<p><b>Потрачено на детали</b></p>
+							<p><?php print $data['price_parts'] ?> руб.</p>
+							<p><b>Доход по заказам</b></p>
+							<p><?php print $data['price_orders'] ?> руб.</p>
+							<p><b>Получено на упаковки</b></p>
+							<p><?php print $data['price_incomes'] ?> руб.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							Данные по кредитам
+						</div>
+						<div class="panel-body">
+							<p><b>Кредитная задолженность</b></p>
+							<p><?php print $team['credit'] ?> руб.</p>
+							<p><b>Итого выплачено</b></p>
+							<p><?php print $data['price_repayment'] ?> руб.</p>
 						</div>
 					</div>
 				</div>

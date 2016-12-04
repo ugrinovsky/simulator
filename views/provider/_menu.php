@@ -61,7 +61,7 @@
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		      </button>
-		      <a class="navbar-brand" href="/provider/">
+		      <a class="navbar-brand" href="#">
 		      	<span class="glyphicon glyphicon-ruble"></span>
 		      	<?php print BRAND ?>
 		      </a>
